@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S Sport Plus - Temsilci Bilgi Merkezi (ULTIMATE)</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>S Sport Plus - Temsilci Bilgi Merkezi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* === GENEL AYARLAR === */
@@ -33,72 +33,73 @@
 
         /* ANA UYGULAMA */
         #main-app { display: none; }
-        .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
+        /* GELİŞTİRİCİ İMZASI */
+        .developer-badge {
+            position: absolute; top: 20px; right: 30px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem;
+            backdrop-filter: blur(5px); display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
         .search-container { position: relative; max-width: 800px; margin: 0 auto; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: none; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
 
         .filter-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .filter-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .filter-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
         .filter-btn:hover { background: rgba(255,255,255,0.3); }
         .filter-btn.active { background: var(--secondary); color: var(--primary); font-weight: 600; border-color: var(--secondary); }
         
-        /* ÖZEL İADE BUTONU */
         .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); border: none; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); animation: pulse 2s infinite; font-weight: bold; }
+        .link-btn { background: rgba(255,255,255,0.2); border: 1px solid white; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* KARTLAR */
         .container { padding: 20px; max-width: 1600px; margin: 0 auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
         .card.teknik { border-left-color: var(--primary); }
         .card.iade { border-left-color: var(--accent); }
         .card.ikna { border-left-color: var(--warning); }
         .card.kampanya { border-left-color: var(--success); }
         .card.bilgi { border-left-color: var(--info); }
         
-        .card-title { font-weight: 700; font-size: 1.1rem; margin: 0 0 10px 0; color: #2c3e50; }
-        .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; float: right; background: #eee; text-transform: uppercase; }
-        .script-box { background: #fffdeb; border: 1px solid #f0e68c; padding: 12px; border-radius: 8px; font-style: italic; color: #444; margin-top: auto; position: relative; }
-        .card-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
-        .btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; }
-        .btn-copy { background: var(--primary); color: white; }
-        .btn-link { background: transparent; border: 1px solid var(--info); color: var(--info); text-decoration: none; display: flex; align-items: center; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .card-title { font-weight: 700; font-size: 1.1rem; margin: 0; color: #2c3e50; line-height: 1.4; }
+        .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; background: #eee; text-transform: uppercase; font-weight: 600; }
+        
+        .card-content { font-size: 0.95rem; color: #555; margin-bottom: 15px; line-height: 1.5; flex-grow: 1; }
+        .script-box { background: #fffdeb; border: 1px solid #f0e68c; padding: 12px; border-radius: 8px; font-style: italic; color: #444; margin-top: auto; position: relative; font-size: 0.92rem; }
+        .script-box::before { content: '\f10d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: -8px; left: 10px; background: #fffdeb; padding: 0 5px; color: #f0e68c; font-size: 0.8rem; }
 
-        /* ==============================
-           İADE ASİSTANI (WIZARD) MODAL
-           ============================== */
-        #wizard-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 5000; justify-content: center; align-items: center;
-        }
-        .wizard-content {
-            background: white; width: 90%; max-width: 650px; border-radius: 15px; padding: 30px;
-            position: relative; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .card-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
+        .btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+        .btn-copy { background: var(--primary); color: white; }
+        .btn-link { background: transparent; border: 1px solid var(--info); color: var(--info); text-decoration: none; }
+        .btn-link:hover { background: #e1f5fe; }
+
+        /* İADE ASİSTANI MODAL */
+        #wizard-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; justify-content: center; align-items: center; }
+        .wizard-content { background: white; width: 90%; max-width: 650px; border-radius: 15px; padding: 30px; position: relative; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-wizard { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; }
         .wizard-step h2 { color: var(--primary); margin-bottom: 10px; }
-        .wizard-step p { font-size: 1.1rem; color: #555; margin-bottom: 25px; }
         .wizard-options { display: flex; flex-direction: column; gap: 10px; }
-        .option-btn {
-            padding: 15px; border: 2px solid #eee; border-radius: 10px; background: white;
-            font-size: 1rem; cursor: pointer; transition: 0.2s; text-align: left; display: flex; align-items: center; gap: 10px;
-        }
+        .option-btn { padding: 15px; border: 2px solid #eee; border-radius: 10px; background: white; font-size: 1rem; cursor: pointer; transition: 0.2s; text-align: left; display: flex; align-items: center; gap: 10px; }
         .option-btn:hover { border-color: var(--primary); background: #f0f4ff; }
-        .option-btn i { color: var(--secondary); }
         
-        /* Sonuç Ekranları */
         .result-box { padding: 20px; border-radius: 10px; margin-top: 20px; }
         .res-red { background: #ffebee; border: 2px solid #ef5350; color: #c62828; }
         .res-green { background: #e8f5e9; border: 2px solid #66bb6a; color: #2e7d32; }
         .res-yellow { background: #fff8e1; border: 2px solid #ffca28; color: #f57f17; }
-        
         .restart-btn { margin-top: 20px; background: #555; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
 
         .highlight { background-color: yellow; font-weight: bold; }
-        .tag { display: inline-block; background: #eee; padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; margin-right: 4px; }
     </style>
 </head>
 <body>
@@ -126,26 +127,27 @@
         <div class="header">
             <div class="header-top">
                 <h1><i class="fas fa-compass"></i> S Sport Plus - Temsilci Pusulası</h1>
-                <div style="display:flex; align-items:center; gap:10px;">
-                     BY MADE DOĞUŞ YALÇINKAYA
-                     <img src="https://www.sitetelekom.com.tr/tema/genel/uploads/logo/logo.png" alt="Logo" style="height:30px; background:white; padding:2px; border-radius:4px;">
+                <div class="developer-badge">
+                    <i class="fas fa-code"></i> Developed by Doğuş Yalçınkaya
                 </div>
             </div>
 
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Hızlı Ara: 'Donma', 'İade', 'Samsung', 'Winback'..." onkeyup="filterContent()">
+                <input type="text" id="searchInput" placeholder="Hızlı Ara: '1001', 'Vestel', 'NBA', 'Donma', 'Fiyat'..." onkeyup="filterContent()">
             </div>
 
             <div class="filter-container">
                 <button class="filter-btn active" onclick="filterCategory('all')">Tümü</button>
                 <button class="filter-btn" onclick="filterCategory('Teknik')">Teknik</button>
-                <button class="filter-btn" onclick="filterCategory('İade')">İade</button>
                 <button class="filter-btn" onclick="filterCategory('İkna')">İkna</button>
                 <button class="filter-btn" onclick="filterCategory('Kampanya')">Kampanya</button>
                 <button class="filter-btn" onclick="filterCategory('Bilgi')">Bilgi</button>
+                
+                <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn link-btn"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
+                
                 <button class="filter-btn wizard-btn" onclick="openWizard()">
-                    <i class="fas fa-magic"></i> İade Asistanı
+                    İade Asistanı
                 </button>
             </div>
         </div>
@@ -163,7 +165,7 @@
     </div>
 
     <script>
-        const BAKIM_MODU = true; 
+        const BAKIM_MODU = false; 
         const DOGRU_SIFRE = "ssport+";
 
         function girisYap() {
@@ -182,104 +184,84 @@
         function enterBas(e) { if (e.key === "Enter") girisYap(); }
 
         // ==========================================
-        // 🧠 İADE ASİSTANI (DOKÜMANA GÖRE GÜNCELLENDİ)
+        // 🧠 İADE ASİSTANI (KARAR AĞACI)
         // ==========================================
         const wizardSteps = {
             start: {
                 title: "İade Talebi Analizi",
                 text: "Lütfen müşterinin durumunu seçiniz:",
                 options: [
-                    { text: "1. İçerik İzlemiş / Kullanım Var", next: "izleme_var" },
-                    { text: "2. Aylık Paket (İzleme YOK)", next: "aylik_izleme_yok" },
-                    { text: "3. Yıllık Paket (İzleme YOK)", next: "yillik_izleme_yok" },
-                    { text: "4. Mükerrer (Çift) Çekim", next: "mukerrer" },
-                    { text: "5. Aynı Gün Yanlışlıkla Yıllık Alım", next: "ayni_gun_yillik" },
-                    { text: "6. Winback (İndirimli) Paket Alıp Eskisini İptal İsteyen", next: "winback_iade" },
-                    { text: "7. Kampanya Kodu ile Yenilemek İsteyen", next: "kod_ile_yenileme" },
-                    { text: "8. YILLIKLOCA Fark İadesi", next: "fark_iade" }
+                    { text: "İçerik İzlemiş / Kullanım Var", next: "izleme_var" },
+                    { text: "Aylık Paket (İzleme YOK)", next: "aylik_izleme_yok" },
+                    { text: "Yıllık Paket (İzleme YOK)", next: "yillik_izleme_yok" },
+                    { text: "Mükerrer (Çift) Çekim", next: "mukerrer" },
+                    { text: "Aynı Gün Yanlışlıkla Yıllık Alım", next: "ayni_gun_yillik" },
+                    { text: "Apple / Google Store İptali", next: "store_iptal" },
+                    { text: "Winback Paket Geçiş İadesi", next: "winback_iade" }
                 ]
             },
             izleme_var: {
                 result: "red", title: "❌ İADE REDDEDİLİR",
-                text: "Genel bir sorun yoksa ve içerik izlenmişse (aylık/yıllık fark etmez) iade yapılamaz. THH tehdidi olsa bile reddedilir.",
+                text: "İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",
                 script: "Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."
             },
             aylik_izleme_yok: {
-                title: "Aylık Paket - İzleme Yok", text: "Müşteri THH başvurusu yapacağını iletiyor mu?",
+                title: "Aylık Paket - İzleme Yok", text: "THH tehdidi var mı?",
                 options: [
-                    { text: "Evet / Israrcı", next: "aylik_teklif" },
-                    { text: "Hayır, sadece soruyor", next: "izleme_var" } // Standart prosedür red, ama THH derse teklif
+                    { text: "Evet/Israrcı", next: "aylik_teklif" },
+                    { text: "Hayır", next: "izleme_var" }
                 ]
             },
             aylik_teklif: {
-                title: "Aylık İade Teklifi", text: "Önce 6AY50 indirimini teklif et.",
+                title: "İndirim Teklifi", text: "Önce 6AY50 ile indirim teklif et.",
                 options: [
                     { text: "İndirimi Kabul Etti", next: "indirim_kabul" },
                     { text: "Reddetti (Tam İade)", next: "tam_iade" }
-                ],
-                note: "Önce 6AY50 ile 139,5 TL indirim öner. Kabul etmezse tam iade yap."
+                ]
             },
             yillik_izleme_yok: {
-                title: "Yıllık Paket - İzleme Yok", text: "Mevcut paket kampanyalı mıydı?",
+                title: "Yıllık Paket", text: "Paket kampanyalı mıydı?",
                 options: [
-                    { text: "Hayır (Standart Paket)", next: "yillik_standart" },
-                    { text: "Evet (Kampanyalı Paket)", next: "yillik_kampanyali" }
+                    { text: "Hayır (Standart)", next: "yillik_standart" },
+                    { text: "Evet (Kampanyalı)", next: "yillik_kampanyali" }
                 ]
             },
             yillik_standart: {
-                title: "Standart Yıllık Paket", text: "Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",
+                title: "Standart Yıllık", text: "Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",
                 options: [
                     { text: "Teklifi Kabul Etti", next: "islem_tamam" },
                     { text: "Hepsini Reddetti (Tam İade)", next: "tam_iade" }
                 ]
             },
             yillik_kampanyali: {
-                title: "Kampanyalı Yıllık Paket", text: "Sadece Aylığa Geçiş önerilebilir.",
+                title: "Kampanyalı Yıllık", text: "Sadece Aylığa Geçiş önerilebilir.",
                 options: [
                     { text: "Aylığa Geçişi Kabul Etti", next: "ayliga_gecis" },
                     { text: "Reddetti (Tam İade)", next: "tam_iade" }
                 ]
             },
             mukerrer: {
-                title: "Mükerrer Çekim Kontrolü", text: "2 işlem de AYNI Cihaz ve IP'den mi yapılmış?",
+                title: "Mükerrer Çekim", text: "15 gün içinde ve Aynı Cihaz/IP mi?",
                 options: [
-                    { text: "Evet (Aynı Cihaz/IP)", next: "mukerrer_iade" },
-                    { text: "Hayır (Farklı Cihaz/IP)", next: "izleme_var" }
-                ],
-                note: "15 gün içinde ulaşmış olması gerekir."
+                    { text: "Evet", next: "mukerrer_iade" },
+                    { text: "Hayır", next: "izleme_var" }
+                ]
             },
             ayni_gun_yillik: {
-                title: "Aylık Üstüne Yıllık Alım", text: "24 saat içinde mi ulaştı?",
+                title: "Aynı Gün Yıllık", text: "24 saat içinde mi?",
                 options: [
-                    { text: "Evet (24 saat içinde)", next: "bir_defaya_mahsus" },
-                    { text: "Hayır (24 saati geçmiş)", next: "izleme_var" }
+                    { text: "Evet", next: "bir_defaya_mahsus" },
+                    { text: "Hayır", next: "izleme_var" }
                 ]
             },
-            winback_iade: {
-                result: "yellow", title: "⚠️ SADECE 2. PAKET İADE",
-                text: "Sistemden Winback (indirimli) paket alıp eskisini iptal etmek istiyorsa, sadece son aldığı (Winback) paket iade edilebilir. İlk paket iade edilmez.",
-                script: "Memnuniyetiniz kapsamında son aldığınız paketin iadesini sağlayabilirim."
-            },
-            kod_ile_yenileme: {
-                title: "Kod ile Yenileme Talebi", text: "Aynı ay ve 15 gün içinde mi ulaştı?",
-                options: [
-                    { text: "Evet", next: "kod_uygula" },
-                    { text: "Hayır (Süre geçmiş/Farklı ay)", next: "red_gec_kalmis" }
-                ]
-            },
-            kod_uygula: {
-                result: "green", title: "✅ DEĞİŞİM YAPILIR",
-                text: "Kullanıcı elindeki kod ile satın alma yapar. Sonra ilk (otomatik yenilenen) paket iade edilir.",
-                script: "Mevcut kodunuzla satın alma işlemini yapın, ardından otomatik yenilenen paketin iadesini sağlayacağım."
-            },
-            red_gec_kalmis: { result: "red", title: "❌ SÜRE GEÇMİŞ (RED)", text: "Ücret tahsilatı farklı bir ayda yapıldıysa veya 15 günü geçtiyse işlem yapılmaz." },
-            bir_defaya_mahsus: { result: "green", title: "✅ BİR DEFAYA MAHSUS İADE", text: "Bir defaya mahsus yıllık paket iade edilir. Aylık paket devam eder." },
-            fark_iade: { result: "green", title: "✅ FARK İADESİ YAPILIR", text: "Defansa geçmeden aradaki farkı iade edin.", script: "Memnuniyetiniz adına aradaki farkı iade ediyorum." },
-            mukerrer_iade: { result: "green", title: "✅ MÜKERRER İADE YAPILIR", text: "Kullanılmayan fazla paketin iadesini yap." },
-            ayliga_gecis: { result: "green", title: "✅ AYLIK PAKETE GEÇİRİLDİ", text: "Yıllık iptal edildi, kalan tutar iade edildi, aylık tanımlandı." },
-            islem_tamam: { result: "green", title: "✅ İŞLEM TAMAMLANDI", text: "Teklif kabul edildi." },
-            tam_iade: { result: "green", title: "✅ TAM İADE YAPILIR", text: "Müşteri tüm teklifleri reddettiği için tam iade sağlanır." },
-            indirim_kabul: { result: "green", title: "✅ İNDİRİM TANIMLANDI", text: "139.5 TL iade yapıldı." }
+            store_iptal: { result: "red", title: "❌ BİZ İPTAL EDEMEYİZ", text: "Apple/Google alımları telefondan yapılmalı." },
+            winback_iade: { result: "yellow", title: "⚠️ SADECE 2. PAKET İADE", text: "Sadece son alınan indirimli paket iade edilebilir." },
+            indirim_kabul: { result: "green", title: "✅ İNDİRİM TANIMLA", text: "139.5 TL iade yapıldı." },
+            tam_iade: { result: "green", title: "✅ TAM İADE YAP", text: "Teklifler reddedildi, iade sağla." },
+            mukerrer_iade: { result: "green", title: "✅ MÜKERRER İADE", text: "Fazla paketi iade et." },
+            ayliga_gecis: { result: "green", title: "✅ AYLIK GEÇİŞ", text: "Yıllık iptal, aylık tanımla, farkı iade et." },
+            bir_defaya_mahsus: { result: "green", title: "✅ TEK SEFERLİK İADE", text: "Yıllık iade, aylık devam." },
+            islem_tamam: { result: "green", title: "✅ İŞLEM TAMAM", text: "Teklif kabul edildi." }
         };
 
         function openWizard() { document.getElementById('wizard-modal').style.display = 'flex'; renderStep('start'); }
@@ -289,14 +271,12 @@
             const step = wizardSteps[stepKey];
             const body = document.getElementById('wizard-body');
             let html = `<h2>${step.title || ''}</h2>`;
-            
             if (step.result) {
                 let icon = step.result === 'red' ? '🛑' : (step.result === 'green' ? '✅' : '⚠️');
                 let styleClass = step.result === 'red' ? 'res-red' : (step.result === 'green' ? 'res-green' : 'res-yellow');
                 html += `<div class="result-box ${styleClass}"><div style="font-size:3rem; margin-bottom:10px;">${icon}</div><h3>${step.title}</h3><p>${step.text}</p>${step.script ? `<div class="script-box">${step.script}</div>` : ''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`;
             } else {
                 html += `<p>${step.text}</p>`;
-                if(step.note) html += `<p style="font-size:0.9rem; color:#d32f2f; background:#ffebee; padding:5px;">💡 ${step.note}</p>`;
                 html += `<div class="wizard-options">`;
                 step.options.forEach(opt => { html += `<button class="option-btn" onclick="renderStep('${opt.next}')"><i class="fas fa-chevron-right"></i> ${opt.text}</button>`; });
                 html += `</div>`;
@@ -306,38 +286,118 @@
         }
 
         // ==========================================
-        // 📊 TÜM VERİLER (EKSİKSİZ)
+        // 📊 DETAYLI VERİ SETİ
         // ==========================================
         const database = [
-            // --- İADE & FİNANS ---
-            { title: "İade: İzleme Geçmişi VAR", category: "İade", type: "iade", tags: ["red", "thh"], text: "İçerik izlenmişse iade REDDEDİLİR. THH tehdidi olsa bile süreç başlatılmaz.", script: "Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz." },
-            { title: "İade: Aylık Paket (İzlememiş)", category: "İade", type: "iade", tags: ["indirim", "6ay50"], text: "Yenilenmiş aylık paket + İzleme YOK. Önce %50 indirim teklif et.", script: "Memnuniyetiniz adına dilerseniz '6AY50' kodu ile üyeliğinize 139.5 TL indirim tanımlayabiliriz.", code: "6AY50" },
-            { title: "İade: Yıllık Paket (İzlememiş)", category: "İade", type: "iade", tags: ["yıllık", "cayma"], text: "Yıllık paket + İzleme YOK. 1. YILLIKLOCA öner. 2. Aylığa geçiş öner. 3. Tam iade.", script: "Dilerseniz 'YILLIKLOCA' kampanyası ile indirim sağlayalım. Ya da paketinizi aylığa çevirip farkı iade edelim." },
-            { title: "İade: Mükerrer Çekim", category: "İade", type: "iade", tags: ["çift çekim"], text: "Aynı ayda çift çekim varsa ve 2. hesap (Aynı IP/Cihaz) kullanılmadıysa iade edilir.", script: "Kontrollerimde mükerrer çekim olduğunu görüyorum. Kullanılmayan çekimin iadesini kartınıza sağlıyorum." },
-            { title: "İade: YILLIKLOCA Fark İadesi", category: "İade", type: "iade", tags: ["fark iadesi"], text: "Müşteri sitedeki fiyatı görüp fark isterse defansa geçmeden iade edilir.", script: "Memnuniyetiniz adına aradaki farkı kartınıza iade ediyorum." },
-            { title: "İade: Aynı Gün Yanlış Yıllık Alım", category: "İade", type: "iade", tags: ["yanlışlık"], text: "Aylık üstüne aynı gün yıllık alındıysa (24 saat içinde) yıllık iade edilir.", script: "Bir defaya mahsus olmak üzere yıllık paket işleminizi iptal edip iadenizi sağlıyorum." },
-            { title: "Bilgi: Apple/Google İptali", category: "Bilgi", type: "bilgi", tags: ["store", "apple"], text: "Store alımlarını BİZ İPTAL EDEMEYİZ. Müşteri telefondan yapmalı.", script: "Aboneliğinizi mağaza üzerinden başlattığınız için iptal işlemini telefonunuzun 'Abonelikler' menüsünden yapmanız gerekmektedir." },
-            { title: "Bilgi: Kart Güncelleme", category: "Bilgi", type: "bilgi", tags: ["cc", "ödeme"], text: "Kart güncelleme sadece Web sitesinden yapılır.", script: "Kart değişikliğini ssportplus.com adresinden 'Üyelik Bilgileri > Ödeme Yöntemi' menüsünden yapabilirsiniz.", link: "https://app.ssportplus.com/login" },
+            // --- BİLGİ: İÇERİKLER & PAKETLER (DOKÜMANLARDAN) ---
+            {
+                title: "Bilgi: Hangi İçerikler Var?", category: "Bilgi", type: "bilgi", tags: ["maçlar", "ligler", "spor"],
+                text: "La Liga, Serie A, EuroLeague, NBA, UFC, ATP, Wimbledon, NFL, Libertadores, Sudamericana, Moto GP, WRC, Nascar.",
+                script: "S Sport Plus'ta EuroLeague, NBA, La Liga, Serie A, UFC ve MotoGP gibi dünyanın en büyük spor organizasyonlarını tek pakette izleyebilirsiniz."
+            },
+            {
+                title: "Bilgi: İnternet Hızı Gereksinimi", category: "Bilgi", type: "bilgi", tags: ["hız", "mbps", "internet"],
+                text: "SD Yayın: Min 3 Mbps | HD Yayın: Min 10 Mbps.",
+                script: "Kesintisiz HD yayın için en az 10 Mbps indirme (download) hızına sahip olmanız önerilir."
+            },
+            {
+                title: "Bilgi: Profil Oluşturma", category: "Bilgi", type: "bilgi", tags: ["profil", "çocuk"],
+                text: "Aynı hesapta farklı profiller oluşturulabilir. Çocuk Profili seçeneği mevcuttur.",
+                script: "Hesabınızda kendiniz ve aile üyeleriniz için ayrı profiller oluşturabilir, çocuklarınız için güvenli çocuk profili açabilirsiniz."
+            },
+            {
+                title: "Bilgi: Çoklu İzleme (Multi-View)", category: "Bilgi", type: "bilgi", tags: ["4 ekran", "aynı anda"],
+                text: "Sadece Web sitesinde geçerlidir. Aynı ekranda 4 maça kadar izlenebilir.",
+                script: "Web sitemiz üzerinden 'Çoklu İzleme' özelliğiyle aynı anda 4 farklı canlı yayını tek ekranda takip edebilirsiniz."
+            },
+            {
+                title: "Bilgi: Veri Tasarrufu Modu", category: "Bilgi", type: "bilgi", tags: ["mobil", "kota"],
+                text: "Mobil uygulamada veri tasarrufu modu mevcuttur. Yayın kalitesini düşürerek kota dostu olur.",
+                script: "Mobil uygulamamızdaki 'Veri Tasarrufu' modunu açarak internet kotanızı daha verimli kullanabilirsiniz."
+            },
+            {
+                title: "Bilgi: Favori Listesi", category: "Bilgi", type: "bilgi", tags: ["listem", "takip"],
+                text: "İçerikler 'Listem'e eklenerek favorilere alınabilir.",
+                script: "Sevdiğiniz programları veya maçları 'Listem'e ekleyerek daha sonra kolayca ulaşabilirsiniz."
+            },
+            {
+                title: "Bilgi: Üyelik Dondurma", category: "Bilgi", type: "bilgi", tags: ["dondurma", "ara verme"],
+                text: "Üyelik dondurma özelliği YOKTUR. İptal edip istendiğinde tekrar başlatılabilir.",
+                script: "Sistemimizde üyelik dondurma özelliği bulunmamaktadır. Dilerseniz üyeliğinizi iptal edip, tekrar izlemek istediğinizde hesabınızı aktif edebilirsiniz."
+            },
+            { title: "Bilgi: Paket Fiyatları (2025)", category: "Bilgi", type: "bilgi", tags: ["ücret"], text: "Aylık: 279 TL | Yıllık: 1799 TL", script: "Güncel fiyatlarımız; Aylık paket 279 TL, Yıllık paket ise 1799 TL'dir." },
+            { title: "Bilgi: NBA Sezonu 25-26", category: "Bilgi", type: "bilgi", tags: ["nba"], text: "Normal sezon, All-Star, Play-off canlı.", script: "NBA'de tüm sezonu ve finalleri canlı yayınlıyoruz." },
+            { title: "Bilgi: NFL (Amerikan Futbolu)", category: "Bilgi", type: "bilgi", tags: ["nfl"], text: "RedZone ve Super Bowl dahil.", script: "NFL heyecanı RedZone ve Super Bowl dahil S Sport Plus'ta." },
+            { title: "Bilgi: Cihaz Sınırı", category: "Bilgi", type: "bilgi", tags: ["sınır"], text: "Sınırsız cihazda oturum açılır, AYNI ANDA 1 cihaz izler.", script: "Hesabınızla dilediğiniz kadar cihazdan giriş yapabilirsiniz ancak aynı anda tek ekrandan izleyebilirsiniz." },
 
             // --- TEKNİK ---
-            { title: "Teknik: TV Donma Sorunu", category: "Teknik", type: "teknik", tags: ["tv", "donma"], text: "Modemi ve TV'yi fişten çekip 10sn bekle. Hız testi iste.", script: "TV ve modeminizi fişten çekip 10 saniye bekledikten sonra takabilir misiniz?" },
-            { title: "Hata: 'Beklenmedik Bir Kesinti'", category: "Teknik", type: "teknik", tags: ["vpn", "yurt dışı"], text: "Yurt Dışı IP veya VPN kaynaklıdır. IP kontrolü yap.", script: "Lisans hakları sebebiyle yayınlarımız sadece Türkiye sınırları içindedir. VPN açıksa kapatmanızı rica ederim." },
-            { title: "Hata: 'Media Decode Error' (1001)", category: "Teknik", type: "teknik", tags: ["decode", "hata"], text: "Tarayıcı/Uygulama önbelleği kaynaklıdır. Silip yüklet.", script: "Lütfen uygulama önbelleğini temizleyip veya silip tekrar yükleyerek deneyiniz." },
-            { title: "Hata: 'Abonelik Başkasına Ait'", category: "Teknik", type: "teknik", tags: ["store", "hata"], text: "Cihazdaki Store hesabı farklı bir S Sport maili ile eşleşmiş.", script: "Cihazınızdaki mağaza hesabı ile daha önce farklı bir mail adresiyle üyelik başlatmışsınız." },
-            { title: "Hata: Samsung 'Yüklenemiyor'", category: "Teknik", type: "teknik", tags: ["samsung", "güvenli mod"], text: "İnternet sağlayıcısında 'Güvenli Mod' açıksa bu hatayı verir.", script: "İnternet servis sağlayıcınızla görüşüp 'Güvenli Mod' özelliğini kapattırmanız gerekmektedir." },
-            { title: "Teknik: Şifre Sıfırlama", category: "Teknik", type: "teknik", tags: ["şifre", "unuttum"], text: "Giriş ekranındaki 'Şifremi Unuttum' butonu kullanılmalı.", script: "Giriş ekranındaki 'Şifremi Unuttum' bağlantısına tıklayarak yeni şifre oluşturabilirsiniz.", link: "https://app.ssportplus.com/forgot-password" },
+            { 
+                title: "Teknik: TV Donma Adımları", category: "Teknik", type: "teknik", tags: ["tv", "donma", "smart"], 
+                text: "1. Modem/TV fişten çek (10sn). 2. Kanal değiştir. 3. TV Tarayıcısından Hız Testi (8Mbps+ gerekli).", 
+                script: "Modeminizi ve televizyonunuzu fişten çekip 10 saniye bekledikten sonra tekrar takabilir misiniz? Düzelmezse TV tarayıcısından hiztesti.com.tr testi yapalım.",
+                link: "https://www.hiztesti.com.tr/"
+            },
+            {
+                title: "Teknik: Mobil Donma Adımları", category: "Teknik", type: "teknik", tags: ["mobil", "android", "ios"],
+                text: "1. Mobil Veri ile dene. 2. Arka plan uygulamalarını kapat. 3. Önbellek Temizle.",
+                script: "Wifi'yi kapatıp mobil veri ile denemenizi rica ederim. Sorun devam ederse uygulama önbelleğini temizleyelim."
+            },
+            {
+                title: "Teknik: PC Donma Adımları", category: "Teknik", type: "teknik", tags: ["web", "pc"],
+                text: "1. Çözünürlüğü 720p yap. 2. Farklı tarayıcı (Edge/Chrome). 3. Ping testi.",
+                script: "Tarayıcı ayarlarından kaliteyi 1080p yerine 720p seçerek deneyebilir misiniz? Farklı bir tarayıcıda da kontrol edelim."
+            },
+            {
+                title: "Uyarı: Vestel / Arçelik Desteği", category: "Teknik", type: "teknik", tags: ["vestel", "arçelik", "beko"],
+                text: "⚠️ 2018 ve öncesi Vestel/Arçelik TV'lerde destek YOKTUR. Sadece 2019+ modeller desteklenir.",
+                script: "2019 yılı öncesi üretilen Vestel ve Arçelik televizyonlarda altyapı desteği sona ermiştir. Yayınları TV Box veya Chromecast ile izleyebilirsiniz."
+            },
+            {
+                title: "Hata Kodu: 1001 / Media Decode", category: "Teknik", type: "teknik", tags: ["1001", "hata"],
+                text: "Cihaz/Tarayıcı önbellek sorunu. Çerezleri temizle, uygulamayı sil-yükle.",
+                script: "Bu hata cihazınızın önbelleği kaynaklı olabilir. Uygulamayı silip tekrar yüklemenizi rica ederim."
+            },
+            {
+                title: "Hata Kodu: 2002 / 2001 / 2403", category: "Teknik", type: "teknik", tags: ["2002", "2001", "sinyal"],
+                text: "Yayın sinyali veya erişim sorunu. MCR kaynaklı olabilir..",
+                script: "Şu an yayın sinyali ile ilgili genel bir kontrol sağlıyoruz. Kısa süre içinde düzelecektir."
+            },
+            {
+                title: "Hata Kodu: 1020 / Erişim Engeli", category: "Teknik", type: "teknik", tags: ["1020", "vpn"],
+                text: "Güvenlik duvarı veya VPN engeli. VPN kapalı olmalı..",
+                script: "Güvenlik duvarı kaynaklı bir engelleme görünüyor. VPN açıksa kapatmanızı rica ederim."
+            },
+            {
+                title: "Hata: 'Abonelik Başkasına Ait'", category: "Teknik", type: "teknik", tags: ["store", "apple"],
+                text: "Cihazdaki Store hesabı farklı bir mail ile eşleşmiş.",
+                script: "Cihazınızdaki mağaza hesabınızla daha önce farklı bir mail adresi üzerinden üyelik başlatılmış. Diğer mailinizle giriş yapmayı deneyin."
+            },
 
-            // --- İKNA & KAMPANYA ---
-            { title: "İkna: Fiyat (Kahve Parası)", category: "İkna", type: "ikna", tags: ["pahalı"], text: "Günlük 4,65 TL vurgusu yap. 6AY50 öner.", script: "Günlük sadece bir kahve fiyatına tüm sporları izleyebilirsiniz. Dilerseniz 6AY50 kodu ile %50 indirim tanımlayalım." },
-            { title: "İkna: Taahhüt Yok", category: "İkna", type: "ikna", tags: ["sözleşme"], text: "12/24 ay zorunluluğu yok, istenildiği an iptal edilebilir.", script: "Platformumuzda taahhüt yoktur. Dilediğiniz zaman iptal edip, dilediğiniz zaman tekrar başlatabilirsiniz." },
-            { title: "İkna: İçerik Zenginliği", category: "İkna", type: "ikna", tags: ["nba", "f1"], text: "EuroLeague, NBA, F1, La Liga tek pakette.", script: "Dünyanın en büyük spor organizasyonlarını tek bir pakette sunuyoruz." },
-            { title: "Kampanya: YILLIKLOCA", category: "Kampanya", type: "kampanya", tags: ["yıllık", "indirim"], text: "Web'e özel yıllık indirim kodu (1499 TL).", script: "Web sitemiz üzerinden 'YILLIKLOCA' kodunu kullanarak yıllık paketi avantajlı fiyatıyla alabilirsiniz.", code: "YILLIKLOCA" },
-            { title: "Kampanya: 6AY50", category: "Kampanya", type: "kampanya", tags: ["aylık", "indirim"], text: "Aylık pakette %50 indirim (139.5 TL).", script: "Aboneliğinize '6AY50' kodu ile önümüzdeki ay için %50 indirim tanımlayabiliriz.", code: "6AY50" },
+            // --- İKNA & CHURN (WORD DOCS) ---
+            {
+                title: "İkna: Fiyat Avantajı", category: "İkna", type: "ikna", tags: ["pahalı", "fiyat"],
+                text: "Aylık 279 TL pahalı gelirse: 'Günlük 9 TL'. Taahhütsüz.",
+                script: "S Sport Plus'ta taahhüt vermeden, günlük sadece bir çay parasına dünyanın en büyük liglerini izleyebilirsiniz."
+            },
+            {
+                title: "İkna: Özellikler (Geri Al / Çoklu)", category: "İkna", type: "ikna", tags: ["özellik"],
+                text: "Vurgula: Tekrar İzle, Durdur/Geri Al, Çoklu İzleme, İndir İzle.",
+                script: "Maçları kaçırma derdiniz yok; 'Tekrar İzle' özelliği ile dilediğiniz zaman izleyebilir, canlı yayını geri alabilirsiniz."
+            },
+            {
+                title: "Rakip: EXXEN vs Biz", category: "İkna", type: "ikna", tags: ["rakip", "exxen"],
+                text: "Exxen sadece Avrupa maçları. Bizde La Liga, Serie A, NBA, F1, UFC var.",
+                script: "Exxen Avrupa maçları odaklıdır. Bizde ise her hafta sonu La Liga, Serie A ve NBA heyecanını kesintisiz takip edebilirsiniz."
+            },
+            {
+                title: "Rakip: TOD / Digiturk vs Biz", category: "İkna", type: "ikna", tags: ["rakip", "tod"],
+                text: "TOD paketleri parçalıdır. Bizde hepsi TEK paket.",
+                script: "Diğer platformlarda ligler için ayrı paketler almanız gerekirken, S Sport Plus'ta tüm içeriklere tek bir abonelikle erişirsiniz."
+            },
 
-            // --- BİLGİ ---
-            { title: "Bilgi: Paket Fiyatları (2025)", category: "Bilgi", type: "bilgi", tags: ["ücret"], text: "Aylık: 279 TL | Yıllık: 1799 TL", script: "Güncel fiyatlarımız; Aylık paket 279 TL, Yıllık paket ise 1799 TL'dir." },
-            { title: "Bilgi: Cihaz Sınırı", category: "Bilgi", type: "bilgi", tags: ["sınır"], text: "Sınırsız cihazda oturum açılır, AYNI ANDA 1 cihaz izler.", script: "Hesabınızla dilediğiniz kadar cihazdan giriş yapabilirsiniz ancak aynı anda tek ekrandan izleyebilirsiniz." },
-            { title: "Bilgi: İletişim", category: "Bilgi", type: "bilgi", tags: ["whatsapp"], text: "WhatsApp: 0850 532 4 777", script: "Bize 0850 532 4 777 numaralı WhatsApp hattımızdan ulaşabilirsiniz." }
+            // --- KAMPANYA ---
+            { title: "Kampanya: YILLIKLOCA", category: "Kampanya", type: "kampanya", tags: ["yıllık", "web"], text: "Web'e özel yıllık 1499 TL.", script: "YILLIKLOCA kodu ile yıllık paketi 1499 TL avantajlı fiyatıyla alabilirsiniz.", code: "YILLIKLOCA" },
+            { title: "Kampanya: 6AY50", category: "Kampanya", type: "kampanya", tags: ["aylık", "indirim"], text: "Aylık pakette %50 indirim.", script: "6AY50 kodu ile önümüzdeki ay için %50 indirim tanımlayabiliriz.", code: "6AY50" }
         ];
 
         function renderCards(data) {
@@ -345,8 +405,16 @@
             container.innerHTML = '';
             if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok</div>'; return; }
             data.forEach(item => {
-                let tagsHtml = item.tags ? `<div class="tag-container">${item.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>` : '';
-                let html = `<div class="card ${item.type}"><div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div><div class="card-content"><div>${highlightText(item.text)}</div>${tagsHtml}</div><div class="script-box">${highlightText(item.script)}</div><div class="card-actions"><button class="btn btn-copy" onclick="copyText('${item.script.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> Kopyala</button>${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${item.code}')">Kod</button>` : ''}${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-link"><i class="fas fa-external-link-alt"></i> Link</a>` : ''}</div></div>`;
+                let html = `<div class="card ${item.type}">
+                    <div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div>
+                    <div class="card-content"><div>${highlightText(item.text)}</div></div>
+                    <div class="script-box">${highlightText(item.script)}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-copy" onclick="copyText('${item.script.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> Kopyala</button>
+                        ${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${item.code}')">Kod</button>` : ''}
+                        ${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-link"><i class="fas fa-external-link-alt"></i> Link</a>` : ''}
+                    </div>
+                </div>`;
                 container.innerHTML += html;
             });
         }
@@ -374,4 +442,3 @@
     </script>
 </body>
 </html>
-
