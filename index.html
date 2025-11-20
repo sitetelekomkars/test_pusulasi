@@ -24,7 +24,78 @@
             color: #333;
             margin: 0;
             padding: 0;
+            /* Metin seçimini engelle (Güvenlik) */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
         }
+
+        /* ==============================
+           GİRİŞ KİLİT EKRANI STİLİ
+           ============================== */
+        #page-lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .lock-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 380px;
+        }
+        .lock-logo {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        .lock-title {
+            color: var(--primary);
+            margin: 10px 0 5px 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .lock-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .lock-input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            text-align: center;
+            transition: 0.3s;
+            box-sizing: border-box;
+            /* Giriş kutusunda metin seçimine izin ver */
+            -webkit-user-select: text; 
+            user-select: text;
+        }
+        .lock-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(14, 27, 66, 0.1); }
+        .lock-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .lock-btn:hover { background: var(--secondary); color: var(--primary); transform: translateY(-2px); }
 
         /* ==============================
            BAKIM MODU EKRANI STİLİ
@@ -34,7 +105,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #f0f2f5;
-            z-index: 9999;
+            z-index: 9998; /* Kilidin altında, panelin üstünde */
             align-items: center;
             justify-content: center;
             text-align: center;
@@ -99,6 +170,9 @@
             outline: none;
             transition: all 0.3s;
             box-sizing: border-box;
+            /* Arama kutusunda metin seçimine izin ver */
+            -webkit-user-select: text; 
+            user-select: text;
         }
         
         #searchInput:focus {
@@ -172,6 +246,9 @@
             flex-direction: column;
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
+            /* Kart içinde metin seçimine izin ver */
+            -webkit-user-select: text; 
+            user-select: text;
         }
 
         .card:hover {
@@ -306,7 +383,17 @@
 
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+    <div id="page-lock-screen">
+        <div class="lock-card">
+            <div class="lock-logo"><i class="fas fa-shield-alt"></i></div>
+            <h2 class="lock-title">S Sport Plus</h2>
+            <p class="lock-subtitle">Temsilci Bilgi Merkezi</p>
+            <input type="password" id="page-pass" class="lock-input" placeholder="Giriş Şifresi" onkeyup="checkEnter(event)">
+            <button class="lock-btn" onclick="verifyPageAccess()">Giriş Yap</button>
+        </div>
+    </div>
 
     <div id="maintenance-screen">
         <div class="maintenance-card">
@@ -320,7 +407,7 @@
         </div>
     </div>
 
-    <div id="main-app">
+    <div id="main-app" style="display: none;">
         <div class="header">
             <div class="header-top">
                 <h1><i class="fas fa-compass"></i> S Sport Plus - Temsilci Pusulası</h1>
@@ -350,28 +437,77 @@
 
     <script>
         // ==========================================
-        // 🚧 BAKIM MODU AYARI
+        // 🔒 GÜVENLİK & ENGELLEME SCRIPTLERI
         // ==========================================
-        // TRUE yaparsanız "Esra Hoca" ekranı açılır.
-        // FALSE yaparsanız normal panel açılır.
         
+        // F12, Ctrl+Shift+I, Ctrl+U Engelleme
+        document.onkeydown = function(e) {
+            if(event.keyCode == 123) { // F12
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
+                return false;
+            }
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
+                return false;
+            }
+        }
+
+        // 🔑 ŞİFRE KONTROLÜ (HASH YÖNTEMİ)
+        // Şifre: "ssport+" (Hash değeri: -1256242481)
+        const TARGET_HASH = -1256242481; 
+
+        // 🚧 BAKIM MODU AYARI (Açmak için true yapın)
+        // TRUE = Şifre sonrası Esra Hoca ekranı gelir.
+        // FALSE = Şifre sonrası Panel açılır.
         const BAKIM_MODU = false; 
 
-        // ==========================================
-        // SAYFA YÜKLENİRKEN KONTROL
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            if (BAKIM_MODU) {
-                document.getElementById('main-app').style.display = 'none';
-                const maintenanceScreen = document.getElementById('maintenance-screen');
-                maintenanceScreen.style.display = 'flex'; 
-                // Arka plana hafif desen ekle
-                document.body.style.background = "#f0f2f5 url('data:image/svg+xml,%3Csvg width=\\'20\\' height=\\'20\\' viewBox=\\'0 0 20 20\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%23d4d4d4\\' fill-opacity=\\'0.2\\' fill-rule=\\'evenodd\\'%3E%3Ccircle cx=\\'3\\' cy=\\'3\\' r=\\'3\\'/%3E%3Ccircle cx=\\'13\\' cy=\\'13\\' r=\\'3\\'/%3E%3C/g%3E%3C/svg%3E')";
-            } else {
-                renderCards(database);
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = (hash << 5) - hash + char;
+                hash = hash & hash; // 32bit integer
             }
-        });
+            return hash;
+        }
 
+        function checkEnter(e) {
+            if(e.key === "Enter") verifyPageAccess();
+        }
+
+        function verifyPageAccess() {
+            const input = document.getElementById('page-pass').value;
+            const inputHash = simpleHash(input);
+
+            if (inputHash === TARGET_HASH) {
+                // Şifre Doğru
+                document.getElementById('page-lock-screen').style.display = 'none'; 
+                
+                if (BAKIM_MODU) {
+                    // Bakım Modu Açıksa
+                    const maintenanceScreen = document.getElementById('maintenance-screen');
+                    maintenanceScreen.style.display = 'flex'; // Flex ile ortala
+                } else {
+                    // Panel Açık
+                    document.getElementById('main-app').style.display = 'block';
+                }
+            } else {
+                // Şifre Yanlış - SweetAlert ile uyarı
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hatalı Şifre',
+                    text: 'Lütfen şifreyi kontrol edip tekrar deneyiniz.',
+                    confirmButtonColor: '#0e1b42'
+                });
+            }
+        }
 
         // ==========================================
         // 📊 VERİ SETİ (DATABASE)
@@ -744,15 +880,10 @@
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
                 // Swal.fire({ icon: 'success', title: 'Kopyalandı', timer: 1000, showConfirmButton: false });
-                // Hız açısından alert veya custom notification daha iyi olabilir ama şimdilik basit bırakalım.
                 alert('Metin kopyalandı!');
             });
         }
 
-        // Sayfa yüklendiğinde tümünü göster
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCards(database);
-        });
     </script>
 
 </body>
