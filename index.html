@@ -24,7 +24,7 @@
             color: #333;
             margin: 0;
             padding: 0;
-            /* Metin seçimini engelle */
+            /* Metin seçimini engelle (Güvenlik) */
             -webkit-user-select: none; 
             -moz-user-select: none; 
             -ms-user-select: none; 
@@ -78,6 +78,9 @@
             text-align: center;
             transition: 0.3s;
             box-sizing: border-box;
+            /* Giriş kutusunda metin seçimine izin ver */
+            -webkit-user-select: text; 
+            user-select: text;
         }
         .lock-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(14, 27, 66, 0.1); }
         .lock-btn {
@@ -93,6 +96,28 @@
             transition: 0.3s;
         }
         .lock-btn:hover { background: var(--secondary); color: var(--primary); transform: translateY(-2px); }
+
+        /* ==============================
+           BAKIM MODU EKRANI STİLİ
+           ============================== */
+        #maintenance-screen {
+            display: none; /* Başlangıçta gizli */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #f0f2f5;
+            z-index: 9998; /* Kilitten bir tık altta ama içerikten üstte */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .maintenance-card {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px;
+        }
 
 
         /* ==============================
@@ -371,6 +396,18 @@
         </div>
     </div>
 
+    <div id="maintenance-screen">
+        <div class="maintenance-card">
+            <h1 style="font-size: 4em; margin: 0 0 15px 0;">👩‍🏫☕</h1>
+            <h2 style="color: #0e1b42; margin-bottom: 10px;">Sistem Mola Verdi!</h2>
+            <p style="color: #555; font-size: 1.2em; line-height: 1.6;">
+                Şu an pusulamızı yeniden kalibre ediyoruz.<br>
+                <strong>Esra Hoca'dan</strong> gelecek kritik bilgileri bekliyoruz... 🚀<br>
+                <span style="font-size: 0.9em; color: #888;">(Az sonra buradayız, panik yok!)</span>
+            </p>
+        </div>
+    </div>
+
     <div id="main-app" style="display: none;">
         <div class="header">
             <div class="header-top">
@@ -424,22 +461,23 @@
         }
 
         // 🔑 ŞİFRE KONTROLÜ (HASH YÖNTEMİ)
-        // Şifre: "ssport+"
-        // Bu şifrenin hashlenmiş hali kodda saklanır, böylece kaynak koda bakılsa bile şifre görülmez.
-        
-        // Basit Hash Fonksiyonu (Metni sayıya çevirir)
+        // Şifre: "ssport+" (Hash değeri: -1256242481)
+        const TARGET_HASH = -1256242481; 
+
+        // 🚧 BAKIM MODU AYARI (Açmak için true yapın)
+        // TRUE = Şifre sonrası Esra Hoca ekranı gelir.
+        // FALSE = Şifre sonrası Panel açılır.
+        const BAKIM_MODU = false; 
+
         function simpleHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = (hash << 5) - hash + char;
-                hash = hash & hash; // 32bit integer'a çevir
+                hash = hash & hash; // 32bit integer
             }
             return hash;
         }
-
-        // "ssport+" şifresinin hash değeri: -1256242481
-        const TARGET_HASH = -1256242481; 
 
         function checkEnter(e) {
             if(e.key === "Enter") verifyPageAccess();
@@ -447,12 +485,20 @@
 
         function verifyPageAccess() {
             const input = document.getElementById('page-pass').value;
-            const inputHash = simpleHash(input); // Girilen şifreyi hashle
+            const inputHash = simpleHash(input);
 
             if (inputHash === TARGET_HASH) {
                 // Şifre Doğru
                 document.getElementById('page-lock-screen').style.display = 'none'; 
-                document.getElementById('main-app').style.display = 'block';
+                
+                if (BAKIM_MODU) {
+                    // Bakım Modu Açıksa
+                    const maintenanceScreen = document.getElementById('maintenance-screen');
+                    maintenanceScreen.style.display = 'flex'; // Flex ile ortala
+                } else {
+                    // Panel Açık
+                    document.getElementById('main-app').style.display = 'block';
+                }
             } else {
                 // Şifre Yanlış - SweetAlert ile uyarı
                 Swal.fire({
