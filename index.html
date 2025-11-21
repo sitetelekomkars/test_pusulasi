@@ -18,7 +18,7 @@
             --info: #0288d1; 
             --warning: #ed6c02; 
             --sales: #10b981;
-            --quiz: #8e24aa; /* Oyun Moru */
+            --quiz: #8e24aa;
         }
 
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
@@ -53,10 +53,49 @@
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: none; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
 
-        .filter-container { display: flex; gap: 10px; flex-wrap: wrap; }
-        .filter-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
-        .filter-btn.active { background: var(--secondary); color: var(--primary); font-weight: 600; border-color: var(--secondary); }
-        .filter-btn:hover { background: rgba(255,255,255,0.3); }
+        .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        /* YENİLENMİŞ FİLTRE BUTONLARI STİLİ */
+        .filter-btn { 
+            border: none; 
+            color: white; 
+            padding: 10px 18px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            opacity: 0.85; /* Pasifken hafif şeffaf */
+        }
+        
+        .filter-btn:hover { opacity: 1; transform: translateY(-2px); }
+        
+        /* Seçili Buton Efekti */
+        .filter-btn.active { 
+            opacity: 1; 
+            box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0,0,0,0.3); 
+            transform: scale(1.05); 
+        }
+
+        /* Kategoriye Özel Renkler */
+        .btn-all { background: linear-gradient(135deg, #4b5563, #1f2937); } /* Gri */
+        .btn-tech { background: linear-gradient(135deg, #0e1b42, #1e3a8a); } /* Lacivert */
+        .btn-ikna { background: linear-gradient(135deg, #ed6c02, #e65100); } /* Turuncu */
+        .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); } /* Yeşil */
+        .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); } /* Mavi */
+        .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); } /* Mor */
+
+        /* Alt Sıra Butonları */
+        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); }
+        .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; }
+        .sales-btn { background: linear-gradient(45deg, #10b981, #059669); }
+        .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
+        .news-btn { background: linear-gradient(45deg, #ff6f00, #ff8f00); animation: pulse 3s infinite; }
+
         
         .right-panel { flex: 1; min-width: 300px; }
         .news-ticker-box {
@@ -70,13 +109,6 @@
 
         @keyframes blink { 50% { opacity: 0.5; } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- BUTON RENKLERİ --- */
-        .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); border: none; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); animation: pulse 2s infinite; font-weight: bold; }
-        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); border: none; font-weight: bold; }
-        .sales-btn { background: linear-gradient(45deg, #10b981, #059669); border: none; font-weight: bold; }
-        .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); border: none; font-weight: bold; box-shadow: 0 4px 15px rgba(142, 36, 170, 0.4); } /* YENİ OYUN BUTONU */
-        .link-btn { background: rgba(255,255,255,0.2); border: 1px solid white; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* KARTLAR */
@@ -196,13 +228,13 @@
                     </div>
 
                     <div class="filter-container">
-                        <button class="filter-btn active" onclick="filterCategory('all')">Tümü</button>
-                        <button class="filter-btn" onclick="filterCategory('Teknik')">Teknik</button>
-                        <button class="filter-btn" onclick="filterCategory('İkna')">İkna</button>
-                        <button class="filter-btn" onclick="filterCategory('Kampanya')">Kampanya</button>
-                        <button class="filter-btn" onclick="filterCategory('Bilgi')">Bilgi</button>
+                        <button class="filter-btn btn-all active" onclick="filterCategory('all')"><i class="fas fa-th-large"></i> Tümü</button>
+                        <button class="filter-btn btn-tech" onclick="filterCategory('Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
+                        <button class="filter-btn btn-ikna" onclick="filterCategory('İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
+                        <button class="filter-btn btn-camp" onclick="filterCategory('Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
+                        <button class="filter-btn btn-info" onclick="filterCategory('Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
                         
-                        <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn link-btn"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
+                        <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn btn-stream"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
                         
                         <button class="filter-btn guide-btn" onclick="openGuide()">
                             📖 Spor Rehberi
@@ -353,11 +385,11 @@
         // 🎮 BİLGİ YARIŞMASI (QUIZ)
         // ==========================================
         const quizQuestions = [
-            { q: "Aşağıdaki liglerden hangisi S Sport Plus'ta YER ALMAZ?", opts: ["Premier Lig", "Serie A", "La Liga", "NBA"], a: 0 }, // Premier Lig yok
-            { q: "Vestel ve Arçelik TV'lerde hangi yıl ve üzeri desteklenmektedir?", opts: ["2017", "2018", "2019", "2020"], a: 2 }, // 2019
-            { q: "Toprak Razgatlıoğlu hangi şampiyonada yarışmaktadır?", opts: ["MotoGP", "WorldSBK", "WRC", "Formula 1"], a: 1 }, // WorldSBK
-            { q: "S Sport Plus'ta aynı anda kaç cihazdan İZLEME yapılabilir?", opts: ["1", "2", "3", "4"], a: 0 }, // 1
-            { q: "Aylık paket kullanan bir üyeye hangi indirim kodu önerilmelidir?", opts: ["YILLIKLOCA", "6AY50", "BEDAVA12", "SPORT100"], a: 1 }, // 6AY50
+            { q: "Aşağıdaki liglerden hangisi S Sport Plus'ta YER ALMAZ?", opts: ["Premier Lig", "Serie A", "La Liga", "NBA"], a: 0 }, 
+            { q: "Vestel ve Arçelik TV'lerde hangi yıl ve üzeri desteklenmektedir?", opts: ["2017", "2018", "2019", "2020"], a: 2 }, 
+            { q: "Toprak Razgatlıoğlu hangi şampiyonada yarışmaktadır?", opts: ["MotoGP", "WorldSBK", "WRC", "Formula 1"], a: 1 }, 
+            { q: "S Sport Plus'ta aynı anda kaç cihazdan İZLEME yapılabilir?", opts: ["1", "2", "3", "4"], a: 0 }, 
+            { q: "Aylık paket kullanan bir üyeye hangi indirim kodu önerilmelidir?", opts: ["YILLIKLOCA", "6AY50", "BEDAVA12", "SPORT100"], a: 1 }, 
             { q: "Hata Kodu 1020 ne anlama gelir?", opts: ["Sinyal Yok", "Cihaz Limiti", "VPN/Erişim Engeli", "Şifre Hatası"], a: 2 },
             { q: "NFL final maçına ne ad verilir?", opts: ["Final Four", "Super Bowl", "Grand Slam", "El Clasico"], a: 1 },
             { q: "İçeriği izlemiş bir kullanıcıya iade yapılabilir mi?", opts: ["Evet, her zaman", "Hayır, izleme varsa iade olmaz", "Sadece mobilde", "Sadece hafta sonu"], a: 1 }
@@ -402,8 +434,6 @@
         function checkAnswer(btn, index) {
             const correct = quizQuestions[currentQuestion].a;
             const buttons = document.querySelectorAll('.quiz-btn-opt');
-            
-            // Tıklamayı engelle
             buttons.forEach(b => b.disabled = true);
 
             if (index === correct) {
@@ -412,7 +442,7 @@
                 Swal.fire({icon:'success', title:'Doğru!', timer:1000, showConfirmButton:false, toast:true, position:'top'});
             } else {
                 btn.classList.add('wrong');
-                buttons[correct].classList.add('correct'); // Doğruyu göster
+                buttons[correct].classList.add('correct');
                 Swal.fire({icon:'error', title:'Yanlış!', timer:1000, showConfirmButton:false, toast:true, position:'top'});
             }
 
