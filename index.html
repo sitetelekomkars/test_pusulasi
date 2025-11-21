@@ -19,7 +19,8 @@
             --warning: #ed6c02; 
         }
 
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; }
+        /* Kopyalamayı ve sağ tıkı engellemek için user-select eklendi */
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
 
         /* GİRİŞ VE BAKIM EKRANLARI */
         #login-screen, #maintenance-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: flex; justify-content: center; align-items: center; }
@@ -166,18 +167,37 @@
 
     <script>
         const BAKIM_MODU = false; 
-        const DOGRU_SIFRE = "ssport+";
+        
+        // ŞİFRELEME AYARLARI
+        // Şifre: ssport+ (Base64 ile şifrelenmiş hali aşağıdadır)
+        const DOGRU_SIFRE_HASH = "c3Nwb3J0Kw==";
+
+        // GÜVENLİK: Sağ Tık ve F12 Engelleme
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        }
 
         function girisYap() {
             var girilen = document.getElementById("passInput").value;
-            if (girilen === DOGRU_SIFRE) {
-                document.getElementById("login-screen").style.display = "none"; 
-                if (BAKIM_MODU) document.getElementById("maintenance-screen").style.display = "flex";
-                else {
-                    document.getElementById("main-app").style.display = "block";
-                    if(document.getElementById('cardGrid').innerHTML === "") renderCards(database);
+            
+            // Girilen şifreyi Base64'e çevirip kontrol et
+            try {
+                if (btoa(girilen) === DOGRU_SIFRE_HASH) {
+                    document.getElementById("login-screen").style.display = "none"; 
+                    if (BAKIM_MODU) document.getElementById("maintenance-screen").style.display = "flex";
+                    else {
+                        document.getElementById("main-app").style.display = "block";
+                        if(document.getElementById('cardGrid').innerHTML === "") renderCards(database);
+                    }
+                } else {
+                    document.getElementById("error-msg").style.display = "block";
                 }
-            } else {
+            } catch (e) {
+                // Türkçe karakter vb hatası olursa
                 document.getElementById("error-msg").style.display = "block";
             }
         }
