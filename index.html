@@ -31,7 +31,7 @@
         .login-btn { width: 100%; padding: 12px; background: #fabb00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .maintenance-content { background: white; padding: 50px; border-radius: 20px; max-width: 600px; }
 
-        /* ANA UYGULAMA */
+        /* ANA UYGULAMA HEADER */
         #main-app { display: none; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -44,18 +44,61 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .search-container { position: relative; max-width: 800px; margin: 0 auto; }
+        /* --- YENİ DÜZEN: FLEX YAPISI --- */
+        .control-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* Sol taraf: Arama ve Butonlar */
+        .left-panel {
+            flex: 2; /* Geniş yer kapla */
+        }
+
+        .search-container { position: relative; width: 100%; margin-bottom: 15px; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: none; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
 
-        .filter-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .filter-container { display: flex; gap: 10px; flex-wrap: wrap; }
         .filter-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
         .filter-btn.active { background: var(--secondary); color: var(--primary); font-weight: 600; border-color: var(--secondary); }
         .filter-btn:hover { background: rgba(255,255,255,0.3); }
         
+        /* Sağ Taraf: Haber Kutusu (Ticker) */
+        .right-panel {
+            flex: 1; /* Daha az yer kapla */
+            min-width: 300px;
+        }
+
+        .news-ticker-box {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            height: 85px; /* Sabit yükseklik */
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .news-ticker-box:hover { background: rgba(255,255,255,0.2); border-color: var(--secondary); }
+        
+        .ticker-label { font-size: 0.75rem; color: var(--secondary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;}
+        .ticker-label i { animation: blink 1.5s infinite; }
+        
+        .ticker-content { font-size: 0.95rem; color: white; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; animation: slideIn 0.5s ease-out; }
+
+        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- BUTON RENKLERİ --- */
         .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); border: none; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); animation: pulse 2s infinite; font-weight: bold; }
         .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); border: none; font-weight: bold; }
-        .news-btn { background: linear-gradient(45deg, #ff6f00, #ff8f00); border: none; font-weight: bold; animation: pulse 3s infinite; }
         .link-btn { background: rgba(255,255,255,0.2); border: 1px solid white; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
@@ -74,11 +117,9 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .card-title { font-weight: 700; font-size: 1.1rem; margin: 0; color: #2c3e50; line-height: 1.4; }
         .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; background: #eee; text-transform: uppercase; font-weight: 600; }
-        
         .card-content { font-size: 0.95rem; color: #555; margin-bottom: 15px; line-height: 1.5; flex-grow: 1; }
         .script-box { background: #fffdeb; border: 1px solid #f0e68c; padding: 12px; border-radius: 8px; font-style: italic; color: #444; margin-top: auto; position: relative; font-size: 0.92rem; }
         .script-box::before { content: '\f10d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: -8px; left: 10px; background: #fffdeb; padding: 0 5px; color: #f0e68c; font-size: 0.8rem; }
-
         .card-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
         .btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
         .btn-copy { background: var(--primary); color: white; }
@@ -90,7 +131,7 @@
         .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 15px; padding: 30px; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #666; font-weight: bold; }
         
-        /* DUYURULAR TIMELINE */
+        /* DUYURULAR LİSTESİ (MODAL İÇİ) */
         .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; }
         .news-item::before { content: ''; position: absolute; left: -9px; top: 0; width: 14px; height: 14px; background: var(--secondary); border-radius: 50%; }
         .news-date { font-size: 0.85rem; color: #999; font-weight: bold; margin-bottom: 5px; display: block; }
@@ -101,7 +142,7 @@
         .tag-update { background: #fff3e0; color: #ef6c00; } 
         .tag-info { background: #e3f2fd; color: #0277bd; }
 
-        /* DİĞER MODAL STİLLERİ (İADE & SPOR) */
+        /* DİĞER MODAL STİLLERİ */
         .wizard-step h2 { color: var(--primary); margin-bottom: 10px; text-align: center;}
         .wizard-options { display: flex; flex-direction: column; gap: 10px; }
         .option-btn { padding: 15px; border: 2px solid #eee; border-radius: 10px; background: white; font-size: 1rem; cursor: pointer; transition: 0.2s; text-align: left; display: flex; align-items: center; gap: 10px; }
@@ -153,31 +194,38 @@
                 </div>
             </div>
 
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Hızlı Ara: '1001', 'Vestel', 'NBA', 'Donma', 'Fiyat'..." onkeyup="filterContent()">
-            </div>
+            <div class="control-wrapper">
+                <div class="left-panel">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Hızlı Ara: '1001', 'Vestel', 'NBA', 'Donma', 'Fiyat'..." onkeyup="filterContent()">
+                    </div>
 
-            <div class="filter-container">
-                <button class="filter-btn active" onclick="filterCategory('all')">Tümü</button>
-                <button class="filter-btn" onclick="filterCategory('Teknik')">Teknik</button>
-                <button class="filter-btn" onclick="filterCategory('İkna')">İkna</button>
-                <button class="filter-btn" onclick="filterCategory('Kampanya')">Kampanya</button>
-                <button class="filter-btn" onclick="filterCategory('Bilgi')">Bilgi</button>
-                
-                <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn link-btn"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
-                
-                <button class="filter-btn news-btn" onclick="openNews()">
-                    📢 Duyurular
-                </button>
+                    <div class="filter-container">
+                        <button class="filter-btn active" onclick="filterCategory('all')">Tümü</button>
+                        <button class="filter-btn" onclick="filterCategory('Teknik')">Teknik</button>
+                        <button class="filter-btn" onclick="filterCategory('İkna')">İkna</button>
+                        <button class="filter-btn" onclick="filterCategory('Kampanya')">Kampanya</button>
+                        <button class="filter-btn" onclick="filterCategory('Bilgi')">Bilgi</button>
+                        
+                        <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn link-btn"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
+                        
+                        <button class="filter-btn guide-btn" onclick="openGuide()">
+                            📖 Spor Rehberi
+                        </button>
+                        
+                        <button class="filter-btn wizard-btn" onclick="openWizard()">
+                            ⚖️ İade Asistanı
+                        </button>
+                    </div>
+                </div>
 
-                <button class="filter-btn guide-btn" onclick="openGuide()">
-                    📖 Spor Rehberi
-                </button>
-                
-                <button class="filter-btn wizard-btn" onclick="openWizard()">
-                    ⚖️ İade Asistanı
-                </button>
+                <div class="right-panel">
+                    <div class="news-ticker-box" onclick="openNews()" title="Tüm duyuruları görmek için tıkla">
+                        <div class="ticker-label"><i class="fas fa-circle" style="font-size:8px;"></i> GÜNCEL DUYURULAR</div>
+                        <div id="ticker-content" class="ticker-content">Yükleniyor...</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -230,6 +278,7 @@
                     if (BAKIM_MODU) document.getElementById("maintenance-screen").style.display = "flex";
                     else {
                         document.getElementById("main-app").style.display = "block";
+                        startTicker(); // Ticker başlat
                         if(document.getElementById('cardGrid').innerHTML === "") renderCards(database);
                     }
                 } else { document.getElementById("error-msg").style.display = "block"; }
@@ -246,6 +295,26 @@
             { date: "20.11.2025", title: "Erlab Çözümleri Eklendi", desc: "Panelde 'Teknik' kategorisi altına sık karşılaşılan Erlab hata kodları ve çözümleri eklenmiştir.", type: "info" },
             { date: "18.11.2025", title: "Yayın Akışı Güncellemesi", desc: "EuroLeague çift maç haftası nedeniyle yayın akışında yoğunluk olabilir, müşterileri web sitesine yönlendirelim.", type: "info" }
         ];
+
+        // Ticker Fonksiyonu (Haberleri sırayla gösterir)
+        let tickerIndex = 0;
+        function startTicker() {
+            const ticker = document.getElementById('ticker-content');
+            if(newsData.length === 0) { ticker.innerHTML = "Güncel duyuru bulunmamaktadır."; return; }
+            
+            function showNext() {
+                const item = newsData[tickerIndex];
+                // Yeniden oluşturarak animasyonu tetikle
+                ticker.style.animation = 'none';
+                ticker.offsetHeight; /* trigger reflow */
+                ticker.style.animation = 'slideIn 0.5s ease-out';
+                ticker.innerHTML = `<strong>${item.date}:</strong> ${item.title} - ${item.desc}`;
+                tickerIndex = (tickerIndex + 1) % newsData.length;
+            }
+            
+            showNext();
+            setInterval(showNext, 5000); // 5 saniyede bir değişir
+        }
 
         function openNews() {
             document.getElementById('news-modal').style.display = 'flex';
