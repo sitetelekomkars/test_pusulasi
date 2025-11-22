@@ -13,11 +13,16 @@
         :root { --primary: #0e1b42; --secondary: #fabb00; --bg: #f0f2f5; --card-bg: #ffffff; --accent: #d32f2f; --success: #2e7d32; --info: #0288d1; --warning: #ed6c02; --sales: #10b981; --quiz: #8e24aa; }
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
         
-        #login-screen, #maintenance-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
+        /* GİRİŞ EKRANI */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
         .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 300px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .login-input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
         .login-btn { width: 100%; padding: 12px; background: #fabb00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
+        /* BAKIM EKRANI - TAMAMEN GİZLENDİ */
+        #maintenance-screen { display: none !important; } 
+
+        /* ANA UYGULAMA */
         #main-app { display: none; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -99,8 +104,6 @@
         .guide-title { font-weight: bold; color: var(--primary); margin-bottom: 5px; display: block; }
         .guide-desc { font-size: 0.9rem; color: #666; margin-bottom: 10px; min-height: 40px; font-style: italic;}
         .guide-tip { background: #e3f2fd; color: #0277bd; padding: 5px; border-radius: 5px; font-size: 0.8rem; font-weight: 600; }
-        
-        /* OKUNUŞ STİLİ */
         .pronunciation-badge { color: #e65100; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; display: block; font-style: italic; }
 
         .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 10px; padding: 20px; cursor: pointer; position: relative; }
@@ -128,7 +131,6 @@
 <body>
 
     <div id="login-screen"><div class="login-card"><i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i><h2>S Sport Plus</h2><p>Temsilci Girişi</p><input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)"><button class="login-btn" onclick="girisYap()">Giriş Yap</button><p id="error-msg" style="color:red; display:none;">Hatalı Şifre!</p></div></div>
-    <div id="maintenance-screen"><div class="maintenance-content"><span style="font-size: 4rem;">👩‍🏫</span><h1>Sistem Mola Verdi!</h1><p>Esra Hoca'dan gelecek kritik bilgileri bekliyoruz... 🚀</p></div></div>
 
     <div id="main-app">
         <div class="header">
@@ -170,7 +172,6 @@
     <div id="quiz-modal" class="modal-overlay"><div class="modal-content" style="max-width: 600px;"><span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span><h2 style="text-align:center; color:var(--quiz);">🎮 Bilgi Yarışması</h2><div id="quiz-body"></div></div></div>
 
     <script>
-        const BAKIM_MODU = false; 
         const DOGRU_SIFRE_HASH = "c3Nwb3J0Kw=="; 
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?output=csv";
 
@@ -184,12 +185,9 @@
             try {
                 if (btoa(girilen) === DOGRU_SIFRE_HASH) {
                     document.getElementById("login-screen").style.display = "none"; 
-                    if (BAKIM_MODU) {
-                        document.getElementById("maintenance-screen").style.display = "flex";
-                    } else {
-                        document.getElementById("main-app").style.display = "block";
-                        loadGoogleSheetData();
-                    }
+                    // BAKIM MODU KALDIRILDI, DİREKT GİRİŞ YAPILIYOR
+                    document.getElementById("main-app").style.display = "block";
+                    loadGoogleSheetData();
                 } else { document.getElementById("error-msg").style.display = "block"; }
             } catch (e) { document.getElementById("error-msg").style.display = "block"; }
         }
@@ -203,10 +201,7 @@
                     
                     database = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link }));
                     newsData = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category }));
-                    
-                    // OKUNUŞ EKLENDİ: pronunciation: i.Pronunciation
                     sportsData = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
-                    
                     salesScripts = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
                     quizQuestions = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions.split(','), a: parseInt(i.QuizAnswer) }));
 
@@ -241,9 +236,7 @@
             const grid = document.getElementById('guide-grid'); 
             grid.innerHTML = ''; 
             sportsData.forEach((s, index) => { 
-                // Okunuşu varsa göster
                 let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : '';
-                
                 grid.innerHTML += `
                     <div class="guide-item" onclick="showSportDetail(${index})">
                         <i class="fas ${s.icon} guide-icon"></i>
@@ -259,7 +252,6 @@
         function showSportDetail(index) {
             const sport = sportsData[index];
             const detailText = sport.detail ? sport.detail : "Bu içerik için henüz detay eklenmemiş.";
-            // Detay penceresinde de okunuşu gösterelim
             const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : '';
 
             Swal.fire({
