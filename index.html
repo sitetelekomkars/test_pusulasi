@@ -26,9 +26,54 @@
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
-        .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s; }
+        /* --- YENİ DÜZENLEME BUTONU TASARIMI --- */
+        .edit-toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 30px; /* Hap şeklinde */
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+
+        .edit-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.2);
+        }
+
+        .edit-toggle-btn.active {
+            background: linear-gradient(135deg, #fabb00, #ff9100);
+            border-color: #ffe082;
+            color: #0e1b42;
+            box-shadow: 0 0 20px rgba(250, 187, 0, 0.6);
+            animation: pulse-border 2s infinite;
+        }
+
+        .edit-toggle-btn.active:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(250, 187, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(250, 187, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); }
+        }
+        /* -------------------------------------- */
+
+        .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s; margin-left: 10px;}
         .admin-btn:hover { background: rgba(255,255,255,0.3); }
-        .admin-edit-mode { border-color: #fabb00; color: #fabb00; background: rgba(250, 187, 0, 0.1); }
+        .header-controls { display: flex; align-items: center; }
 
         .control-wrapper { display: flex; gap: 20px; align-items: flex-start; }
         .left-panel { flex: 2; }
@@ -191,7 +236,7 @@
             if (!text) return "";
             return text.toString()
                 .replace(/\\/g, "\\\\") 
-                .replace(/'/g, "\\'")   
+                .replace(/'/g, "\\'")    
                 .replace(/"/g, "&quot;") 
                 .replace(/\n/g, "<br>") 
                 .replace(/\r/g, "");    
@@ -258,7 +303,7 @@
         function checkAdmin(user) {
             const editBtn = document.getElementById('quickEditBtn');
             if(user === "Admin" || user === "admin" || user === "Site Talip Bey") {
-                editBtn.style.display = "block";
+                editBtn.style.display = "flex"; // flex olarak değiştirdim, icon ve text ortalansın diye
             } else {
                 editBtn.style.display = "none";
             }
