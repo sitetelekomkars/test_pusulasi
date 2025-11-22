@@ -25,6 +25,7 @@
 
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
         .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s; }
         .admin-btn:hover { background: rgba(255,255,255,0.3); }
         .admin-edit-mode { border-color: #fabb00; color: #fabb00; background: rgba(250, 187, 0, 0.1); }
@@ -35,13 +36,22 @@
         .search-container { position: relative; width: 100%; margin-bottom: 15px; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: none; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
+        
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
         .filter-btn { border: none; color: white; padding: 10px 18px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); opacity: 0.85; }
         .filter-btn:hover { opacity: 1; transform: translateY(-2px); }
         .filter-btn.active { opacity: 1; box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0,0,0,0.3); transform: scale(1.05); }
 
-        .btn-all { background: linear-gradient(135deg, #4b5563, #1f2937); } .btn-tech { background: linear-gradient(135deg, #0e1b42, #1e3a8a); } .btn-ikna { background: linear-gradient(135deg, #ed6c02, #e65100); } .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); } .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); } .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
-        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); } .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; } .sales-btn { background: linear-gradient(45deg, #10b981, #059669); } .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
+        .btn-all { background: linear-gradient(135deg, #4b5563, #1f2937); }
+        .btn-tech { background: linear-gradient(135deg, #0e1b42, #1e3a8a); }
+        .btn-ikna { background: linear-gradient(135deg, #ed6c02, #e65100); }
+        .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+        .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); }
+        .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
+        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); }
+        .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; }
+        .sales-btn { background: linear-gradient(45deg, #10b981, #059669); }
+        .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
 
         .news-ticker-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 15px; height: 85px; position: relative; cursor: pointer; overflow: hidden; backdrop-filter: blur(5px); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .news-ticker-box:hover { background: rgba(255,255,255,0.2); border-color: var(--secondary); }
@@ -53,7 +63,10 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card.Teknik { border-left-color: var(--primary); } .card.İkna { border-left-color: var(--accent); } .card.Kampanya { border-left-color: var(--success); } .card.Bilgi { border-left-color: var(--info); }
+        .card.Teknik { border-left-color: var(--primary); }
+        .card.İkna { border-left-color: var(--accent); }
+        .card.Kampanya { border-left-color: var(--success); }
+        .card.Bilgi { border-left-color: var(--info); }
         
         .edit-icon { position: absolute; right: 10px; top: 10px; color: #fabb00; cursor: pointer; display: none; font-size: 1.2rem; padding: 8px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 20; border:1px solid #eee; }
         .edit-icon:hover { transform: scale(1.1); background:#fff8e1; }
@@ -117,8 +130,10 @@
     </style>
 </head>
 <body>
+
     <div id="login-screen"><div class="login-card"><i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i><h2>S Sport Plus</h2><p>Personel Girişi</p><input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı"><input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)"><button class="login-btn" onclick="girisYap()">Giriş Yap</button><div id="loading-msg" class="loading-text">Kullanıcılar kontrol ediliyor...</div><p id="error-msg" style="color:red; display:none; margin-top:10px;">Hatalı Kullanıcı Adı veya Şifre!</p></div></div>
     <div id="maintenance-screen"><div class="maintenance-content"><span style="font-size: 4rem;">👩‍🏫</span><h1>Sistem Mola Verdi!</h1><p>Esra Hoca'dan gelecek kritik bilgileri bekliyoruz... 🚀</p></div></div>
+
     <div id="main-app">
         <div class="header">
             <div class="header-top">
@@ -156,16 +171,16 @@
     <script>
         const BAKIM_MODU = false; 
         
-        // !!! BURAYA KENDİ LİNKLERİNİ YAPIŞTIRMAYI UNUTMA !!!
+        // !!! LİNKLER BURAYA !!!
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?output=csv";
         const USERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=1075778951&single=true&output=csv";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
 
-        // YEDEK VERİLER (EĞER TABLO ÇEKİLEMEZSE BUNLAR DEVREYE GİRER)
+        // YEDEK VERİLER (GÜVENLİK AĞI - Tablo boşsa bunlar çalışır)
         const backupSportsData = [
             { title: "WorldSBK", icon: "fa-motorcycle", desc: "Dünya Superbike Şampiyonası.", tip: "🇹🇷 Toprak Razgatlıoğlu burada!", detail: "BMW ile yarışıyor.", pronunciation: "Vörld Süper Bayk" },
             { title: "MotoGP", icon: "fa-motorcycle", desc: "Motosikletin F1'i.", tip: "En hızlılar.", detail: "Prototip motorlar.", pronunciation: "Moto Ji Pi" },
-            { title: "NBA", icon: "fa-basketball", desc: "Dünyanın en iyi basketbol ligi.", tip: "LeBron, Curry.", detail: "Normal sezon.", pronunciation: "En Bi Ey" },
+            { title: "NBA", icon: "fa-basketball", desc: "Dünyanın en iyi basketbol ligi.", tip: "LeBron, Curry.", detail: "Normal sezon ve Play-off.", pronunciation: "En Bi Ey" },
             { title: "UFC", icon: "fa-hand-fist", desc: "Kafes Dövüşü.", tip: "En sert dövüş.", detail: "Islam Makhachev.", pronunciation: "Yu Ef Si" }
         ];
         const backupSalesScripts = [
@@ -177,8 +192,7 @@
         ];
 
         let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [], users = [];
-        let currentUser = "", isAdminMode = false, sessionTimeout;
-        let activeCards = []; 
+        let currentUser = "", isAdminMode = false, sessionTimeout, activeCards = [];
 
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) { if(e.keyCode == 123) return false; }
@@ -204,11 +218,16 @@
         }
 
         function girisYap() {
-            const uName = document.getElementById("usernameInput").value.trim(); const uPass = document.getElementById("passInput").value.trim();
+            const uName = document.getElementById("usernameInput").value.trim();
+            const uPass = document.getElementById("passInput").value.trim();
             const loadingMsg = document.getElementById("loading-msg");
+
             if(users.length === 0) {
                 loadingMsg.style.display = "block";
-                Papa.parse(USERS_SHEET_URL, { download: true, header: true, complete: function(results) { users = results.data; loadingMsg.style.display = "none"; checkCredentials(uName, uPass); } });
+                Papa.parse(USERS_SHEET_URL, {
+                    download: true, header: true,
+                    complete: function(results) { users = results.data; loadingMsg.style.display = "none"; checkCredentials(uName, uPass); }
+                });
             } else { checkCredentials(uName, uPass); }
         }
 
@@ -229,7 +248,9 @@
 
         function startSessionTimer() {
             if (sessionTimeout) clearTimeout(sessionTimeout);
-            sessionTimeout = setTimeout(() => { Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); }); }, 3600000); 
+            sessionTimeout = setTimeout(() => {
+                Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); });
+            }, 3600000); 
         }
 
         function enterBas(e) { if (e.key === "Enter") girisYap(); }
@@ -260,7 +281,6 @@
             if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
 
-        // İÇERİK GÜNCELLEME FONKSİYONLARI
         async function editContent(title, category, cText, cScript) {
             const { value: formValues } = await Swal.fire({
                 title: 'İçeriği Düzenle',
@@ -301,7 +321,7 @@
             });
             if (val && val !== cText) sendUpdate(title, "Text", val);
         }
-
+        
         async function editNews(title, cDate, cDesc, cType) {
             const { value: formValues } = await Swal.fire({
                 title: 'Duyuruyu Düzenle',
@@ -317,7 +337,7 @@
                 setTimeout(() => sendUpdate(title, "Category", formValues[2]), 2000);
             }
         }
-        
+
         function openQuizEditor() {
             let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">';
             quizQuestions.forEach((q, i) => {
@@ -378,13 +398,13 @@
                 download: true, header: true,
                 complete: function(results) {
                     const rawData = results.data;
+                    // KONTROL: EĞER TABLODAN VERİ GELMEZSE YEDEKLERİ KULLAN
                     const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link }));
                     const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category }));
                     const fetchedSports = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
                     const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
                     const fetchedQuiz = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions ? i.QuizOptions.split(',') : [], a: parseInt(i.QuizAnswer) }));
 
-                    // YEDEK VERİ KULLANIMI (GÜVENLİK AĞI)
                     database = fetchedCards.length > 0 ? fetchedCards : database;
                     newsData = fetchedNews.length > 0 ? fetchedNews : newsData;
                     sportsData = fetchedSports.length > 0 ? fetchedSports : backupSportsData;
@@ -406,7 +426,6 @@
             if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok</div>'; return; } 
             
             data.forEach((item, index) => { 
-                // Safe strings for click
                 const safeText = item.text ? item.text.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
                 const safeScript = item.script ? item.script.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
                 const safeTitle = item.title ? item.title.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
