@@ -94,10 +94,10 @@
         .news-tag { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-top: 5px; font-weight: bold; }
         .tag-fix { background: #e8f5e9; color: #2e7d32; } .tag-update { background: #fff3e0; color: #ef6c00; } .tag-info { background: #e3f2fd; color: #0277bd; }
 
-        /* Spor Rehberi Grid (Izgara) Kalacak */
+        /* Spor Rehberi Grid (Izgara) */
         .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
 
-        /* Satış Scriptleri Flex Column (Alt Alta) Olacak */
+        /* Satış Scriptleri Flex Column (Alt Alta) */
         .sales-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
 
         .guide-item { border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center; transition: 0.3s; background: #f8f9fa; cursor: pointer; position: relative; }
@@ -392,10 +392,10 @@
                 preConfirm: () => [document.getElementById('swal-desc').value, document.getElementById('swal-tip').value, document.getElementById('swal-detail').value, document.getElementById('swal-pron').value]
             });
             if (formValues) {
-                sendUpdate(title, "Text", formValues[0]);
-                setTimeout(() => sendUpdate(title, "Tip", formValues[1]), 1000);
-                setTimeout(() => sendUpdate(title, "Detail", formValues[2]), 2000);
-                setTimeout(() => sendUpdate(title, "Pronunciation", formValues[3]), 3000);
+                sendUpdate(title, "Text", formValues[0], 'sport');
+                setTimeout(() => sendUpdate(title, "Tip", formValues[1], 'sport'), 1000);
+                setTimeout(() => sendUpdate(title, "Detail", formValues[2], 'sport'), 2000);
+                setTimeout(() => sendUpdate(title, "Pronunciation", formValues[3], 'sport'), 3000);
             }
         }
 
@@ -405,7 +405,7 @@
                 title: 'Satış Metnini Düzenle', html: `<label style="font-weight:bold;">Metin</label><textarea id="swal-text" class="swal2-textarea">${cText}</textarea>`,
                 showCancelButton: true, confirmButtonText: 'Kaydet', preConfirm: () => document.getElementById('swal-text').value
             });
-            if (val && val !== cText) sendUpdate(title, "Text", val);
+            if (val && val !== cText) sendUpdate(title, "Text", val, 'sales');
         }
 
         async function editNews(title, cDate, cDesc, cType) {
@@ -418,9 +418,9 @@
                 preConfirm: () => [document.getElementById('swal-date').value, document.getElementById('swal-desc').value, document.getElementById('swal-type').value]
             });
             if (formValues) {
-                sendUpdate(title, "Date", formValues[0]);
-                setTimeout(() => sendUpdate(title, "Text", formValues[1]), 1000);
-                setTimeout(() => sendUpdate(title, "Category", formValues[2]), 2000);
+                sendUpdate(title, "Date", formValues[0], 'news');
+                setTimeout(() => sendUpdate(title, "Text", formValues[1], 'news'), 1000);
+                setTimeout(() => sendUpdate(title, "Category", formValues[2], 'news'), 2000);
             }
         }
         
@@ -442,18 +442,66 @@
             });
             if (formValues) {
                 if(!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
+                // Quiz update için özel logic
                 const payload = { action: "updateContent", title: qText, column: "Text", value: formValues[0], type: 'quiz', originalText: qText, username: currentUser };
-                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+                .then(() => {
+                     // Quiz Local Update
+                     const qItem = quizQuestions.find(i => i.q === qText);
+                     if(qItem) { qItem.q = formValues[0]; qItem.opts = formValues[1].split(','); qItem.a = parseInt(formValues[2]); }
+                     Swal.fire({icon: 'success', title: 'Güncellendi!', text: 'Quiz güncellendi.', timer: 1500, showConfirmButton: false});
+                });
+                
+                // Diğer alanları da arkada gönderelim (QuizOptions ve QuizAnswer)
                 setTimeout(() => sendUpdate(formValues[0], "QuizOptions", formValues[1], 'quiz'), 1500);
                 setTimeout(() => sendUpdate(formValues[0], "QuizAnswer", formValues[2], 'quiz'), 3000);
             }
         }
 
+        // GÜNCELLENEN sendUpdate FONKSİYONU (LOCAL UPDATE İÇERİR)
         function sendUpdate(title, column, value, type = 'card') {
             if(!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
+            
             const payload = { action: "updateContent", title: title, column: column, value: value, type: type, originalText: title, username: currentUser };
+            
             fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-            .then(() => Swal.fire({icon: 'success', title: 'Güncellendi!', text: 'Değişiklik 1-2 dk içinde herkese yansır.', timer: 2000, showConfirmButton: false}))
+            .then(() => {
+                // --- LOCAL HAFIZAYI GÜNCELLE ---
+                if(type === 'card') {
+                    const item = database.find(i => i.title === title);
+                    if(item) {
+                        if(column === 'Text') item.text = value;
+                        if(column === 'Script') item.script = value;
+                    }
+                    renderCards(activeCards); // Kartları Yeniden Çiz (Yeni veriyle)
+                } 
+                else if (type === 'sport') {
+                    const item = sportsData.find(i => i.title === title);
+                    if(item) {
+                        if(column === 'Text') item.desc = value;
+                        if(column === 'Tip') item.tip = value;
+                        if(column === 'Detail') item.detail = value;
+                        if(column === 'Pronunciation') item.pronunciation = value;
+                    }
+                    openGuide(); // Rehberi Yenile
+                }
+                else if (type === 'sales') {
+                    const item = salesScripts.find(i => i.title === title);
+                    if(item && column === 'Text') item.text = value;
+                    openSales(); // Satış Scriptlerini Yenile
+                }
+                else if (type === 'news') {
+                    const item = newsData.find(i => i.title === title);
+                    if(item) {
+                        if(column === 'Date') item.date = value;
+                        if(column === 'Text') item.desc = value;
+                        if(column === 'Category') item.type = value;
+                    }
+                    openNews(); // Haberleri Yenile
+                }
+
+                Swal.fire({icon: 'success', title: 'Güncellendi!', text: 'Anlık olarak yansıdı. (Not: Sayfayı yenilersen Google önbelleği nedeniyle 5dk eski veriyi görebilirsin.)', timer: 3000, showConfirmButton: false});
+            })
             .catch(err => Swal.fire('Hata', 'Güncelleme başarısız: ' + err, 'error'));
         }
 
