@@ -26,8 +26,10 @@
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
-        /* DÜZENLEME BUTONU TASARIMI */
-        .edit-toggle-btn {
+        /* DÜZENLEME VE EKLEME BUTONLARI */
+        .header-controls { display: flex; align-items: center; gap:10px; }
+        
+        .edit-toggle-btn, .add-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.4);
             color: #fff;
@@ -39,21 +41,19 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             backdrop-filter: blur(5px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            letter-spacing: 0.5px;
         }
 
-        .edit-toggle-btn:hover { background: rgba(255, 255, 255, 0.25); border-color: #fff; transform: translateY(-3px); box-shadow: 0 7px 14px rgba(0,0,0,0.2); }
+        .edit-toggle-btn:hover, .add-btn:hover { background: rgba(255, 255, 255, 0.25); border-color: #fff; transform: translateY(-3px); }
+        
         .edit-toggle-btn.active { background: linear-gradient(135deg, #fabb00, #ff9100); border-color: #ffe082; color: #0e1b42; box-shadow: 0 0 20px rgba(250, 187, 0, 0.6); animation: pulse-border 2s infinite; }
-        .edit-toggle-btn.active:hover { transform: scale(1.05); }
+        .add-btn { background: linear-gradient(135deg, #2e7d32, #43a047); border-color: #a5d6a7; }
+        
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(250, 187, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(250, 187, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); } }
 
-        .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s; margin-left: 10px;}
-        .admin-btn:hover { background: rgba(255,255,255,0.3); }
-        .header-controls { display: flex; align-items: center; }
-
+        .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s;}
+        
         .control-wrapper { display: flex; gap: 20px; align-items: flex-start; }
         .left-panel { flex: 2; }
         .right-panel { flex: 1; min-width: 300px; }
@@ -119,16 +119,9 @@
         .news-tag { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-top: 5px; font-weight: bold; }
         .tag-fix { background: #e8f5e9; color: #2e7d32; } .tag-update { background: #fff3e0; color: #ef6c00; } .tag-info { background: #e3f2fd; color: #0277bd; }
 
-        /* DEĞİŞİKLİK: sales-grid'i guide-grid'den ayırdık ve alt alta (column) yaptık */
         .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        .sales-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
         
-        .sales-grid { 
-            display: flex; /* Grid yerine Flex kullandık */
-            flex-direction: column; /* Yan yana yerine ALT ALTA sırala dedik */
-            gap: 15px; 
-            margin-top: 20px; 
-        }
-
         .guide-item { border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center; transition: 0.3s; background: #f8f9fa; cursor: pointer; position: relative; }
         .guide-item:hover { transform: translateY(-5px); border-color: var(--secondary); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .guide-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
@@ -172,6 +165,9 @@
             <div class="header-top">
                 <h1><i class="fas fa-compass"></i> S Sport Plus - Temsilci Pusulası</h1>
                 <div class="header-controls">
+                    <button id="addCardBtn" class="add-btn" style="display:none;" onclick="addNewCardPopup()">
+                        <i class="fas fa-plus"></i> Kart Ekle
+                    </button>
                     <button id="quickEditBtn" class="edit-toggle-btn" style="display:none;" onclick="toggleEditMode()">
                         <i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç
                     </button>
@@ -434,9 +430,9 @@
                     }) 
                 })
                 .then(response => {
-                    if (response.ok || response.type === 'opaque') { // No-cors response control
+                    if (response.ok || response.type === 'opaque') { 
                         Swal.fire({icon: 'success', title: 'Kart Eklendi!', text: 'Sayfayı yeniledikten sonra listenin sonunda görünecektir.', timer: 3000, showConfirmButton: false});
-                        setTimeout(loadContentData, 3500); // Verileri yeniden yükle
+                        setTimeout(loadContentData, 3500); 
                     } else {
                         throw new Error('Network response was not ok.');
                     }
@@ -620,5 +616,3 @@
     </script>
 </body>
 </html>
-
-
