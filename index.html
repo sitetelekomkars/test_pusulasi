@@ -212,8 +212,7 @@
 
         // KATEGORİ DOĞRULAMASI İÇİN SABİT KATEGORİ LİSTESİ
         const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
-        const CARD_TYPES = ['card', 'bilgi', 'teknik', 'kampanya', 'ikna']; 
-
+        
         let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [], users = [];
         let currentUser = "", isAdminMode = false, sessionTimeout;
         let activeCards = []; 
@@ -223,14 +222,22 @@
             let options = VALID_CATEGORIES.map(cat => 
                 `<option value="${cat}" ${cat === currentCategory ? 'selected' : ''}>${cat}</option>`
             ).join('');
-            // Ek olarak, eğer kartın kategorisi listede yoksa, onu da seçili olarak ekle (veri bozukluğunu korumak için)
+            
             if (currentCategory && !VALID_CATEGORIES.includes(currentCategory)) {
                 options = `<option value="${currentCategory}" selected>${currentCategory} (Hata)</option>` + options;
             }
-            // swal2-input sınıfını select elementine taşıdık.
+            
             return `<select id="${id}" class="swal2-input" style="width:100%; margin-top:5px;">${options}</select>`;
         }
-
+        
+        // Yardımcı fonksiyon: Kategoriye göre Type değerini atar
+        function mapCategoryToType(category) {
+            if (category === 'Teknik') return 'teknik';
+            if (category === 'İkna') return 'ikna';
+            if (category === 'Kampanya') return 'kampanya';
+            if (category === 'Bilgi') return 'bilgi';
+            return 'card'; // Diğerleri için default
+        }
 
         function cleanData(text) {
             if (!text) return "";
@@ -345,7 +352,7 @@
             if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
 
-        // --- GÜNCEL GELİŞMİŞ EDİT FONKSİYONU ---
+        // --- GÜNCEL GELİŞMİŞ EDİT FONKSİYONU (KATEGORİ DROPDOWN VE GÖRSEL DÜZENLEME) ---
         async function editContent(index) {
             const item = activeCards[index]; 
             
@@ -411,30 +418,21 @@
             }
         }
         
-        // --- YENİ KART EKLEME FONKSİYONU ---
+        // --- YENİ KART EKLEME FONKSİYONU (TYPE SEÇİCİ KALDIRILDI) ---
         async function addNewCardPopup() {
             const { value: formValues } = await Swal.fire({
                 title: 'Yeni Kart Ekle',
                 html: `
                     <div style="display:flex; gap:15px; margin-bottom:15px;">
                         <div style="flex:1;">
-                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kart Tipi (Type)</label>
-                            <select id="swal-new-type" class="swal2-input" style="width:100%;">
-                                <option value="card">Standart Kart (card)</option>
-                                <option value="bilgi">Bilgi Kartı (bilgi)</option>
-                                <option value="teknik">Teknik Kart (teknik)</option>
-                                <option value="ikna">İkna Kartı (ikna)</option>
-                                <option value="kampanya">Kampanya Kartı (kampanya)</option>
-                            </select>
-                        </div>
-                        <div style="flex:1;">
                             <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kategori</label>${getCategorySelectHtml('Bilgi', 'swal-new-cat')}
+                        </div>
+                        <div style="flex:2;">
+                             <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Başlık</label>
+                            <input id="swal-new-title" class="swal2-input" style="width:100%;" placeholder="Başlık (Benzersiz olmalı)">
                         </div>
                     </div>
                     
-                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Başlık</label>
-                    <input id="swal-new-title" class="swal2-input" style="width:100%;" placeholder="Başlık (Benzersiz olmalı)">
-
                     <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:10px; margin-bottom:3px;">Açıklama Metni</label>
                     <textarea id="swal-new-text" class="swal2-textarea" style="height: 100px;" placeholder="Müşterinin göreceği detaylı açıklama"></textarea>
                     
@@ -456,9 +454,10 @@
                 showCancelButton: true,
                 confirmButtonText: 'Ekle',
                 preConfirm: () => {
+                    const selectedCategory = document.getElementById('swal-new-cat').value;
                     return {
-                        cardType: document.getElementById('swal-new-type').value,
-                        category: document.getElementById('swal-new-cat').value,
+                        cardType: mapCategoryToType(selectedCategory), // Kategoriye göre Type otomatik atanır
+                        category: selectedCategory,
                         title: document.getElementById('swal-new-title').value,
                         text: document.getElementById('swal-new-text').value,
                         script: document.getElementById('swal-new-script').value,
