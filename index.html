@@ -248,6 +248,17 @@
                 .replace(/\n/g, "<br>") 
                 .replace(/\r/g, "");    
         }
+        
+        // Yardımcı fonksiyon: JS eventlerine parametre geçerken bozulmayı engeller
+        function escapeForJsString(text) {
+            if (!text) return "";
+            return text.toString()
+                .replace(/\\/g, '\\\\') 
+                .replace(/'/g, '\\\'')  
+                .replace(/"/g, '\\"')   
+                .replace(/\n/g, '\\n')  
+                .replace(/\r/g, ''); 
+        }
 
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) { if(e.keyCode == 123) return false; }
@@ -352,7 +363,7 @@
             if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
 
-        // --- GÜNCEL GELİŞMİŞ EDİT FONKSİYONU (KATEGORİ DROPDOWN VE GÖRSEL DÜZENLEME) ---
+        // --- GÜNCEL GELİŞMİŞ EDİT FONKSİYONU ---
         async function editContent(index) {
             const item = activeCards[index]; 
             
@@ -371,10 +382,10 @@
                     </div>
 
                     <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Metin (Text - Müşteriye Giden Bilgi)</label>
-                    <textarea id="swal-text" class="swal2-textarea" style="height: 120px;">${item.text}</textarea>
+                    <textarea id="swal-text" class="swal2-textarea" style="height: 120px;">${cleanData(item.text).replace(/<br>/g, '\n').replace(/&quot;/g, '"')}</textarea>
 
                     <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:15px; margin-bottom:3px;">Script (Konuşma Metni - Temsilciye Özel)</label>
-                    <textarea id="swal-script" class="swal2-textarea" style="height: 100px;">${item.script}</textarea>
+                    <textarea id="swal-script" class="swal2-textarea" style="height: 100px;">${cleanData(item.script).replace(/<br>/g, '\n').replace(/&quot;/g, '"')}</textarea>
 
                     <div style="display:flex; gap:15px; margin-top:15px;">
                         <div style="flex:1;">
@@ -418,7 +429,7 @@
             }
         }
         
-        // --- YENİ KART EKLEME FONKSİYONU (TYPE SEÇİCİ KALDIRILDI) ---
+        // --- YENİ KART EKLEME FONKSİYONU ---
         async function addNewCardPopup() {
             const { value: formValues } = await Swal.fire({
                 title: 'Yeni Kart Ekle',
@@ -456,7 +467,7 @@
                 preConfirm: () => {
                     const selectedCategory = document.getElementById('swal-new-cat').value;
                     return {
-                        cardType: mapCategoryToType(selectedCategory), // Kategoriye göre Type otomatik atanır
+                        cardType: mapCategoryToType(selectedCategory), 
                         category: selectedCategory,
                         title: document.getElementById('swal-new-title').value,
                         text: document.getElementById('swal-new-text').value,
@@ -496,9 +507,9 @@
         }
         
         // Diğer Yardımcı Fonksiyonlar
-        function sendUpdate(title, column, value, type = 'card') {
+        function sendUpdate(originalTitle, column, value, type = 'card') {
             if(!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
-            const payload = { action: "updateContent", title: title, column: column, value: value, type: type, originalText: title, username: currentUser };
+            const payload = { action: "updateContent", title: originalTitle, column: column, value: value, type: type, originalText: originalTitle, username: currentUser };
             fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
             .then(() => Swal.fire({icon: 'success', title: 'Güncellendi!', text: 'Değişiklik 1-2 dk içinde herkese yansır.', timer: 2000, showConfirmButton: false}))
             .catch(err => Swal.fire('Hata', 'Güncelleme başarısız: ' + err, 'error'));
@@ -561,23 +572,21 @@
             
             data.forEach((item, index) => { 
                 // cleanData fonksiyonu ile güvenli hale getiriyoruz
-                const safeText = cleanData(item.text);
-                const safeScript = cleanData(item.script);
-                const safeTitle = cleanData(item.title);
+                const safeTitle = escapeForJsString(item.title);
                 
                 let html = `
                 <div class="card ${item.category}">
                     <i class="fas fa-pencil-alt edit-icon" onclick="editContent(${index})"></i>
                     <div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div>
                     
-                    <div class="card-content" onclick="showCardDetail('${safeTitle}', '${safeText}')">
+                    <div class="card-content" onclick="showCardDetail('${safeTitle}', '${escapeForJsString(item.text)}')">
                         <div class="card-text-truncate">${highlightText(item.text)}</div>
                         <div style="font-size:0.8rem; color:#999; margin-top:5px; text-align:right;">(Tamamını oku)</div>
                     </div>
                     <div class="script-box">${highlightText(item.script)}</div>
                     <div class="card-actions">
-                        <button class="btn btn-copy" onclick="copyText('${cleanData(item.script)}')"><i class="fas fa-copy"></i> Kopyala</button>
-                        ${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${item.code}')">Kod</button>` : ''}
+                        <button class="btn btn-copy" onclick="copyText('${escapeForJsString(item.script)}')"><i class="fas fa-copy"></i> Kopyala</button>
+                        ${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${escapeForJsString(item.code)}')">Kod</button>` : ''}
                         ${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-link"><i class="fas fa-external-link-alt"></i> Link</a>` : ''}
                     </div>
                 </div>`; 
@@ -585,7 +594,7 @@
             }); 
         }
 
-        function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div style="text-align:left; font-size:1rem; line-height:1.6;">${text}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
+        function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div style="text-align:left; font-size:1rem; line-height:1.6;">${cleanData(text)}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
         function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); renderCards(database.filter(i => i.title?.toLowerCase().includes(search) || i.text?.toLowerCase().includes(search))); }
         function filterCategory(cat) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); event.target.closest('button').classList.add('active'); renderCards(cat === 'all' ? database : database.filter(i => i.category === cat)); }
         function highlightText(t) { if(!t) return ""; const s = document.getElementById('searchInput').value.trim(); return s ? t.replace(new RegExp(`(${s})`, 'gi'), '<span class="highlight">$1</span>') : t; }
@@ -613,7 +622,8 @@
             sportsData.forEach((s, index) => { 
                 let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : '';
                 // Admin butonu
-                let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:5px; right:5px; z-index:50;" onclick="editSport(${index})"></i>` : '';
+                // FIX: event.stopPropagation() added
+                let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:5px; right:5px; z-index:50;" onclick="event.stopPropagation(); editSport(${index})"></i>` : '';
 
                 grid.innerHTML += `
                     <div class="guide-item" onclick="showSportDetail(${index})">
@@ -633,7 +643,15 @@
             // Satır sonlarını <br> ile değiştir
             const detailText = sport.detail ? cleanData(sport.detail) : "Bu içerik için henüz detay eklenmemiş.";
             const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : '';
-            Swal.fire({ title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`, html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' });
+            
+            Swal.fire({ 
+                title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`, 
+                html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`, 
+                showCloseButton: true, 
+                showConfirmButton: false, 
+                width: '600px', 
+                background: '#f8f9fa' 
+            });
         }
 
         function openSales() { 
@@ -641,13 +659,14 @@
             const grid = document.getElementById('sales-grid'); 
             grid.innerHTML = ''; 
             salesScripts.forEach((s, index) => { 
-                let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:10px; right:40px; z-index:50;" onclick="editSales(${index})"></i>` : '';
+                // FIX: event.stopPropagation() added to edit icon
+                let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales(${index})"></i>` : '';
 
                 grid.innerHTML += `
                     <div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">
                         ${editBtn}
                         <div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div>
-                        <div class="sales-text">${cleanData(s.text)}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${cleanData(s.text)}')"><i class="fas fa-copy"></i> Kopyala</button></div></div>
+                        <div class="sales-text">${cleanData(s.text)}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text)}')"><i class="fas fa-copy"></i> Kopyala</button></div></div>
                     </div>`; 
             }); 
         }
