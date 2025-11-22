@@ -57,7 +57,6 @@
         @keyframes blink { 50% { opacity: 0.5; } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .container { padding: 20px; max-width: 1600px; margin: 0 auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
@@ -93,23 +92,21 @@
         .tag-update { background: #fff3e0; color: #ef6c00; } 
         .tag-info { background: #e3f2fd; color: #0277bd; }
 
-        .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        .guide-grid, .sales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
         .guide-item { border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center; transition: 0.3s; background: #f8f9fa; cursor: pointer; }
         .guide-item:hover { transform: translateY(-5px); border-color: var(--secondary); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .guide-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
         .guide-title { font-weight: bold; color: var(--primary); margin-bottom: 5px; display: block; }
         .guide-desc { font-size: 0.9rem; color: #666; margin-bottom: 10px; min-height: 40px; font-style: italic;}
         .guide-tip { background: #e3f2fd; color: #0277bd; padding: 5px; border-radius: 5px; font-size: 0.8rem; font-weight: 600; }
+        
+        /* OKUNUŞ STİLİ */
+        .pronunciation-badge { color: #e65100; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; display: block; font-style: italic; }
 
-        /* SATIŞ SCRIPTLERİ İÇİN YENİ STİL (AKORDEON) */
-        .sales-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 10px; padding: 15px 20px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .sales-item:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); border-color: var(--sales); }
-        .sales-item.active { background: #d1fae5; border-left: 5px solid var(--sales); }
-        .sales-header { display: flex; justify-content: space-between; align-items: center; }
-        .sales-title { font-weight: 800; color: #065f46; font-size: 1.1rem; }
-        .sales-text { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #a7f3d0; font-size: 1rem; color: #374151; line-height: 1.6; animation: fadeIn 0.5s; }
-        .sales-item.active .sales-text { display: block; }
+        .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 10px; padding: 20px; cursor: pointer; position: relative; }
+        .sales-item:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); }
+        .sales-title { font-weight: 800; color: #065f46; margin-bottom: 10px; display: block; }
+        .sales-copy-hint { position: absolute; bottom: 10px; right: 15px; font-size: 0.75rem; color: var(--sales); font-weight: bold; opacity: 0.7; }
 
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .quiz-btn-opt { padding: 15px; border: 2px solid #eee; background: white; border-radius: 10px; cursor: pointer; }
@@ -131,7 +128,6 @@
 <body>
 
     <div id="login-screen"><div class="login-card"><i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i><h2>S Sport Plus</h2><p>Temsilci Girişi</p><input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)"><button class="login-btn" onclick="girisYap()">Giriş Yap</button><p id="error-msg" style="color:red; display:none;">Hatalı Şifre!</p></div></div>
-    
     <div id="maintenance-screen"><div class="maintenance-content"><span style="font-size: 4rem;">👩‍🏫</span><h1>Sistem Mola Verdi!</h1><p>Esra Hoca'dan gelecek kritik bilgileri bekliyoruz... 🚀</p></div></div>
 
     <div id="main-app">
@@ -169,11 +165,8 @@
 
     <div id="news-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('news-modal')">&times;</span><h2 style="color:var(--primary);">📢 Duyurular</h2><div id="news-container"></div></div></div>
     <div id="wizard-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('wizard-modal')">&times;</span><div id="wizard-body"></div></div></div>
-    
     <div id="guide-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('guide-modal')">&times;</span><h2 style="text-align:center; color:var(--primary);">📖 Spor Terimleri & İçerik Rehberi</h2><p style="text-align:center; color:#666;">Detaylı bilgi için karta tıklayınız.</p><div class="guide-grid" id="guide-grid"></div></div></div>
-    
-    <div id="sales-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('sales-modal')">&times;</span><h2 style="text-align:center; color:var(--sales);">📞 TeleSatış Scriptleri</h2><p style="text-align:center; color:#666;">Metni okumak için başlığa tıklayınız.</p><div class="sales-grid" id="sales-grid"></div></div></div>
-    
+    <div id="sales-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('sales-modal')">&times;</span><h2 style="text-align:center; color:var(--sales);">📞 Satış Scriptleri</h2><div class="sales-grid" id="sales-grid"></div></div></div>
     <div id="quiz-modal" class="modal-overlay"><div class="modal-content" style="max-width: 600px;"><span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span><h2 style="text-align:center; color:var(--quiz);">🎮 Bilgi Yarışması</h2><div id="quiz-body"></div></div></div>
 
     <script>
@@ -210,7 +203,10 @@
                     
                     database = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link }));
                     newsData = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category }));
-                    sportsData = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail }));
+                    
+                    // OKUNUŞ EKLENDİ: pronunciation: i.Pronunciation
+                    sportsData = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
+                    
                     salesScripts = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
                     quizQuestions = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions.split(','), a: parseInt(i.QuizAnswer) }));
 
@@ -245,10 +241,14 @@
             const grid = document.getElementById('guide-grid'); 
             grid.innerHTML = ''; 
             sportsData.forEach((s, index) => { 
+                // Okunuşu varsa göster
+                let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : '';
+                
                 grid.innerHTML += `
                     <div class="guide-item" onclick="showSportDetail(${index})">
                         <i class="fas ${s.icon} guide-icon"></i>
                         <span class="guide-title">${s.title}</span>
+                        ${pronHtml}
                         <div class="guide-desc">${s.desc}</div>
                         <div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div>
                         <div style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için tıkla)</div>
@@ -259,9 +259,12 @@
         function showSportDetail(index) {
             const sport = sportsData[index];
             const detailText = sport.detail ? sport.detail : "Bu içerik için henüz detay eklenmemiş.";
+            // Detay penceresinde de okunuşu gösterelim
+            const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : '';
+
             Swal.fire({
                 title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`,
-                html: `<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`,
+                html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`,
                 showCloseButton: true,
                 showConfirmButton: false,
                 width: '600px',
@@ -269,44 +272,7 @@
             });
         }
 
-        // YENİ SATIŞ FONKSİYONU (AKORDEON)
-        function openSales() { 
-            document.getElementById('sales-modal').style.display = 'flex'; 
-            const grid = document.getElementById('sales-grid'); 
-            grid.innerHTML = ''; 
-            salesScripts.forEach((s, index) => { 
-                grid.innerHTML += `
-                    <div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">
-                        <div class="sales-header">
-                            <span class="sales-title">${s.title}</span>
-                            <i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i>
-                        </div>
-                        <div class="sales-text">
-                            ${s.text}
-                            <div style="text-align:right; margin-top:15px;">
-                                <button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${s.text.replace(/'/g, "\\'")}')">
-                                    <i class="fas fa-copy"></i> Kopyala
-                                </button>
-                            </div>
-                        </div>
-                    </div>`; 
-            }); 
-        }
-
-        function toggleSales(index) {
-            const item = document.getElementById(`sales-${index}`);
-            const icon = document.getElementById(`icon-${index}`);
-            
-            // Diğerlerini kapatmak istersek burayı açabiliriz:
-            // document.querySelectorAll('.sales-item').forEach(el => { if(el !== item) { el.classList.remove('active'); el.querySelector('.fa-chevron-up')?.classList.replace('fa-chevron-up', 'fa-chevron-down'); } });
-
-            item.classList.toggle('active');
-            if(item.classList.contains('active')){
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-            } else {
-                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-            }
-        }
+        function openSales() { document.getElementById('sales-modal').style.display = 'flex'; const grid=document.getElementById('sales-grid'); grid.innerHTML=''; salesScripts.forEach(s=>{ grid.innerHTML+=`<div class="sales-item" onclick="copyText('${s.text.replace(/'/g, "\\'")}')"><span class="sales-title">${s.title}</span><div class="sales-text">${s.text}</div><div class="sales-copy-hint"><i class="fas fa-copy"></i> Tıkla Kopyala</div></div>`; }); }
         
         let currentQuestion=0, score=0;
         function openQuiz() { document.getElementById('quiz-modal').style.display='flex'; currentQuestion=0; score=0; showStartScreen(); }
