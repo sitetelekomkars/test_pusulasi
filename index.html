@@ -7,21 +7,24 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
         /* TASARIM AYARLARI */
         :root { --primary: #0e1b42; --secondary: #fabb00; --bg: #f0f2f5; --card-bg: #ffffff; --accent: #d32f2f; --success: #2e7d32; --info: #0288d1; --warning: #ed6c02; --sales: #10b981; --quiz: #8e24aa; }
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
         
+        /* GİRİŞ EKRANI */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
         
         /* BAKIM EKRANI (GİZLİ) */
-        #maintenance-screen { display: none !important; }
+        #maintenance-screen { display: none !important; } 
 
-        .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 300px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .login-input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
-        .login-btn { width: 100%; padding: 12px; background: #fabb00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        
+        .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
+        .login-btn { width: 100%; padding: 12px; background: #fabb00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .loading-text { font-size: 0.8rem; color: #666; margin-top: 10px; display: none; }
+
         /* ANA UYGULAMA */
         #main-app { display: none; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -47,7 +50,6 @@
         .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
         .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); }
         .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
-        
         .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); }
         .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; }
         .sales-btn { background: linear-gradient(45deg, #10b981, #059669); }
@@ -68,12 +70,10 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        
         .card.Teknik { border-left-color: var(--primary); }
         .card.İkna { border-left-color: var(--accent); }
         .card.Kampanya { border-left-color: var(--success); }
         .card.Bilgi { border-left-color: var(--info); }
-        
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .card-title { font-weight: 700; font-size: 1.1rem; margin: 0; color: #2c3e50; line-height: 1.4; }
         .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; background: #eee; text-transform: uppercase; font-weight: 600; }
@@ -89,8 +89,6 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 15px; padding: 30px; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #666; font-weight: bold; }
-        
-        /* ÖNEMLİ: SWEETALERT EN ÜSTTE ÇIKSIN */
         .swal2-container { z-index: 10000 !important; }
 
         .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; }
@@ -110,21 +108,13 @@
         .guide-tip { background: #e3f2fd; color: #0277bd; padding: 5px; border-radius: 5px; font-size: 0.8rem; font-weight: 600; }
         .pronunciation-badge { color: #e65100; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; display: block; font-style: italic; }
 
-        /* SATIŞ SCRIPTLERİ İÇİN DÜZELTİLMİŞ AKORDEON STİLİ */
         .sales-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
         .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 10px; padding: 15px 20px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .sales-item:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); border-color: var(--sales); }
-        
-        /* Aktif (Açık) olduğunda */
         .sales-item.active { background: #d1fae5; border-left: 6px solid var(--sales); }
-        
         .sales-header { display: flex; justify-content: space-between; align-items: center; }
         .sales-title { font-weight: 800; color: #065f46; font-size: 1.1rem; margin: 0; }
-        
-        /* Metin varsayılan olarak GİZLİ */
         .sales-text { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #a7f3d0; font-size: 1rem; color: #374151; line-height: 1.6; animation: fadeIn 0.4s ease-in; }
-        
-        /* Sadece .active sınıfı varsa GÖSTER */
         .sales-item.active .sales-text { display: block; }
 
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -140,21 +130,31 @@
         .res-green { background: #e8f5e9; border: 2px solid #66bb6a; color: #2e7d32; }
         .res-yellow { background: #fff8e1; border: 2px solid #ffca28; color: #f57f17; }
         .restart-btn { margin-top: 20px; background: #555; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-
         .highlight { background-color: yellow; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen"><div class="login-card"><i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i><h2>S Sport Plus</h2><p>Temsilci Girişi</p><input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)"><button class="login-btn" onclick="girisYap()">Giriş Yap</button><p id="error-msg" style="color:red; display:none;">Hatalı Şifre!</p></div></div>
-    
+    <div id="login-screen">
+        <div class="login-card">
+            <i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i>
+            <h2>S Sport Plus</h2>
+            <p>Personel Girişi</p>
+            <input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı">
+            <input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)">
+            <button class="login-btn" onclick="girisYap()">Giriş Yap</button>
+            <div id="loading-msg" class="loading-text">Kullanıcılar kontrol ediliyor...</div>
+            <p id="error-msg" style="color:red; display:none; margin-top:10px;">Hatalı Kullanıcı Adı veya Şifre!</p>
+        </div>
+    </div>
+
     <div id="maintenance-screen"><div class="maintenance-content"><span style="font-size: 4rem;">👩‍🏫</span><h1>Sistem Mola Verdi!</h1><p>Esra Hoca'dan gelecek kritik bilgileri bekliyoruz... 🚀</p></div></div>
 
     <div id="main-app">
         <div class="header">
             <div class="header-top">
                 <h1><i class="fas fa-compass"></i> S Sport Plus - Temsilci Pusulası</h1>
-                <div class="developer-badge"><i class="fas fa-code"></i> Developed by Doğuş Yalçınkaya</div>
+                <div class="developer-badge"><i class="fas fa-user-circle"></i> <span id="user-display">Misafir</span></div>
             </div>
             <div class="control-wrapper">
                 <div class="left-panel">
@@ -185,45 +185,69 @@
 
     <div id="news-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('news-modal')">&times;</span><h2 style="color:var(--primary);">📢 Duyurular</h2><div id="news-container"></div></div></div>
     <div id="wizard-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('wizard-modal')">&times;</span><div id="wizard-body"></div></div></div>
-    
     <div id="guide-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('guide-modal')">&times;</span><h2 style="text-align:center; color:var(--primary);">📖 Spor Terimleri & İçerik Rehberi</h2><p style="text-align:center; color:#666;">Detaylı bilgi için karta tıklayınız.</p><div class="guide-grid" id="guide-grid"></div></div></div>
-    
     <div id="sales-modal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('sales-modal')">&times;</span><h2 style="text-align:center; color:var(--sales);">📞 TeleSatış Scriptleri</h2><p style="text-align:center; color:#666;">Metni okumak için başlığa tıklayınız.</p><div class="sales-grid" id="sales-grid"></div></div></div>
-    
     <div id="quiz-modal" class="modal-overlay"><div class="modal-content" style="max-width: 600px;"><span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span><h2 style="text-align:center; color:var(--quiz);">🎮 Bilgi Yarışması</h2><div id="quiz-body"></div></div></div>
 
     <script>
         const BAKIM_MODU = false; 
-        const DOGRU_SIFRE_HASH = "c3Nwb3J0Kw=="; 
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?output=csv";
+        
+        const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?output=csv";
+        // !!! BURAYA USERS SHEET LINKI YAPIŞTIRILACAK !!!
+        const USERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=1075778951&single=true&output=csv";
 
-        let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [];
+        let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [], users = [];
 
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) { if(e.keyCode == 123) return false; }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            Papa.parse(USERS_SHEET_URL, {
+                download: true, header: true,
+                complete: function(results) { users = results.data; },
+                error: function() { console.log("Kullanıcı listesi çekilemedi."); }
+            });
+        });
+
         function girisYap() {
-            var girilen = document.getElementById("passInput").value;
-            try {
-                if (btoa(girilen) === DOGRU_SIFRE_HASH) {
-                    document.getElementById("login-screen").style.display = "none"; 
-                    if (BAKIM_MODU) {
-                        document.getElementById("maintenance-screen").style.display = "flex";
-                    } else {
-                        document.getElementById("main-app").style.display = "block";
-                        loadGoogleSheetData();
+            const uName = document.getElementById("usernameInput").value.trim();
+            const uPass = document.getElementById("passInput").value.trim();
+            const loadingMsg = document.getElementById("loading-msg");
+
+            if(users.length === 0) {
+                loadingMsg.style.display = "block";
+                Papa.parse(USERS_SHEET_URL, {
+                    download: true, header: true,
+                    complete: function(results) {
+                        users = results.data;
+                        loadingMsg.style.display = "none";
+                        checkCredentials(uName, uPass);
                     }
-                } else { document.getElementById("error-msg").style.display = "block"; }
-            } catch (e) { document.getElementById("error-msg").style.display = "block"; }
+                });
+            } else { checkCredentials(uName, uPass); }
         }
+
+        function checkCredentials(name, pass) {
+            // Girilen şifreyi MD5 yap
+            const hashedPass = CryptoJS.MD5(pass).toString();
+            // Tablodaki Username ve Password ile karşılaştır
+            const user = users.find(u => u.Username === name && u.Password === hashedPass);
+
+            if (user) {
+                document.getElementById("login-screen").style.display = "none"; 
+                document.getElementById("user-display").innerText = user.Username;
+                if (BAKIM_MODU) { document.getElementById("maintenance-screen").style.display = "flex"; } 
+                else { document.getElementById("main-app").style.display = "block"; loadContentData(); }
+            } else { document.getElementById("error-msg").style.display = "block"; }
+        }
+
         function enterBas(e) { if (e.key === "Enter") girisYap(); }
 
-        function loadGoogleSheetData() {
-            Papa.parse(SHEET_URL, {
+        function loadContentData() {
+            Papa.parse(DATA_SHEET_URL, {
                 download: true, header: true,
                 complete: function(results) {
                     const rawData = results.data;
-                    
                     database = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link }));
                     newsData = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category }));
                     sportsData = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
@@ -237,105 +261,17 @@
             });
         }
 
-        function renderCards(data) {
-            const container = document.getElementById('cardGrid');
-            container.innerHTML = '';
-            if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok</div>'; return; }
-            data.forEach(item => {
-                let html = `<div class="card ${item.category}">
-                    <div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div>
-                    <div class="card-content"><div>${highlightText(item.text)}</div></div>
-                    <div class="script-box">${highlightText(item.script)}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-copy" onclick="copyText('${item.script.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> Kopyala</button>
-                        ${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${item.code}')">Kod</button>` : ''}
-                        ${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-link"><i class="fas fa-external-link-alt"></i> Link</a>` : ''}
-                    </div>
-                </div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        function openGuide() { 
-            document.getElementById('guide-modal').style.display = 'flex'; 
-            const grid = document.getElementById('guide-grid'); 
-            grid.innerHTML = ''; 
-            sportsData.forEach((s, index) => { 
-                let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : '';
-                grid.innerHTML += `
-                    <div class="guide-item" onclick="showSportDetail(${index})">
-                        <i class="fas ${s.icon} guide-icon"></i>
-                        <span class="guide-title">${s.title}</span>
-                        ${pronHtml}
-                        <div class="guide-desc">${s.desc}</div>
-                        <div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div>
-                        <div style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için tıkla)</div>
-                    </div>`; 
-            }); 
-        }
-
-        function showSportDetail(index) {
-            const sport = sportsData[index];
-            const detailText = sport.detail ? sport.detail : "Bu içerik için henüz detay eklenmemiş.";
-            const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : '';
-
-            Swal.fire({
-                title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`,
-                html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`,
-                showCloseButton: true,
-                showConfirmButton: false,
-                width: '600px',
-                background: '#f8f9fa'
-            });
-        }
-
-        // DÜZELTİLMİŞ SATIŞ AKORDEON FONKSİYONU
-        function openSales() { 
-            document.getElementById('sales-modal').style.display = 'flex'; 
-            const grid = document.getElementById('sales-grid'); 
-            grid.innerHTML = ''; 
-            salesScripts.forEach((s, index) => { 
-                grid.innerHTML += `
-                    <div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">
-                        <div class="sales-header">
-                            <span class="sales-title">${s.title}</span>
-                            <i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i>
-                        </div>
-                        <div class="sales-text">
-                            ${s.text}
-                            <div style="text-align:right; margin-top:15px;">
-                                <button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${s.text.replace(/'/g, "\\'")}')">
-                                    <i class="fas fa-copy"></i> Kopyala
-                                </button>
-                            </div>
-                        </div>
-                    </div>`; 
-            }); 
-        }
-
-        function toggleSales(index) {
-            const item = document.getElementById(`sales-${index}`);
-            const icon = document.getElementById(`icon-${index}`);
-            
-            item.classList.toggle('active');
-            if(item.classList.contains('active')){
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-            } else {
-                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-            }
-        }
-        
+        function renderCards(data) { const container = document.getElementById('cardGrid'); container.innerHTML = ''; if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok</div>'; return; } data.forEach(item => { let html = `<div class="card ${item.category}"><div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div><div class="card-content"><div>${highlightText(item.text)}</div></div><div class="script-box">${highlightText(item.script)}</div><div class="card-actions"><button class="btn btn-copy" onclick="copyText('${item.script.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> Kopyala</button>${item.code ? `<button class="btn btn-copy" style="background:var(--secondary); color:#333;" onclick="copyText('${item.code}')">Kod</button>` : ''}${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-link"><i class="fas fa-external-link-alt"></i> Link</a>` : ''}</div></div>`; container.innerHTML += html; }); }
+        function openGuide() { document.getElementById('guide-modal').style.display = 'flex'; const grid=document.getElementById('guide-grid'); grid.innerHTML=''; sportsData.forEach((s, index) => { let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : ''; grid.innerHTML += `<div class="guide-item" onclick="showSportDetail(${index})"><i class="fas ${s.icon} guide-icon"></i><span class="guide-title">${s.title}</span>${pronHtml}<div class="guide-desc">${s.desc}</div><div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div><div style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için tıkla)</div></div>`; }); }
+        function showSportDetail(index) { const sport = sportsData[index]; const detailText = sport.detail ? sport.detail : "Bu içerik için henüz detay eklenmemiş."; const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : ''; Swal.fire({ title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`, html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
+        function openSales() { document.getElementById('sales-modal').style.display = 'flex'; const grid=document.getElementById('sales-grid'); grid.innerHTML=''; salesScripts.forEach((s, index) => { grid.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')"><div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div><div class="sales-text">${s.text}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${s.text.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> Kopyala</button></div></div></div>`; }); }
+        function toggleSales(index) { const item = document.getElementById(`sales-${index}`); const icon = document.getElementById(`icon-${index}`); item.classList.toggle('active'); if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } }
         let currentQuestion=0, score=0;
         function openQuiz() { document.getElementById('quiz-modal').style.display='flex'; currentQuestion=0; score=0; showStartScreen(); }
         function showStartScreen() { document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Hazır mısın?</h3><button class="restart-btn" style="background:var(--quiz);" onclick="showQuestion()">BAŞLA</button></div>`; }
         function showQuestion() { if(currentQuestion>=quizQuestions.length){showResult();return;} const q=quizQuestions[currentQuestion]; let html=`<div class="quiz-score">Soru: ${currentQuestion+1}</div><div class="quiz-question">${q.q}</div><div class="quiz-options">`; q.opts.forEach((opt,i)=>{ html+=`<button class="quiz-btn-opt" onclick="checkAnswer(this, ${i})">${opt}</button>`; }); html+=`</div>`; document.getElementById('quiz-body').innerHTML=html; }
         function checkAnswer(btn,i) { const correct=quizQuestions[currentQuestion].a; document.querySelectorAll('.quiz-btn-opt').forEach(b=>b.disabled=true); if(i===correct){btn.classList.add('correct'); score+=10; Swal.fire({icon:'success',title:'Doğru!',timer:1000,toast:true,position:'top',showConfirmButton:false});}else{btn.classList.add('wrong'); Swal.fire({icon:'error',title:'Yanlış!',timer:1000,toast:true,position:'top',showConfirmButton:false});} setTimeout(()=>{currentQuestion++; showQuestion();},1500); }
         function showResult() { document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Bitti! Puan: ${score}</h3><button class="restart-btn" onclick="openQuiz()">Tekrar</button></div>`; }
-
-        const wizardSteps={start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[{text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"},{text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"},{text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"},{text:"Mükerrer (Çift) Çekim",next:"mukerrer"},{text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"},{text:"Apple / Google Store İptali",next:"store_iptal"},{text:"Winback Paket Geçiş İadesi",next:"winback_iade"}]},izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."},aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]},aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]},yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]},yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]},ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]},store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."},winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."},indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."},tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."},mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."},ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."},bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."},islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."}};
-        function openWizard(){document.getElementById('wizard-modal').style.display='flex';renderStep('start');}
-        function renderStep(k){const s=wizardSteps[k];const b=document.getElementById('wizard-body');let h=`<h2>${s.title||''}</h2>`;if(s.result){let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️');let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow');h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`;}else{h+=`<p>${s.text}</p><div class="wizard-options">`;s.options.forEach(o=>{h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`;});h+=`</div>`;if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`;}b.innerHTML=h;}
-
         function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); renderCards(database.filter(i => i.title?.toLowerCase().includes(search) || i.text?.toLowerCase().includes(search))); }
         function filterCategory(cat) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); event.target.closest('button').classList.add('active'); renderCards(cat === 'all' ? database : database.filter(i => i.category === cat)); }
         function highlightText(t) { if(!t) return ""; const s = document.getElementById('searchInput').value.trim(); return s ? t.replace(new RegExp(`(${s})`, 'gi'), '<span class="highlight">$1</span>') : t; }
@@ -344,6 +280,9 @@
         let tickerIndex = 0;
         function startTicker() { const t = document.getElementById('ticker-content'); if(newsData.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = newsData[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % newsData.length; } showNext(); setInterval(showNext, 5000); }
         function openNews() { document.getElementById('news-modal').style.display = 'flex'; const c = document.getElementById('news-container'); c.innerHTML = ''; newsData.forEach(i => { let cl = i.type === 'fix' ? 'tag-fix' : (i.type === 'update' ? 'tag-update' : 'tag-info'); let tx = i.type === 'fix' ? 'Çözüldü' : (i.type === 'update' ? 'Değişiklik' : 'Bilgi'); c.innerHTML += `<div class="news-item"><span class="news-date">${i.date}</span><span class="news-title">${i.title}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span></div>`; }); }
+        const wizardSteps={start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[{text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"},{text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"},{text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"},{text:"Mükerrer (Çift) Çekim",next:"mukerrer"},{text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"},{text:"Apple / Google Store İptali",next:"store_iptal"},{text:"Winback Paket Geçiş İadesi",next:"winback_iade"}]},izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."},aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]},aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]},yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]},yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]},ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]},store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."},winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."},indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."},tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."},mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."},ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."},bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."},islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."}};
+        function openWizard(){document.getElementById('wizard-modal').style.display='flex';renderStep('start');}
+        function renderStep(k){const s=wizardSteps[k];const b=document.getElementById('wizard-body');let h=`<h2>${s.title||''}</h2>`;if(s.result){let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️');let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow');h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`;}else{h+=`<p>${s.text}</p><div class="wizard-options">`;s.options.forEach(o=>{h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`;});h+=`</div>`;if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`;}b.innerHTML=h;}
     </script>
 </body>
 </html>
