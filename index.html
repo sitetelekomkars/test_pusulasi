@@ -15,17 +15,16 @@
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
         
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
-        #maintenance-screen { display: none !important; } 
-
         .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
         .login-btn { width: 100%; padding: 12px; background: #fabb00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .loading-text { font-size: 0.8rem; color: #666; margin-top: 10px; display: none; }
-
+        
+        #maintenance-screen { display: none !important; } 
         #main-app { display: none; }
+
         .header { background: linear-gradient(135deg, var(--primary) 0%, #1a2f6e 100%); color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        
         .admin-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s; }
         .admin-btn:hover { background: rgba(255,255,255,0.3); }
         .admin-edit-mode { border-color: #fabb00; color: #fabb00; background: rgba(250, 187, 0, 0.1); }
@@ -36,22 +35,13 @@
         .search-container { position: relative; width: 100%; margin-bottom: 15px; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: none; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
-        
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
         .filter-btn { border: none; color: white; padding: 10px 18px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); opacity: 0.85; }
         .filter-btn:hover { opacity: 1; transform: translateY(-2px); }
         .filter-btn.active { opacity: 1; box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0,0,0,0.3); transform: scale(1.05); }
 
-        .btn-all { background: linear-gradient(135deg, #4b5563, #1f2937); }
-        .btn-tech { background: linear-gradient(135deg, #0e1b42, #1e3a8a); }
-        .btn-ikna { background: linear-gradient(135deg, #ed6c02, #e65100); }
-        .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
-        .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); }
-        .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
-        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); }
-        .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; }
-        .sales-btn { background: linear-gradient(45deg, #10b981, #059669); }
-        .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
+        .btn-all { background: linear-gradient(135deg, #4b5563, #1f2937); } .btn-tech { background: linear-gradient(135deg, #0e1b42, #1e3a8a); } .btn-ikna { background: linear-gradient(135deg, #ed6c02, #e65100); } .btn-camp { background: linear-gradient(135deg, #2e7d32, #1b5e20); } .btn-info { background: linear-gradient(135deg, #0288d1, #01579b); } .btn-stream { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
+        .guide-btn { background: linear-gradient(45deg, #0288d1, #01579b); } .wizard-btn { background: linear-gradient(45deg, #d32f2f, #c62828); animation: pulse 2s infinite; } .sales-btn { background: linear-gradient(45deg, #10b981, #059669); } .quiz-btn { background: linear-gradient(45deg, #8e24aa, #ba68c8); }
 
         .news-ticker-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 15px; height: 85px; position: relative; cursor: pointer; overflow: hidden; backdrop-filter: blur(5px); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .news-ticker-box:hover { background: rgba(255,255,255,0.2); border-color: var(--secondary); }
@@ -63,10 +53,7 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card.Teknik { border-left-color: var(--primary); }
-        .card.İkna { border-left-color: var(--accent); }
-        .card.Kampanya { border-left-color: var(--success); }
-        .card.Bilgi { border-left-color: var(--info); }
+        .card.Teknik { border-left-color: var(--primary); } .card.İkna { border-left-color: var(--accent); } .card.Kampanya { border-left-color: var(--success); } .card.Bilgi { border-left-color: var(--info); }
         
         .edit-icon { position: absolute; right: 10px; top: 10px; color: #fabb00; cursor: pointer; display: none; font-size: 1.2rem; padding: 8px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 20; border:1px solid #eee; }
         .edit-icon:hover { transform: scale(1.1); background:#fff8e1; }
@@ -88,8 +75,8 @@
         .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 15px; padding: 30px; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #666; font-weight: bold; }
         .swal2-container { z-index: 10000 !important; }
-
-        .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; }
+        
+        .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; padding-right: 30px; }
         .news-date { font-size: 0.85rem; color: #999; font-weight: bold; display: block; }
         .news-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); display: block; }
         .news-tag { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-top: 5px; font-weight: bold; }
@@ -108,7 +95,7 @@
         .sales-item:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); border-color: var(--sales); }
         .sales-item.active { background: #d1fae5; border-left: 6px solid var(--sales); }
         .sales-header { display: flex; justify-content: space-between; align-items: center; }
-        .sales-title { font-weight: 800; color: #065f46; font-size: 1.1rem; margin: 0; }
+        .sales-title { font-weight: 800; color: #065f46; font-size: 1.1rem; margin: 0; padding-right: 25px; }
         .sales-text { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #a7f3d0; font-size: 1rem; color: #374151; line-height: 1.6; animation: fadeIn 0.4s ease-in; }
         .sales-item.active .sales-text { display: block; }
 
@@ -130,10 +117,8 @@
     </style>
 </head>
 <body>
-
     <div id="login-screen"><div class="login-card"><i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i><h2>S Sport Plus</h2><p>Personel Girişi</p><input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı"><input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)"><button class="login-btn" onclick="girisYap()">Giriş Yap</button><div id="loading-msg" class="loading-text">Kullanıcılar kontrol ediliyor...</div><p id="error-msg" style="color:red; display:none; margin-top:10px;">Hatalı Kullanıcı Adı veya Şifre!</p></div></div>
     <div id="maintenance-screen"><div class="maintenance-content"><span style="font-size: 4rem;">👩‍🏫</span><h1>Sistem Mola Verdi!</h1><p>Esra Hoca'dan gelecek kritik bilgileri bekliyoruz... 🚀</p></div></div>
-
     <div id="main-app">
         <div class="header">
             <div class="header-top">
@@ -170,27 +155,25 @@
 
     <script>
         const BAKIM_MODU = false; 
+        
+        // !!! BURAYA KENDİ LİNKLERİNİ YAPIŞTIRMAYI UNUTMA !!!
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?output=csv";
         const USERS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=1075778951&single=true&output=csv";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
 
-        // YEDEK VERİLER (Eğer Tablo Boş Gelirse Çalışacak)
+        // YEDEK VERİLER (EĞER TABLO ÇEKİLEMEZSE BUNLAR DEVREYE GİRER)
         const backupSportsData = [
-            { title: "WorldSBK", icon: "fa-motorcycle", desc: "Dünya Superbike Şampiyonası. Sokakta satılan motorların modifiye edilip yarıştığı seri.", tip: "🇹🇷 Toprak Razgatlıoğlu burada!", detail: "Toprak Razgatlıoğlu 2021 ve 2024 Dünya Şampiyonu. BMW ile yarışıyor.", pronunciation: "Vörld Süper Bayk" },
-            { title: "MotoGP", icon: "fa-motorcycle", desc: "Motosiklet dünyasının Formula 1'i.", tip: "En hızlı prototip motorlar burada.", detail: "Pecco Bagnaia, Marc Marquez gibi yıldızlar burada.", pronunciation: "Moto Ji Pi" },
-            { title: "NBA", icon: "fa-basketball", desc: "Dünyanın en büyük basketbol ligi.", tip: "LeBron, Curry, Alperen Şengün.", detail: "Normal sezon, All-Star ve Play-off heyecanı.", pronunciation: "En Bi Ey" },
-            { title: "UFC", icon: "fa-hand-fist", desc: "Karma Dövüş Sanatları (Kafes Dövüşü).", tip: "En sert dövüş organizasyonu.", detail: "Islam Makhachev, Jon Jones, İbo Aslan burada.", pronunciation: "Yu Ef Si" }
+            { title: "WorldSBK", icon: "fa-motorcycle", desc: "Dünya Superbike Şampiyonası.", tip: "🇹🇷 Toprak Razgatlıoğlu burada!", detail: "BMW ile yarışıyor.", pronunciation: "Vörld Süper Bayk" },
+            { title: "MotoGP", icon: "fa-motorcycle", desc: "Motosikletin F1'i.", tip: "En hızlılar.", detail: "Prototip motorlar.", pronunciation: "Moto Ji Pi" },
+            { title: "NBA", icon: "fa-basketball", desc: "Dünyanın en iyi basketbol ligi.", tip: "LeBron, Curry.", detail: "Normal sezon.", pronunciation: "En Bi Ey" },
+            { title: "UFC", icon: "fa-hand-fist", desc: "Kafes Dövüşü.", tip: "En sert dövüş.", detail: "Islam Makhachev.", pronunciation: "Yu Ef Si" }
         ];
-
         const backupSalesScripts = [
-            { title: "Açılış (Giriş)", text: "Merhaba [İsim] Bey/Hanım, S Sport Plus'tan arıyorum. Sporda dünyanın en büyük heyecanlarını tek pakette sunduğumuz yeni kampanyamız hakkında bilgi vermek için sizi rahatsız ettim." },
-            { title: "Fiyat İtirazı", text: "Haklısınız, ancak kampanyamızla günlük maliyet sadece bir çay parasına geliyor. Bu fiyata La Liga, NBA ve EuroLeague dahil tüm içerikleri izleyebiliyorsunuz." },
-            { title: "Kapanış", text: "Bu kampanya sadece bugüne özel. Dilerseniz şimdi aktivasyonu yapalım, hemen izlemeye başlayın." }
+            { title: "Açılış", text: "Merhaba, S Sport Plus'tan arıyorum..." },
+            { title: "Fiyat", text: "Günlük sadece bir çay parasına..." }
         ];
-
         const backupQuizQuestions = [
-            { q: "S Sport Plus'ta hangi lig YOKTUR?", opts: ["NBA", "Premier Lig", "La Liga", "Serie A"], a: 1 },
-            { q: "Toprak Razgatlıoğlu hangi seride yarışıyor?", opts: ["MotoGP", "WorldSBK", "F1", "WRC"], a: 1 }
+            { q: "S Sport Plus'ta hangisi yok?", opts: ["NBA", "Premier Lig", "La Liga"], a: 1 }
         ];
 
         let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [], users = [];
@@ -221,20 +204,11 @@
         }
 
         function girisYap() {
-            const uName = document.getElementById("usernameInput").value.trim();
-            const uPass = document.getElementById("passInput").value.trim();
+            const uName = document.getElementById("usernameInput").value.trim(); const uPass = document.getElementById("passInput").value.trim();
             const loadingMsg = document.getElementById("loading-msg");
-
             if(users.length === 0) {
                 loadingMsg.style.display = "block";
-                Papa.parse(USERS_SHEET_URL, {
-                    download: true, header: true,
-                    complete: function(results) {
-                        users = results.data;
-                        loadingMsg.style.display = "none";
-                        checkCredentials(uName, uPass);
-                    }
-                });
+                Papa.parse(USERS_SHEET_URL, { download: true, header: true, complete: function(results) { users = results.data; loadingMsg.style.display = "none"; checkCredentials(uName, uPass); } });
             } else { checkCredentials(uName, uPass); }
         }
 
@@ -255,9 +229,7 @@
 
         function startSessionTimer() {
             if (sessionTimeout) clearTimeout(sessionTimeout);
-            sessionTimeout = setTimeout(() => {
-                Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); });
-            }, 3600000); 
+            sessionTimeout = setTimeout(() => { Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); }); }, 3600000); 
         }
 
         function enterBas(e) { if (e.key === "Enter") girisYap(); }
@@ -285,8 +257,10 @@
             if(document.getElementById('guide-modal').style.display === 'flex') openGuide();
             if(document.getElementById('sales-modal').style.display === 'flex') openSales();
             if(document.getElementById('quiz-modal').style.display === 'flex') openQuiz();
+            if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
 
+        // İÇERİK GÜNCELLEME FONKSİYONLARI
         async function editContent(title, category, cText, cScript) {
             const { value: formValues } = await Swal.fire({
                 title: 'İçeriği Düzenle',
@@ -295,8 +269,8 @@
                 showCancelButton: true, confirmButtonText: 'Kaydet', preConfirm: () => [document.getElementById('swal-text').value, document.getElementById('swal-script').value]
             });
             if (formValues) {
-                sendUpdate(title, "Text", formValues[0]);
-                setTimeout(() => sendUpdate(title, "Script", formValues[1]), 1000);
+                if(formValues[0] !== cText) sendUpdate(title, "Text", formValues[0]);
+                if(formValues[1] !== cScript) setTimeout(() => sendUpdate(title, "Script", formValues[1]), 1000);
             }
         }
 
@@ -327,6 +301,22 @@
             });
             if (val && val !== cText) sendUpdate(title, "Text", val);
         }
+
+        async function editNews(title, cDate, cDesc, cType) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Duyuruyu Düzenle',
+                html: `<label style="font-weight:bold;">Tarih</label><input id="swal-date" class="swal2-input" value="${cDate}">
+                       <label style="font-weight:bold;">Metin</label><textarea id="swal-desc" class="swal2-textarea">${cDesc}</textarea>
+                       <label style="font-weight:bold;">Tür (update/fix/info)</label><input id="swal-type" class="swal2-input" value="${cType}">`,
+                showCancelButton: true, confirmButtonText: 'Kaydet',
+                preConfirm: () => [document.getElementById('swal-date').value, document.getElementById('swal-desc').value, document.getElementById('swal-type').value]
+            });
+            if (formValues) {
+                sendUpdate(title, "Date", formValues[0]);
+                setTimeout(() => sendUpdate(title, "Text", formValues[1]), 1000);
+                setTimeout(() => sendUpdate(title, "Category", formValues[2]), 2000);
+            }
+        }
         
         function openQuizEditor() {
             let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">';
@@ -345,8 +335,9 @@
                 showCancelButton: true, confirmButtonText: 'Kaydet', preConfirm: () => [document.getElementById('swal-q').value, document.getElementById('swal-opts').value, document.getElementById('swal-ans').value]
             });
             if (formValues) {
-                Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
-                if(formValues[0] !== q.q) sendUpdate(q.q, "Text", formValues[0], 'quiz');
+                if(!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
+                const payload = { action: "updateContent", title: qText, column: "Text", value: formValues[0], type: 'quiz', originalText: qText, username: currentUser };
+                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 setTimeout(() => sendUpdate(formValues[0], "QuizOptions", formValues[1], 'quiz'), 1500);
                 setTimeout(() => sendUpdate(formValues[0], "QuizAnswer", formValues[2], 'quiz'), 3000);
             }
@@ -393,7 +384,7 @@
                     const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
                     const fetchedQuiz = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions ? i.QuizOptions.split(',') : [], a: parseInt(i.QuizAnswer) }));
 
-                    // YEDEK VERİ KULLANIMI
+                    // YEDEK VERİ KULLANIMI (GÜVENLİK AĞI)
                     database = fetchedCards.length > 0 ? fetchedCards : database;
                     newsData = fetchedNews.length > 0 ? fetchedNews : newsData;
                     sportsData = fetchedSports.length > 0 ? fetchedSports : backupSportsData;
@@ -415,6 +406,7 @@
             if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok</div>'; return; } 
             
             data.forEach((item, index) => { 
+                // Safe strings for click
                 const safeText = item.text ? item.text.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
                 const safeScript = item.script ? item.script.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
                 const safeTitle = item.title ? item.title.replace(/"/g, '&quot;').replace(/'/g, "\\'") : "";
@@ -423,6 +415,7 @@
                 <div class="card ${item.category}">
                     <i class="fas fa-pencil-alt edit-icon" onclick="editContent('${safeTitle}', '${item.category}', '${safeText}', '${safeScript}')"></i>
                     <div class="card-header"><h3 class="card-title">${highlightText(item.title)}</h3><span class="badge">${item.category}</span></div>
+                    
                     <div class="card-content" onclick="showCardDetail('${safeTitle}', '${safeText}')">
                         <div class="card-text-truncate">${highlightText(item.text)}</div>
                         <div style="font-size:0.8rem; color:#999; margin-top:5px; text-align:right;">(Tamamını oku)</div>
@@ -446,7 +439,21 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         let tickerIndex = 0;
         function startTicker() { const t = document.getElementById('ticker-content'); if(newsData.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = newsData[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % newsData.length; } showNext(); setInterval(showNext, 5000); }
-        function openNews() { document.getElementById('news-modal').style.display = 'flex'; const c = document.getElementById('news-container'); c.innerHTML = ''; newsData.forEach(i => { let cl = i.type === 'fix' ? 'tag-fix' : (i.type === 'update' ? 'tag-update' : 'tag-info'); let tx = i.type === 'fix' ? 'Çözüldü' : (i.type === 'update' ? 'Değişiklik' : 'Bilgi'); c.innerHTML += `<div class="news-item"><span class="news-date">${i.date}</span><span class="news-title">${i.title}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span></div>`; }); }
+        function openNews() { document.getElementById('news-modal').style.display = 'flex'; const c = document.getElementById('news-container'); c.innerHTML = ''; newsData.forEach(i => { 
+            const safeTitle = i.title.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            const safeDesc = i.desc.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            const safeDate = i.date.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            const safeType = i.type.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+
+            let cl = i.type === 'fix' ? 'tag-fix' : (i.type === 'update' ? 'tag-update' : 'tag-info'); 
+            let tx = i.type === 'fix' ? 'Çözüldü' : (i.type === 'update' ? 'Değişiklik' : 'Bilgi'); 
+            
+            c.innerHTML += `
+            <div class="news-item">
+                <i class="fas fa-pencil-alt edit-icon" style="top:0; right:0; font-size:0.9rem; padding:4px;" onclick="editNews('${safeTitle}', '${safeDate}', '${safeDesc}', '${safeType}')"></i>
+                <span class="news-date">${i.date}</span><span class="news-title">${i.title}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span>
+            </div>`; 
+        }); }
         const wizardSteps={start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[{text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"},{text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"},{text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"},{text:"Mükerrer (Çift) Çekim",next:"mukerrer"},{text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"},{text:"Apple / Google Store İptali",next:"store_iptal"},{text:"Winback Paket Geçiş İadesi",next:"winback_iade"}]},izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."},aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]},aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]},yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]},yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]},mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]},ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]},store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."},winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."},indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."},tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."},mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."},ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."},bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."},islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."}};
         function openWizard(){document.getElementById('wizard-modal').style.display='flex';renderStep('start');}
         function renderStep(k){const s=wizardSteps[k];const b=document.getElementById('wizard-body');let h=`<h2>${s.title||''}</h2>`;if(s.result){let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️');let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow');h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`;}else{h+=`<p>${s.text}</p><div class="wizard-options">`;s.options.forEach(o=>{h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`;});h+=`</div>`;if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`;}b.innerHTML=h;}
