@@ -699,55 +699,100 @@
             }
         }
 
-        async function addNewCardPopup() {
-            const { value: formValues } = await Swal.fire({
-                title: 'Yeni Kart Ekle',
-                html: `
-                    <div style="display:flex; gap:15px; margin-bottom:15px;">
-                        <div style="flex:1;">
-                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kategori</label>
-                            ${getCategorySelectHtml('Bilgi', 'swal-new-cat')}
-                        </div>
-                        <div style="flex:2;">
-                             <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Başlık</label>
-                            <input id="swal-new-title" class="swal2-input" style="width:100%;" placeholder="Başlık">
-                        </div>
-                    </div>
-                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:10px; margin-bottom:3px;">Açıklama</label>
-                    <textarea id="swal-new-text" class="swal2-textarea" style="height: 100px;"></textarea>
-                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:10px; margin-bottom:3px;">Script</label>
-                    <textarea id="swal-new-script" class="swal2-textarea" style="height: 80px;"></textarea>
-                    <div style="display:flex; gap:15px; margin-top:15px;">
-                        <div style="flex:1;"><input id="swal-new-code" class="swal2-input" style="width:100%;" placeholder="Kod"></div>
-                        <div style="flex:1;"><input id="swal-new-link" class="swal2-input" style="width:100%;" placeholder="Link"></div>
-                    </div>`,
-                width: '700px', showCancelButton: true, confirmButtonText: 'Ekle',
-                preConfirm: () => {
-                    return {
-                        cardType: "card", category: document.getElementById('swal-new-cat').value,
-                        title: document.getElementById('swal-new-title').value,
-                        text: document.getElementById('swal-new-text').value,
-                        script: document.getElementById('swal-new-script').value,
-                        code: document.getElementById('swal-new-code').value,
-                        link: document.getElementById('swal-new-link').value
-                    }
-                }
-            });
+      async function addNewCardPopup() {
+    // Kategori seçimi için HTML'i alalım ama stilini özelleştireceğiz
+    const catSelectHTML = getCategorySelectHtml('Bilgi', 'swal-new-cat');
 
-            if (formValues) {
-                if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
-                Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
+    const { value: formValues } = await Swal.fire({
+        title: 'Yeni Kart Oluştur',
+        // HTML yapısını normal kart tasarımına benzettik
+        html: `
+            <div id="preview-card" class="card Bilgi" style="text-align:left; box-shadow:none; border:1px solid #e0e0e0; margin-top:10px;">
                 
-                fetch(SCRIPT_URL, { 
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ action: "addCard", username: currentUser, ...formValues }) 
-                })
-                .then(response => {
-                    Swal.fire({icon: 'success', title: 'İşlem Gönderildi', text: 'Kart eklendi.', timer: 3000, showConfirmButton: false});
-                    setTimeout(loadContentData, 3500); 
-                });
+                <div class="card-header" style="align-items: center; gap: 10px;">
+                    <input id="swal-new-title" class="swal2-input" 
+                        style="margin:0; height:40px; flex-grow:1; border:none; border-bottom:2px solid #eee; padding:0 5px; font-weight:bold; color:#0e1b42;" 
+                        placeholder="Kart Başlığı Giriniz...">
+                    
+                    <div style="width: 110px;">
+                        ${catSelectHTML}
+                    </div>
+                </div>
+
+                <div class="card-content" style="margin-bottom:10px;">
+                    <textarea id="swal-new-text" class="swal2-textarea" 
+                        style="margin:0; width:100%; box-sizing:border-box; border:none; resize:none; font-family:inherit; min-height:100px; padding:10px; background:#f9f9f9;" 
+                        placeholder="Buraya ana içerik metnini veya açıklamayı yazınız..."></textarea>
+                </div>
+
+                <div class="script-box" style="padding:0; border:1px solid #f0e68c;">
+                    <textarea id="swal-new-script" class="swal2-textarea" 
+                        style="margin:0; width:100%; box-sizing:border-box; border:none; background:transparent; font-style:italic; min-height:80px; font-size:0.9rem;" 
+                        placeholder="Varsa script (okuma metni) buraya..."></textarea>
+                </div>
+
+                <div class="card-actions" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div style="position:relative;">
+                        <i class="fas fa-code" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
+                        <input id="swal-new-code" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Kod (Örn: LOCA123)">
+                    </div>
+                    <div style="position:relative;">
+                        <i class="fas fa-link" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
+                        <input id="swal-new-link" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Link (URL)">
+                    </div>
+                </div>
+            </div>
+        `,
+        width: '700px',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-plus"></i> Kartı Ekle',
+        cancelButtonText: 'İptal',
+        focusConfirm: false,
+        // Popup açıldığında çalışacak script (Kategori değişince renk değişsin diye)
+        didOpen: () => {
+            const selectEl = document.getElementById('swal-new-cat');
+            const cardEl = document.getElementById('preview-card');
+            
+            // Select elementinin stilini düzelt (Swal default stilini ezmek için)
+            selectEl.style.margin = "0";
+            selectEl.style.height = "30px";
+            selectEl.style.fontSize = "0.8rem";
+            selectEl.style.padding = "0 5px";
+
+            // Kategori değiştiğinde sol border rengini (class'ı) değiştir
+            selectEl.addEventListener('change', function() {
+                // Önceki sınıfları temizle ama 'card' kalsın
+                cardEl.className = 'card ' + this.value;
+            });
+        },
+        preConfirm: () => {
+            return {
+                cardType: "card",
+                category: document.getElementById('swal-new-cat').value,
+                title: document.getElementById('swal-new-title').value,
+                text: document.getElementById('swal-new-text').value,
+                script: document.getElementById('swal-new-script').value,
+                code: document.getElementById('swal-new-code').value,
+                link: document.getElementById('swal-new-link').value
             }
         }
+    });
+
+    if (formValues) {
+        if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
+        
+        Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
+        
+        fetch(SCRIPT_URL, { 
+            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ action: "addCard", username: currentUser, ...formValues }) 
+        })
+        .then(response => {
+            Swal.fire({icon: 'success', title: 'İşlem Gönderildi', text: 'Kart başarıyla eklendi.', timer: 2000, showConfirmButton: false});
+            setTimeout(loadContentData, 2500); 
+        });
+    }
+}
 
         async function editSport(index) {
             event.stopPropagation();
@@ -938,5 +983,6 @@
     </script>
 </body>
 </html>
+
 
 
