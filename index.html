@@ -139,7 +139,7 @@
         .guide-tip { background: #e3f2fd; color: #0277bd; padding: 5px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
         .pronunciation-badge { color: #e65100; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; display: block; font-style: italic; }
 
-        .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 8px; padding: 15px 20px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .sales-item { border: 1px solid #d1fae5; background: #ecfdf5; border-radius: 8px; padding: 15px 20px; cursor: pointer; transition: all 0.3s.ease; position: relative; overflow: hidden; }
         .sales-item:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); border-color: var(--sales); }
         .sales-item.active { background: #d1fae5; border-left: 6px solid var(--sales); }
         .sales-header { display: flex; justify-content: space-between; align-items: center; }
@@ -391,9 +391,10 @@
 
             const hashedPass = CryptoJS.SHA256(uPass).toString();
 
+            // 1) LOGIN FETCİ DEĞİŞTİ
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ 
                     action: "login", 
                     username: uName, 
@@ -482,9 +483,10 @@
             });
             if (formValues) {
                 Swal.fire({ title: 'İşleniyor...', didOpen: () => { Swal.showLoading() } });
+                // 2) ŞİFRE DEĞİŞTİRME FETCHİ DEĞİŞTİ
                 fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ 
                         action: "changePassword", 
                         username: currentUser, 
@@ -644,9 +646,10 @@
                 token: getToken()
             };
             
+            // 3) UPDATE CONTENT FETCİ DEĞİŞTİ
             fetch(SCRIPT_URL, { 
                 method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                 body: JSON.stringify(payload) 
             })
             .then(r => r.json())
@@ -751,9 +754,10 @@
                 if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
                 Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
                 
+                // 4) ADD CARD FETCİ DEĞİŞTİ
                 fetch(SCRIPT_URL, { 
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }, 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                     body: JSON.stringify({ action: "addCard", username: currentUser, token: getToken(), ...formValues }) 
                 })
                 .then(response => response.json())
@@ -821,7 +825,7 @@
             if(newsData.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } 
             function showNext() { 
                 const i = newsData[tickerIndex]; 
-                t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; 
+                t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s.ease-out'; 
                 t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; 
                 tickerIndex = (tickerIndex + 1) % newsData.length; 
             } 
