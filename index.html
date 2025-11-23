@@ -15,7 +15,6 @@
         :root { --primary: #0e1b42; --secondary: #fabb00; --bg: #f0f2f5; --card-bg: #ffffff; --accent: #d32f2f; --success: #2e7d32; --info: #0288d1; --warning: #ed6c02; --sales: #10b981; --quiz: #8e24aa; }
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
         
-        /* Login Screen */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
         .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
@@ -25,7 +24,6 @@
         #maintenance-screen { display: none !important; } 
         #main-app { display: none; }
 
-        /* Header */
         .header { background-color: #0e1b42; border-bottom: 3px solid #d32f2f; color: white; padding: 20px 30px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-controls { display: flex; align-items: center; gap:10px; }
@@ -45,7 +43,7 @@
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 4px; border: none; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #0e1b42; }
         
-        /* --- KURUMSAL BUTON TASARIMI --- */
+        /* KURUMSAL BUTON TASARIMI */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
         
         .filter-btn { 
@@ -65,6 +63,12 @@
         }
         .btn-fav { border-color: #fabb00; color: #fabb00; }
         .btn-fav:hover, .btn-fav.active { color: #0e1b42; }
+        .btn-shift { border-left: 3px solid #00bcd4; }
+        .btn-shift:hover { border-color: #00bcd4; background-color: #00bcd4; color: white; }
+
+        .btn-all, .btn-tech, .btn-ikna, .btn-camp, .btn-info, .btn-stream, .guide-btn, .wizard-btn, .sales-btn, .quiz-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
 
         /* TICKER */
         .news-ticker-box { 
@@ -79,29 +83,10 @@
         .ticker-label i { font-size: 10px; color: #fabb00; animation: intense-pulse 1.5s infinite; }
         .ticker-content { font-size: 0.95rem; color: #fff; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; animation: slideIn 0.5s ease-out; }
 
-        /* --- GÜNCELLENMİŞ GRID SİSTEMİ (EŞİT YÜKSEKLİK) --- */
+        /* Cards */
         .container { padding: 20px; max-width: 1600px; margin: 0 auto; }
-        
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Sütunları otomatik ayarla */
-            gap: 20px; 
-            align-items: stretch; /* Tüm kartları aynı yüksekliğe zorla */
-        }
-        
-        .card { 
-            background: var(--card-bg); 
-            border-radius: 8px; 
-            padding: 20px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
-            border-left: 5px solid var(--info); 
-            display: flex; 
-            flex-direction: column; /* İçeriği alt alta diz */
-            height: 100%; /* Bulunduğu grid hücresini tamamen kapla */
-            transition: transform 0.2s; 
-            position: relative; 
-            box-sizing: border-box;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .card.Teknik { border-left-color: var(--primary); } .card.İkna { border-left-color: var(--accent); } .card.Kampanya { border-left-color: var(--success); } .card.Bilgi { border-left-color: var(--info); }
         
@@ -117,30 +102,9 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; padding-right: 40px; }
         .card-title { font-weight: 700; font-size: 1.1rem; margin: 0; color: #0e1b42; line-height: 1.4; }
         .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #eee; text-transform: uppercase; font-weight: 600; color: #555; }
-        
-        .card-content { 
-            font-size: 0.95rem; 
-            color: #555; 
-            margin-bottom: 15px; 
-            line-height: 1.5; 
-            flex-grow: 1; /* İçerik az olsa bile burayı doldur */
-            cursor: pointer; 
-        }
-        
+        .card-content { font-size: 0.95rem; color: #555; margin-bottom: 15px; line-height: 1.5; flex-grow: 1; cursor: pointer; }
         .card-text-truncate { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .script-box { 
-            background: #fffdeb; 
-            border: 1px solid #f0e68c; 
-            padding: 12px; 
-            border-radius: 4px; 
-            font-style: italic; 
-            color: #444; 
-            margin-top: auto; /* En alta yapış */
-            position: relative; 
-            font-size: 0.92rem; 
-        }
-        
+        .script-box { background: #fffdeb; border: 1px solid #f0e68c; padding: 12px; border-radius: 4px; font-style: italic; color: #444; margin-top: auto; position: relative; font-size: 0.92rem; }
         .card-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
         .btn { padding: 6px 12px; border-radius: 4px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
         .btn-copy { background: var(--primary); color: white; }
@@ -186,6 +150,7 @@
         .restart-btn { margin-top: 20px; background: #555; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .highlight { background-color: yellow; font-weight: bold; }
         .crafted-by-badge { position: fixed; bottom: 10px; right: 15px; font-family: 'Segoe UI', sans-serif; font-size: 0.75rem; color: #0e1b42; opacity: 0.35; z-index: 9999; pointer-events: none; user-select: none; font-style: italic; letter-spacing: 0.5px; font-weight: 600; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
+        
         @keyframes blink { 50% { opacity: 0.5; } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
@@ -324,7 +289,7 @@
         const BAKIM_MODU = false; 
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=0&single=true&output=csv";
         
-        // --- BURAYA KENDİ SCRIPT LİNKİNİ YAPIŞTIRMAYI UNUTMA ---
+        // --- KENDİ SCRIPT LİNKİNİ YAPIŞTIR ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
         
         const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
@@ -332,6 +297,7 @@
         let currentUser = "", isAdminMode = false, sessionTimeout;
         let activeCards = []; 
         let currentCategory = 'all';
+        let activeGameQuestions = [];
 
         function getToken() { return localStorage.getItem("sSportToken"); }
 
@@ -343,13 +309,12 @@
             if (favs.includes(title)) { favs = favs.filter(t => t !== title); } 
             else { favs.push(title); }
             localStorage.setItem('sSportFavs', JSON.stringify(favs));
-            
             if (currentCategory === 'fav') { filterCategory(document.querySelector('.btn-fav'), 'fav'); } 
             else { renderCards(activeCards); }
         }
         function isFav(title) { return getFavs().includes(title); }
 
-        // --- YENİ ETİKETİ KONTROLÜ (TÜRKÇE TARİH DESTEKLİ) ---
+        // --- YENİ ETİKETİ KONTROLÜ ---
         function isNew(dateStr) {
             if (!dateStr) return false;
             let date;
@@ -494,7 +459,7 @@
                     const rawData = results.data;
                     const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link, date: i.Date })); 
                     
-                    // DUYURU (NEWS) verilerini çekerken Status'u da alıyoruz
+                    // NEWS (Status ile filtreleme yapmıyoruz, hepsini alıp frontend'de işliyoruz)
                     const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category, status: i.Status }));
                     
                     const fetchedSports = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
@@ -608,7 +573,7 @@
             .catch(err => Swal.fire('Hata', 'Güncelleme hatası: ' + err, 'error'));
         }
 
-        // --- YENİ İÇERİK EKLEME PANELİ (GELİŞMİŞ) ---
+        // --- YENİ "İÇERİK EKLE" PANELİ (GELİŞMİŞ) ---
         async function addNewCardPopup() {
             const catSelectHTML = getCategorySelectHtml('Bilgi', 'swal-new-cat');
             const { value: formValues } = await Swal.fire({
@@ -737,7 +702,7 @@
             }
         }
 
-        // --- KART DÜZENLEME ---
+        // --- KART DÜZENLEME (ÖNİZLEMELİ) ---
         async function editContent(index) {
             const item = activeCards[index]; 
             const catSelectHTML = getCategorySelectHtml(item.category, 'swal-cat');
@@ -781,7 +746,7 @@
             }
         }
         
-        // --- SPOR DÜZENLEME ---
+        // --- SPOR DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ) ---
         async function editSport(index) {
             event.stopPropagation();
             const s = sportsData[index];
@@ -835,7 +800,7 @@
             }
         }
 
-        // --- SATIŞ SCRİPTİ DÜZENLEME ---
+        // --- SATIŞ SCRİPTİ DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ) ---
         async function editSales(index) {
             event.stopPropagation(); 
             const s = salesScripts[index];
@@ -864,7 +829,7 @@
             }
         }
 
-        // --- DUYURU DÜZENLEME ---
+        // --- DUYURU DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ & TÜM ALANLAR) ---
         async function editNews(index) {
             const i = newsData[index];
             let statusOptions = `<option value="Aktif" ${i.status !== 'Pasif' ? 'selected' : ''}>Aktif</option>
@@ -921,8 +886,49 @@
             }
         }
 
-        // ... (Diğer fonksiyonlar aynı)
+        // --- KARIŞTIRILMIŞ VE LOGLANMIŞ QUIZ SİSTEMİ ---
         async function editQuizQuestion(index) { const q = quizQuestions[index]; const { value: formValues } = await Swal.fire({ title: 'Soruyu Düzenle', html: `<label style="font-weight:bold;">Soru</label><input id="swal-q" class="swal2-input" value="${q.q}"><label style="font-weight:bold;">Şıklar</label><textarea id="swal-opts" class="swal2-textarea">${q.opts.join(',')}</textarea><label style="font-weight:bold;">Doğru Cevap (0 tabanlı index)</label><input id="swal-ans" class="swal2-input" type="number" value="${q.a}">`, showCancelButton: true, confirmButtonText: 'Kaydet', preConfirm: () => [ document.getElementById('swal-q').value, document.getElementById('swal-opts').value, document.getElementById('swal-ans').value ] }); if (formValues) { sendUpdate(q.q, "Text", formValues[0], 'quiz'); setTimeout(() => sendUpdate(formValues[0], "QuizOptions", formValues[1], 'quiz'), 1500); setTimeout(() => sendUpdate(formValues[0], "QuizAnswer", formValues[2], 'quiz'), 3000); } }
+        
+        let activeGameQuestions = []; 
+        function openQuiz() { 
+            document.getElementById('quiz-modal').style.display='flex'; 
+            if(isAdminMode) { openQuizEditor(); return; } 
+            
+            // YENİ: Soruları kopyala ve karıştır
+            activeGameQuestions = [...quizQuestions];
+            activeGameQuestions.sort(() => Math.random() - 0.5);
+            
+            currentQuestion=0; score=0; showStartScreen(); 
+        }
+        function showStartScreen() { document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Hazır mısın?</h3><button class="restart-btn" style="background:var(--quiz);" onclick="showQuestion()">BAŞLA</button></div>`; }
+        function showQuestion() { 
+            if(currentQuestion >= activeGameQuestions.length){ showResult(); return; } 
+            const q = activeGameQuestions[currentQuestion]; 
+            let html=`<div class="quiz-score">Soru: ${currentQuestion+1} / ${activeGameQuestions.length}</div><div class="quiz-question">${q.q}</div><div class="quiz-options">`; 
+            q.opts.forEach((opt,i)=>{ html+=`<button class="quiz-btn-opt" onclick="checkAnswer(this, ${i})">${opt}</button>`; }); 
+            html+=`</div>`; 
+            document.getElementById('quiz-body').innerHTML=html; 
+        }
+        function checkAnswer(btn,i) { 
+            const q = activeGameQuestions[currentQuestion];
+            const correct = q.a; 
+            document.querySelectorAll('.quiz-btn-opt').forEach(b=>b.disabled=true); 
+            if(i===correct){ btn.classList.add('correct'); score+=10; Swal.fire({icon:'success',title:'Doğru!',timer:1000,toast:true,position:'top',showConfirmButton:false}); } 
+            else{ btn.classList.add('wrong'); Swal.fire({icon:'error',title:'Yanlış!',timer:1000,toast:true,position:'top',showConfirmButton:false}); } 
+            setTimeout(()=>{currentQuestion++; showQuestion();},1500); 
+        }
+        function showResult() { 
+            document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Bitti! Puan: ${score}</h3><button class="restart-btn" onclick="openQuiz()">Tekrar</button></div>`;
+            
+            // YENİ: Sonucu Sunucuya Gönder (Logla)
+            fetch(SCRIPT_URL, { 
+                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify({ action: 'logQuiz', username: currentUser, token: getToken(), score: score, total: activeGameQuestions.length }) 
+            });
+        }
+        function openQuizEditor() { let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">'; quizQuestions.forEach((q, i) => { const safeQ = cleanData(q.q); html += `<div style="border-bottom:1px solid #eee; padding:10px; cursor:pointer;" onclick="editQuizQuestion(${i})"><b>${i+1}. ${safeQ}</b><br><span style="font-size:0.8rem; color:#fabb00;"><i class="fas fa-pencil-alt"></i> Düzenle</span></div>`; }); html += '</div>'; Swal.fire({ title: 'Soruları Düzenle', html: html, showConfirmButton: false, showCloseButton: true }); }
+
+        // ... (Diğer helper fonksiyonlar)
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         let tickerIndex = 0;
         function startTicker() { const t = document.getElementById('ticker-content'); const activeNews = newsData.filter(i => i.status !== 'Pasif'); if(activeNews.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = activeNews[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % activeNews.length; } showNext(); setInterval(showNext, 5000); }
@@ -931,12 +937,6 @@
         function showSportDetail(index) { const sport = sportsData[index]; const detailText = sport.detail ? sport.detail.replace(/\n/g,'<br>') : "Bu içerik için henüz detay eklenmemiş."; const pronDetail = sport.pronunciation ? `<div style="color:#e65100; font-weight:bold; margin-bottom:15px;">🗣️ Okunuşu: ${sport.pronunciation}</div>` : ''; Swal.fire({ title: `<i class="fas ${sport.icon}" style="color:#0e1b42;"></i> ${sport.title}`, html: `${pronDetail}<div style="text-align:left; font-size:1rem; line-height:1.6;">${detailText}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
         function openSales() { document.getElementById('sales-modal').style.display = 'flex'; const c = document.getElementById('sales-grid'); c.innerHTML = ''; salesScripts.forEach((s, index) => { let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales(${index})"></i>` : ''; c.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">${editBtn}<div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div><div class="sales-text">${(s.text || '').replace(/\n/g,'<br>')}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text || '')}')"><i class="fas fa-copy"></i> Kopyala</button></div></div></div>`; }); }
         function toggleSales(index) { const item = document.getElementById(`sales-${index}`); const icon = document.getElementById(`icon-${index}`); item.classList.toggle('active'); if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } }
-        let currentQuestion=0, score=0; function openQuiz() { document.getElementById('quiz-modal').style.display='flex'; currentQuestion=0; score=0; if(isAdminMode) { openQuizEditor(); return; } else { showStartScreen(); } }
-        function showStartScreen() { document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Hazır mısın?</h3><button class="restart-btn" style="background:var(--quiz);" onclick="showQuestion()">BAŞLA</button></div>`; }
-        function showQuestion() { if(currentQuestion>=quizQuestions.length){showResult();return;} const q=quizQuestions[currentQuestion]; let html=`<div class="quiz-score">Soru: ${currentQuestion+1}</div><div class="quiz-question">${q.q}</div><div class="quiz-options">`; q.opts.forEach((opt,i)=>{ html+=`<button class="quiz-btn-opt" onclick="checkAnswer(this, ${i})">${opt}</button>`; }); html+=`</div>`; document.getElementById('quiz-body').innerHTML=html; }
-        function checkAnswer(btn,i) { const correct=quizQuestions[currentQuestion].a; document.querySelectorAll('.quiz-btn-opt').forEach(b=>b.disabled=true); if(i===correct){ btn.classList.add('correct'); score+=10; Swal.fire({icon:'success',title:'Doğru!',timer:1000,toast:true,position:'top',showConfirmButton:false}); } else{ btn.classList.add('wrong'); Swal.fire({icon:'error',title:'Yanlış!',timer:1000,toast:true,position:'top',showConfirmButton:false}); } setTimeout(()=>{currentQuestion++; showQuestion();},1500); }
-        function showResult() { document.getElementById('quiz-body').innerHTML=`<div class="quiz-final"><h3>Bitti! Puan: ${score}</h3><button class="restart-btn" onclick="openQuiz()">Tekrar</button></div>`; }
-        function openQuizEditor() { let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">'; quizQuestions.forEach((q, i) => { const safeQ = cleanData(q.q); html += `<div style="border-bottom:1px solid #eee; padding:10px; cursor:pointer;" onclick="editQuizQuestion(${i})"><b>${i+1}. ${safeQ}</b><br><span style="font-size:0.8rem; color:#fabb00;"><i class="fas fa-pencil-alt"></i> Düzenle</span></div>`; }); html += '</div>'; Swal.fire({ title: 'Soruları Düzenle', html: html, showConfirmButton: false, showCloseButton: true }); }
         
         const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
         function openWizard(){ document.getElementById('wizard-modal').style.display='flex'; renderStep('start'); }
