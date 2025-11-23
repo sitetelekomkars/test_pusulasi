@@ -536,8 +536,8 @@
                 
                 // --- KALIN YAZI ÖZELLİĞİ EKLENDİ ---
                 let rawText = item.text || "";
-                // **kelime** desenini bulup <b>kelime</b> ile değiştiriyoruz
-                let formattedText = rawText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                // *kelime* desenini bulup <b>kelime</b> ile değiştiriyoruz
+                let formattedText = rawText.replace(/\*(.*?)\*/g, '<b>$1</b>');
                 
                 let html = `
                 <div class="card ${item.category}">
@@ -1038,4 +1038,5 @@
     </script>
 </body>
 </html>
+
 
