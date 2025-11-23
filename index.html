@@ -28,52 +28,6 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-controls { display: flex; align-items: center; gap:10px; }
         
-        /* --- AYIN TEMSİLCİSİ (KAMYON YAZISI STİLİ) --- */
-        .marquee-area {
-            flex-grow: 1; /* Boşluğu doldur */
-            margin: 0 30px;
-            overflow: hidden; /* Taşanı gizle */
-            white-space: nowrap;
-            position: relative;
-            background: rgba(0, 0, 0, 0.3); /* Hafif koyu zemin */
-            border-radius: 8px;
-            padding: 8px 0;
-            border: 2px solid rgba(255, 215, 0, 0.2); /* Hafif altın çerçeve */
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
-        }
-
-        .marquee-text {
-            display: inline-block;
-            padding-left: 100%; /* Sağdan başlasın */
-            animation: scroll-left 18s linear infinite; /* Kayma hızı */
-            font-family: 'Arial Black', 'Impact', sans-serif; /* Kalın font */
-            font-size: 1.3rem;
-            letter-spacing: 1.5px;
-            
-            /* ŞAŞALI ALTIN EFEKTİ */
-            background: linear-gradient(to bottom, #fff8db 0%, #fabb00 45%, #ff8f00 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent; /* Yazı içi şeffaf */
-            
-            /* Sert siyah gölge (Kamyon yazısı efekti) */
-            filter: drop-shadow(2px 2px 0px #000); 
-        }
-
-        .king-name {
-            color: #fff; /* İsim beyaz olsun */
-            background: none;
-            /* İsim daha çok parlasın */
-            text-shadow: 0 0 5px #fabb00, 2px 2px 0 #000;
-            font-size: 1.4rem;
-        }
-
-        @keyframes scroll-left {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        /* Butonlar */
         .edit-toggle-btn, .add-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
         .edit-toggle-btn:hover, .add-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
         .edit-toggle-btn.active { background: #fabb00; border-color: #fabb00; color: #0e1b42; }
@@ -96,6 +50,8 @@
 
         /* Renkler */
         .btn-all { background: #333; } .btn-tech { background: #0e1b42; } .btn-ikna { background: #e65100; } .btn-camp { background: #2e7d32; } .btn-info { background: #0277bd; } .btn-stream { background: #4a148c; } .guide-btn { background: #01579b; } .wizard-btn { background: #c62828; } .sales-btn { background: #00796b; } .quiz-btn { background: #7b1fa2; }
+        
+        /* YENİ: Favori Butonu Stili (Sarı) */
         .btn-fav { background: #fabb00; color: #0e1b42; font-weight:800; border:1px solid #e6ac00; }
         .btn-fav:hover { background: #ffc107; transform: translateY(-2px); }
 
@@ -116,14 +72,17 @@
         /* İKONLAR (Favori ve Edit) */
         .icon-wrapper { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 20; }
         
+        /* Kalem İkonu */
         .edit-icon { color: #fabb00; cursor: pointer; display: none; font-size: 1rem; padding: 6px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border:1px solid #eee; }
         .edit-icon:hover { transform: scale(1.1); background:#fff8e1; }
         body.editing .edit-icon { display: block !important; } 
         
+        /* Yıldız İkonu */
         .fav-icon { color: #ccc; cursor: pointer; font-size: 1.2rem; padding: 5px; transition: 0.2s; }
         .fav-icon:hover { transform: scale(1.2); }
         .fav-icon.active { color: #fabb00; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
+        /* Yeni Rozeti */
         .new-badge { position: absolute; top: -8px; left: -8px; background: #2e7d32; color: white; font-size: 0.65rem; padding: 4px 8px; border-radius: 10px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: pulse 2s infinite; z-index:15; }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; padding-right: 40px; }
@@ -182,14 +141,7 @@
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Mobilde kayan yazıyı gizle */
-        @media (max-width: 768px) { 
-            .header { padding: 15px 15px; } 
-            .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } 
-            .control-wrapper { flex-direction: column; } 
-            .marquee-area { display: none; } /* Telefondan girince üst taraf şişmesin */
-        }
+        @media (max-width: 768px) { .header { padding: 15px 15px; } .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } .control-wrapper { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -219,13 +171,6 @@
         <div class="header">
             <div class="header-top">
                 <h1 style="margin:0; font-size:1.5rem;"><i class="fas fa-compass"></i> S Sport Plus - Temsilci Pusulası</h1>
-                
-                <div class="marquee-area">
-                    <div class="marquee-text">
-                        👑 AYIN TEMSİLCİSİ: <span class="king-name">DOĞUŞ YALÇINKAYA</span> — EFSANE GERİ DÖNDÜ! 🧿 👑
-                    </div>
-                </div>
-
                 <div class="header-controls">
                     <button id="addCardBtn" class="add-btn" style="display:none;" onclick="addNewCardPopup()">
                         <i class="fas fa-plus"></i> Kart Ekle
@@ -323,7 +268,7 @@
         const BAKIM_MODU = false; 
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=0&single=true&output=csv";
         
-        // --- BURAYA KENDİ SCRIPT LİNKİNİ YAPIŞTIRMAYI UNUTMA ---
+        // --- BURAYA KENDİ SCRIPT LİNKİNİ YAPIŞTIR ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
         
         const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
@@ -343,27 +288,35 @@
             else { favs.push(title); }
             localStorage.setItem('sSportFavs', JSON.stringify(favs));
             
+            // Eğer favoriler sekmesindeysek listeyi yenile, değilse kartı güncelle
             if (currentCategory === 'fav') { filterCategory(document.querySelector('.btn-fav'), 'fav'); } 
             else { renderCards(activeCards); }
         }
         function isFav(title) { return getFavs().includes(title); }
 
-        // --- YENİ ETİKETİ KONTROLÜ (TÜRKÇE TARİH DESTEKLİ) ---
-        function isNew(dateStr) {
+        // --- YENİ ETİKETİ KONTROLÜ ---
+   function isNew(dateStr) {
             if (!dateStr) return false;
+            
             let date;
+            // Eğer tarih "23.11.2025" gibi noktalı geliyorsa:
             if (dateStr.indexOf('.') > -1) {
+                // Önce saati atalım, sadece tarihi alalım (23.11.2025)
                 const cleanDate = dateStr.split(' ')[0]; 
-                const parts = cleanDate.split('.'); 
+                const parts = cleanDate.split('.'); // Noktalardan böl
+                // new Date(Yıl, Ay-1, Gün) formatına çevir
                 date = new Date(parts[2], parts[1] - 1, parts[0]);
             } else {
+                // Nokta yoksa standart formattır, direkt işle
                 date = new Date(dateStr);
             }
-            if (isNaN(date.getTime())) return false; 
+
+            if (isNaN(date.getTime())) return false; // Hala tarih değilse boşver
+
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            return diffDays <= 3; 
+            return diffDays <= 3; // Son 3 gün
         }
 
         function getCategorySelectHtml(currentCategory, id) {
@@ -491,7 +444,7 @@
                 download: true, header: true,
                 complete: function(results) {
                     const rawData = results.data;
-                    const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link, date: i.Date })); 
+                    const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link, date: i.Date })); // Date eklendi
                     const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category }));
                     const fetchedSports = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
                     const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
@@ -599,7 +552,7 @@
             fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
             .then(r => r.json())
             .then(data => {
-                if (data.result === "success") { Swal.fire({icon: 'success', title: 'Güncelleme Başarılı', text: 'Değişiklikler kaydedildi.', timer: 2000, showConfirmButton: false}); } 
+                if (data.result === "success") { Swal.fire({icon: 'success', title: 'Güncelleme Başarılı', text: 'Değişiklikler kaydedildi. 1-2 Dakika içinde sisteme yansıyacaktır', timer: 2000, showConfirmButton: false}); } 
                 else { Swal.fire('Hata', data.message || 'Güncelleme başarısız.', 'error'); }
             })
             .catch(err => Swal.fire('Hata', 'Güncelleme hatası: ' + err, 'error'));
@@ -766,3 +719,5 @@
     </script>
 </body>
 </html>
+
+
