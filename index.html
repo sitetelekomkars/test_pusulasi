@@ -45,9 +45,9 @@
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 4px; border: none; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #0e1b42; }
         
+        /* --- KURUMSAL BUTON TASARIMI --- */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        /* BUTONLAR (PREMIUM) */
         .filter-btn { 
             background-color: rgba(255, 255, 255, 0.05); 
             border: 1px solid rgba(255, 255, 255, 0.15); 
@@ -79,10 +79,29 @@
         .ticker-label i { font-size: 10px; color: #fabb00; animation: intense-pulse 1.5s infinite; }
         .ticker-content { font-size: 0.95rem; color: #fff; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; animation: slideIn 0.5s ease-out; }
 
-        /* CARDS & GRID */
+        /* --- GÜNCELLENMİŞ GRID SİSTEMİ (EŞİT YÜKSEKLİK) --- */
         .container { padding: 20px; max-width: 1600px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Sütunları otomatik ayarla */
+            gap: 20px; 
+            align-items: stretch; /* Tüm kartları aynı yüksekliğe zorla */
+        }
+        
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 8px; 
+            padding: 20px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
+            border-left: 5px solid var(--info); 
+            display: flex; 
+            flex-direction: column; /* İçeriği alt alta diz */
+            height: 100%; /* Bulunduğu grid hücresini tamamen kapla */
+            transition: transform 0.2s; 
+            position: relative; 
+            box-sizing: border-box;
+        }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .card.Teknik { border-left-color: var(--primary); } .card.İkna { border-left-color: var(--accent); } .card.Kampanya { border-left-color: var(--success); } .card.Bilgi { border-left-color: var(--info); }
         
@@ -98,9 +117,30 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; padding-right: 40px; }
         .card-title { font-weight: 700; font-size: 1.1rem; margin: 0; color: #0e1b42; line-height: 1.4; }
         .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #eee; text-transform: uppercase; font-weight: 600; color: #555; }
-        .card-content { font-size: 0.95rem; color: #555; margin-bottom: 15px; line-height: 1.5; flex-grow: 1; cursor: pointer; }
+        
+        .card-content { 
+            font-size: 0.95rem; 
+            color: #555; 
+            margin-bottom: 15px; 
+            line-height: 1.5; 
+            flex-grow: 1; /* İçerik az olsa bile burayı doldur */
+            cursor: pointer; 
+        }
+        
         .card-text-truncate { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .script-box { background: #fffdeb; border: 1px solid #f0e68c; padding: 12px; border-radius: 4px; font-style: italic; color: #444; margin-top: auto; position: relative; font-size: 0.92rem; }
+        
+        .script-box { 
+            background: #fffdeb; 
+            border: 1px solid #f0e68c; 
+            padding: 12px; 
+            border-radius: 4px; 
+            font-style: italic; 
+            color: #444; 
+            margin-top: auto; /* En alta yapış */
+            position: relative; 
+            font-size: 0.92rem; 
+        }
+        
         .card-actions { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
         .btn { padding: 6px 12px; border-radius: 4px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
         .btn-copy { background: var(--primary); color: white; }
@@ -284,7 +324,7 @@
         const BAKIM_MODU = false; 
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=0&single=true&output=csv";
         
-        // --- BURAYA KENDİ SCRIPT LİNKİNİ YAPIŞTIR ---
+        // --- BURAYA KENDİ SCRIPT LİNKİNİ YAPIŞTIRMAYI UNUTMA ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
         
         const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
@@ -292,7 +332,6 @@
         let currentUser = "", isAdminMode = false, sessionTimeout;
         let activeCards = []; 
         let currentCategory = 'all';
-        let activeGameQuestions = []; // Karıştırılmış soru havuzu
 
         function getToken() { return localStorage.getItem("sSportToken"); }
 
@@ -310,7 +349,7 @@
         }
         function isFav(title) { return getFavs().includes(title); }
 
-        // --- YENİ ETİKETİ KONTROLÜ ---
+        // --- YENİ ETİKETİ KONTROLÜ (TÜRKÇE TARİH DESTEKLİ) ---
         function isNew(dateStr) {
             if (!dateStr) return false;
             let date;
@@ -454,7 +493,10 @@
                 complete: function(results) {
                     const rawData = results.data;
                     const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link, date: i.Date })); 
+                    
+                    // DUYURU (NEWS) verilerini çekerken Status'u da alıyoruz
                     const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category, status: i.Status }));
+                    
                     const fetchedSports = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
                     const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
                     const fetchedQuiz = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions ? i.QuizOptions.split(',') : [], a: parseInt(i.QuizAnswer) }));
@@ -739,7 +781,7 @@
             }
         }
         
-        // --- SPOR DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ) ---
+        // --- SPOR DÜZENLEME ---
         async function editSport(index) {
             event.stopPropagation();
             const s = sportsData[index];
@@ -793,7 +835,7 @@
             }
         }
 
-        // --- SATIŞ SCRİPTİ DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ) ---
+        // --- SATIŞ SCRİPTİ DÜZENLEME ---
         async function editSales(index) {
             event.stopPropagation(); 
             const s = salesScripts[index];
@@ -822,7 +864,7 @@
             }
         }
 
-        // --- DUYURU DÜZENLEME (GÜNCELLENDİ: KART GÖRÜNÜMÜ & TÜM ALANLAR) ---
+        // --- DUYURU DÜZENLEME ---
         async function editNews(index) {
             const i = newsData[index];
             let statusOptions = `<option value="Aktif" ${i.status !== 'Pasif' ? 'selected' : ''}>Aktif</option>
@@ -879,7 +921,7 @@
             }
         }
 
-        // ... (Diğer fonksiyonlar aynı: editQuizQuestion, closeModal, startTicker, openNews vb.)
+        // ... (Diğer fonksiyonlar aynı)
         async function editQuizQuestion(index) { const q = quizQuestions[index]; const { value: formValues } = await Swal.fire({ title: 'Soruyu Düzenle', html: `<label style="font-weight:bold;">Soru</label><input id="swal-q" class="swal2-input" value="${q.q}"><label style="font-weight:bold;">Şıklar</label><textarea id="swal-opts" class="swal2-textarea">${q.opts.join(',')}</textarea><label style="font-weight:bold;">Doğru Cevap (0 tabanlı index)</label><input id="swal-ans" class="swal2-input" type="number" value="${q.a}">`, showCancelButton: true, confirmButtonText: 'Kaydet', preConfirm: () => [ document.getElementById('swal-q').value, document.getElementById('swal-opts').value, document.getElementById('swal-ans').value ] }); if (formValues) { sendUpdate(q.q, "Text", formValues[0], 'quiz'); setTimeout(() => sendUpdate(formValues[0], "QuizOptions", formValues[1], 'quiz'), 1500); setTimeout(() => sendUpdate(formValues[0], "QuizAnswer", formValues[2], 'quiz'), 3000); } }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         let tickerIndex = 0;
