@@ -25,8 +25,8 @@
 
         /* --- Header & Controls (S SPORT PLUS RENKLERİ) --- */
         .header { 
-            background-color: #0e1b42; /* Tam S Sport Laciverti */
-            border-bottom: 3px solid #d32f2f; /* Logo kırmızısı ince çizgi */
+            background-color: #0e1b42;
+            border-bottom: 3px solid #d32f2f;
             color: white; 
             padding: 20px 30px; 
             position: sticky; 
@@ -43,7 +43,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             padding: 8px 20px;
-            border-radius: 4px; /* Daha kurumsal keskin hatlar */
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
@@ -60,9 +60,9 @@
         .admin-btn { background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s;}
         .admin-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
         
-        .control-wrapper { display: flex; gap: 20px; align-items: flex-start; }
-        .left-panel { flex: 2; }
-        .right-panel { flex: 1; min-width: 300px; }
+        .control-wrapper { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+        .left-panel { flex: 2; min-width: 280px; }
+        .right-panel { flex: 1; min-width: 260px; }
         
         .search-container { position: relative; width: 100%; margin-bottom: 15px; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 4px; border: none; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -73,7 +73,6 @@
         .filter-btn:hover { opacity: 1; transform: translateY(-1px); }
         .filter-btn.active { opacity: 1; box-shadow: 0 0 0 2px #fff; }
 
-        /* Renkler */
         .btn-all { background: #333; }
         .btn-tech { background: #0e1b42; }
         .btn-ikna { background: #e65100; }
@@ -92,9 +91,7 @@
         .ticker-label i { animation: blink 1.5s infinite; }
         .ticker-content { font-size: 0.95rem; color: white; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; animation: slideIn 0.5s ease-out; }
 
-        /* Grid & Cards */
         .container { padding: 20px; max-width: 1600px; margin: 0 auto; }
-        /* MOBİL UYUM: minmax 300px */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         
         .card { background: var(--card-bg); border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
@@ -120,13 +117,11 @@
         .btn-link { background: transparent; border: 1px solid var(--info); color: var(--info); text-decoration: none; }
         .btn-link:hover { background: #e1f5fe; }
 
-        /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 10px; padding: 30px; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #666; font-weight: bold; }
         .swal2-container { z-index: 10000 !important; }
         
-        /* İçerik Stilleri */
         .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; padding-right: 30px; }
         .news-date { font-size: 0.85rem; color: #999; font-weight: bold; display: block; }
         .news-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); display: block; }
@@ -167,17 +162,16 @@
         .restart-btn { margin-top: 20px; background: #555; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .highlight { background-color: yellow; font-weight: bold; }
 
-        /* --- ÖZEL İMZA STİLİ (Doğuş Yalçınkaya) --- */
         .crafted-by-badge {
             position: fixed;
             bottom: 10px;
             right: 15px;
             font-family: 'Segoe UI', sans-serif;
             font-size: 0.75rem;
-            color: #0e1b42; /* S Sport Laciverti */
-            opacity: 0.35; /* Saydamlık */
+            color: #0e1b42;
+            opacity: 0.35;
             z-index: 9999;
-            pointer-events: none; /* Tıklamayı engellemez, içinden geçilir */
+            pointer-events: none;
             user-select: none;
             font-style: italic;
             letter-spacing: 0.5px;
@@ -189,6 +183,12 @@
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px 15px; }
+            .header-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .control-wrapper { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
@@ -237,11 +237,11 @@
                         <input type="text" id="searchInput" placeholder="Hızlı Ara..." onkeyup="filterContent()">
                     </div>
                     <div class="filter-container">
-                        <button class="filter-btn btn-all active" onclick="filterCategory('all')"><i class="fas fa-th-large"></i> Tümü</button>
-                        <button class="filter-btn btn-tech" onclick="filterCategory('Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
-                        <button class="filter-btn btn-ikna" onclick="filterCategory('İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
-                        <button class="filter-btn btn-camp" onclick="filterCategory('Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
-                        <button class="filter-btn btn-info" onclick="filterCategory('Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
+                        <button class="filter-btn btn-all active" onclick="filterCategory(this, 'all')"><i class="fas fa-th-large"></i> Tümü</button>
+                        <button class="filter-btn btn-tech" onclick="filterCategory(this, 'Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
+                        <button class="filter-btn btn-ikna" onclick="filterCategory(this, 'İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
+                        <button class="filter-btn btn-camp" onclick="filterCategory(this, 'Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
+                        <button class="filter-btn btn-info" onclick="filterCategory(this, 'Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
                         <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn btn-stream"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
                         <button class="filter-btn guide-btn" onclick="openGuide()">📖 Spor Rehberi</button>
                         <button class="filter-btn wizard-btn" onclick="openWizard()">⚖️ İade Asistanı</button>
@@ -315,10 +315,7 @@
     <script>
         const BAKIM_MODU = false; 
         
-        // SADECE İÇERİK DATASI (Kullanıcı listesi buradan SİLİNDİ!)
         const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=0&single=true&output=csv";
-        
-        // Backend Script URL
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
 
         const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
@@ -326,8 +323,11 @@
         let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [];
         let currentUser = "", isAdminMode = false, sessionTimeout;
         let activeCards = []; 
+        let currentCategory = 'all';
 
-        // ----- YARDIMCI FONKSİYONLAR -----
+        function getToken() {
+            return localStorage.getItem("sSportToken");
+        }
 
         function getCategorySelectHtml(currentCategory, id) {
             let options = VALID_CATEGORIES.map(cat => 
@@ -352,11 +352,8 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) { if(e.keyCode == 123) return false; }
 
-        // ----- BAŞLANGIÇ -----
-        
         document.addEventListener('DOMContentLoaded', () => {
             checkSession();
-            // Artık kullanıcı listesini çekmiyoruz!
         });
 
         function checkSession() {
@@ -371,8 +368,6 @@
                 else { document.getElementById("main-app").style.display = "block"; loadContentData(); }
             }
         }
-
-        // ----- GİRİŞ İŞLEMLERİ (SERVER SIDE) -----
 
         function enterBas(e) { if (e.key === "Enter") girisYap(); }
 
@@ -389,20 +384,16 @@
                 return;
             }
 
-            // UI Güncelleme
             loadingMsg.style.display = "block";
             loadingMsg.innerText = "Doğrulanıyor...";
             errorMsg.style.display = "none";
             document.querySelector('.login-btn').disabled = true;
 
-            // Şifreyi Hashle
             const hashedPass = CryptoJS.SHA256(uPass).toString();
 
-            // Sunucuya Sor
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                redirect: "follow", 
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     action: "login", 
                     username: uName, 
@@ -417,7 +408,8 @@
                 if (data.result === "success") {
                     currentUser = data.username;
                     localStorage.setItem("sSportUser", currentUser);
-                    
+                    localStorage.setItem("sSportToken", data.token);
+
                     document.getElementById("login-screen").style.display = "none"; 
                     document.getElementById("user-display").innerText = currentUser;
                     
@@ -431,7 +423,7 @@
                         loadContentData(); 
                     }
                 } else {
-                    errorMsg.innerText = "Kullanıcı adı veya şifre hatalı!";
+                    errorMsg.innerText = data.message || "Kullanıcı adı veya şifre hatalı!";
                     errorMsg.style.display = "block";
                 }
             })
@@ -460,6 +452,7 @@
         function logout() {
             currentUser = ""; isAdminMode = false; document.body.classList.remove('editing');
             localStorage.removeItem("sSportUser");
+            localStorage.removeItem("sSportToken");
             if (sessionTimeout) clearTimeout(sessionTimeout);
             document.getElementById("main-app").style.display = "none"; 
             document.getElementById("login-screen").style.display = "flex";
@@ -474,8 +467,6 @@
                 Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); });
             }, 3600000); 
         }
-        
-        // ----- PROFİL MENÜSÜ & ŞİFRE DEĞİŞTİRME -----
 
         function openUserMenu() {
             let options = { title: `Merhaba, ${currentUser}`, showCancelButton: true, showDenyButton: true, confirmButtonText: '🔑 Şifre Değiştir', denyButtonText: '🚪 Çıkış Yap', cancelButtonText: 'İptal' };
@@ -491,16 +482,15 @@
             });
             if (formValues) {
                 Swal.fire({ title: 'İşleniyor...', didOpen: () => { Swal.showLoading() } });
-                // SHA-256 ile güvenli gönderim
                 fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    redirect: "follow",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
                         action: "changePassword", 
                         username: currentUser, 
                         oldPass: CryptoJS.SHA256(formValues[0]).toString(), 
-                        newPass: CryptoJS.SHA256(formValues[1]).toString() 
+                        newPass: CryptoJS.SHA256(formValues[1]).toString(),
+                        token: getToken()
                     }) 
                 })
                 .then(response => response.json())
@@ -511,8 +501,6 @@
                 .catch(err => Swal.fire('Hata', 'Sunucu hatası.', 'error'));
             }
         }
-
-        // ----- VERİ YÜKLEME -----
 
         function loadContentData() {
             Papa.parse(DATA_SHEET_URL, {
@@ -535,11 +523,13 @@
                     activeCards = database;
                     renderCards(database);
                     startTicker();
+                },
+                error: function(err) {
+                    console.error("CSV Hatası:", err);
+                    document.getElementById('loading').innerHTML = 'Veriler alınamadı. Lütfen tekrar deneyin.';
                 }
             });
         }
-
-        // ----- KART RENDER & FİLTRELEME -----
 
         function renderCards(data) { 
             activeCards = data; 
@@ -575,7 +565,6 @@
             const searchTerm = document.getElementById('searchInput').value.trim();
             if (!searchTerm) return htmlContent;
             
-            // Güvenli HTML arama (Tagleri bozmaz)
             const regex = new RegExp(`(${searchTerm})(?![^<]*>|[^<>]*<\/)`, "gi");
             return htmlContent.replace(regex, '<span class="highlight">$1</span>');
         }
@@ -593,13 +582,27 @@
 
         function filterContent() { 
             const search = document.getElementById('searchInput').value.toLowerCase(); 
-            renderCards(database.filter(i => i.title?.toLowerCase().includes(search) || i.text?.toLowerCase().includes(search))); 
+            let filtered = database;
+
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(i => i.category === currentCategory);
+            }
+
+            if (search) {
+                filtered = filtered.filter(i =>
+                    (i.title && i.title.toLowerCase().includes(search)) ||
+                    (i.text && i.text.toLowerCase().includes(search))
+                );
+            }
+
+            renderCards(filtered);
         }
 
-        function filterCategory(cat) { 
+        function filterCategory(btn, cat) { 
+            currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); 
-            event.target.closest('button').classList.add('active'); 
-            renderCards(cat === 'all' ? database : database.filter(i => i.category === cat)); 
+            btn.classList.add('active'); 
+            filterContent();
         }
 
         function copyText(t) { 
@@ -607,8 +610,6 @@
                 Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500})
             ); 
         }
-
-        // ----- ADMIN / DÜZENLEME MODU -----
 
         function toggleEditMode() {
             isAdminMode = !isAdminMode; 
@@ -629,216 +630,144 @@
             if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
 
-        // Update Fonksiyonu
         function sendUpdate(originalTitle, column, value, type = 'card') {
-            if(!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
+            if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
             
-            const payload = { action: "updateContent", title: originalTitle, column: column, value: value, type: type, originalText: originalTitle, username: currentUser };
+            const payload = { 
+                action: "updateContent", 
+                title: originalTitle, 
+                column: column, 
+                value: value, 
+                type: type, 
+                originalText: originalTitle, 
+                username: currentUser,
+                token: getToken()
+            };
             
             fetch(SCRIPT_URL, { 
                 method: 'POST', 
-                mode: 'no-cors', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify(payload) 
             })
-            .then(() => Swal.fire({icon: 'success', title: 'İşlem İletildi', text: 'Güncelleme gönderildi. 1 - 2 dakikaya yansır.', timer: 2000, showConfirmButton: false}))
+            .then(r => r.json())
+            .then(data => {
+                if (data.result === "success") {
+                    Swal.fire({icon: 'success', title: 'Güncelleme Başarılı', text: 'Değişiklikler kısa süre içinde tabloya yansıyacak.', timer: 2000, showConfirmButton: false});
+                } else {
+                    Swal.fire('Hata', data.message || 'Güncelleme başarısız.', 'error');
+                }
+            })
             .catch(err => Swal.fire('Hata', 'Güncelleme hatası: ' + err, 'error'));
         }
 
-        // ----- DÜZENLEME POPUP'LARI -----
-
         async function editContent(index) {
-    const item = activeCards[index]; 
-    
-    // Mevcut kategoriyi seçili getiren dropdown HTML'i
-    const catSelectHTML = getCategorySelectHtml(item.category, 'swal-cat');
-
-    const { value: formValues } = await Swal.fire({
-        title: 'Kartı Düzenle',
-        // HTML yapısı "Kart Ekle" ile aynı, tek fark "value" değerlerinin dolu gelmesi
-        html: `
-            <div id="preview-card-edit" class="card ${item.category}" style="text-align:left; box-shadow:none; border:1px solid #e0e0e0; margin-top:10px;">
-                
-                <div class="card-header" style="align-items: center; gap: 10px;">
-                    <input id="swal-title" class="swal2-input" 
-                        style="margin:0; height:40px; flex-grow:1; border:none; border-bottom:2px solid #eee; padding:0 5px; font-weight:bold; color:#0e1b42;" 
-                        value="${item.title}" placeholder="Başlık">
-                    
-                    <div style="width: 110px;">
-                        ${catSelectHTML}
+            const item = activeCards[index]; 
+            const { value: formValues } = await Swal.fire({
+                title: 'İçeriği Düzenle',
+                html: `
+                    <div style="display:flex; gap:15px; margin-bottom: 15px;">
+                        <div style="flex:1;">
+                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kategori</label>
+                            ${getCategorySelectHtml(item.category, 'swal-cat')}
+                        </div>
+                        <div style="flex:2;">
+                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Başlık</label>
+                            <input id="swal-title" class="swal2-input" style="width:100%;" value="${item.title}">
+                        </div>
                     </div>
-                </div>
-
-                <div class="card-content" style="margin-bottom:10px;">
-                    <textarea id="swal-text" class="swal2-textarea" 
-                        style="margin:0; width:100%; box-sizing:border-box; border:none; resize:none; font-family:inherit; min-height:120px; padding:10px; background:#f9f9f9;" 
-                        placeholder="İçerik metni...">${(item.text || '').toString().replace(/<br>/g,'\n')}</textarea>
-                </div>
-
-                <div class="script-box" style="padding:0; border:1px solid #f0e68c;">
-                    <textarea id="swal-script" class="swal2-textarea" 
-                        style="margin:0; width:100%; box-sizing:border-box; border:none; background:transparent; font-style:italic; min-height:80px; font-size:0.9rem;" 
-                        placeholder="Script metni...">${(item.script || '').toString().replace(/<br>/g,'\n')}</textarea>
-                </div>
-
-                <div class="card-actions" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div style="position:relative;">
-                        <i class="fas fa-code" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
-                        <input id="swal-code" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" value="${item.code || ''}" placeholder="Kod">
-                    </div>
-                    <div style="position:relative;">
-                        <i class="fas fa-link" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
-                        <input id="swal-link" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" value="${item.link || ''}" placeholder="Link">
-                    </div>
-                </div>
-            </div>
-        `,
-        width: '700px',
-        showCancelButton: true,
-        confirmButtonText: '<i class="fas fa-save"></i> Değişiklikleri Kaydet',
-        cancelButtonText: 'İptal',
-        focusConfirm: false,
-        
-        // Popup açıldığında çalışacak kodlar (Renk değişimi için)
-        didOpen: () => {
-            const selectEl = document.getElementById('swal-cat');
-            const cardEl = document.getElementById('preview-card-edit');
-            
-            // Dropdown stil ayarı
-            selectEl.style.margin = "0";
-            selectEl.style.height = "30px";
-            selectEl.style.fontSize = "0.8rem";
-            selectEl.style.padding = "0 5px";
-
-            // Kategori değişince kartın rengini (sınıfını) değiştir
-            selectEl.addEventListener('change', function() {
-                // 'card' sınıfını koruyup, yanına yeni kategori ismini ekliyoruz
-                cardEl.className = 'card ' + this.value;
+                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Metin</label>
+                    <textarea id="swal-text" class="swal2-textarea" style="height: 120px;">${(item.text || '').toString().replace(/<br>/g,'\n')}</textarea>
+                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:15px; margin-bottom:3px;">Script</label>
+                    <textarea id="swal-script" class="swal2-textarea" style="height: 100px;">${(item.script || '').toString().replace(/<br>/g,'\n')}</textarea>
+                    <div style="display:flex; gap:15px; margin-top:15px;">
+                        <div style="flex:1;">
+                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kod</label>
+                            <input id="swal-code" class="swal2-input" style="width:100%;" value="${item.code || ''}">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Link</label>
+                            <input id="swal-link" class="swal2-input" style="width:100%;" value="${item.link || ''}">
+                        </div>
+                    </div>`,
+                width: '700px', showCancelButton: true, confirmButtonText: 'Kaydet',
+                preConfirm: () => {
+                    return {
+                        cat: document.getElementById('swal-cat').value,
+                        title: document.getElementById('swal-title').value,
+                        text: document.getElementById('swal-text').value,
+                        script: document.getElementById('swal-script').value,
+                        code: document.getElementById('swal-code').value,
+                        link: document.getElementById('swal-link').value
+                    }
+                }
             });
-        },
-        
-        preConfirm: () => {
-            return {
-                cat: document.getElementById('swal-cat').value,
-                title: document.getElementById('swal-title').value,
-                text: document.getElementById('swal-text').value,
-                script: document.getElementById('swal-script').value,
-                code: document.getElementById('swal-code').value,
-                link: document.getElementById('swal-link').value
+
+            if (formValues) {
+                if(formValues.cat !== item.category) sendUpdate(item.title, "Category", formValues.cat, 'card');
+                if(formValues.text !== item.text) setTimeout(() => sendUpdate(item.title, "Text", formValues.text, 'card'), 500);
+                if(formValues.script !== item.script) setTimeout(() => sendUpdate(item.title, "Script", formValues.script, 'card'), 1000);
+                if(formValues.code !== (item.code || '')) setTimeout(() => sendUpdate(item.title, "Code", formValues.code, 'card'), 1500);
+                if(formValues.link !== (item.link || '')) setTimeout(() => sendUpdate(item.title, "Link", formValues.link, 'card'), 2000);
+                if(formValues.title !== item.title) setTimeout(() => sendUpdate(item.title, "Title", formValues.title, 'card'), 2500);
             }
         }
-    });
 
-    // Kaydetme Mantığı (Eskisiyle aynı, sadece değişken adlarını kontrol ediyoruz)
-    if (formValues) {
-        // Değişiklik var mı kontrolü ve sırayla gönderim
-        if(formValues.cat !== item.category) sendUpdate(item.title, "Category", formValues.cat, 'card');
-        
-        // Diğer alanlarda değişiklik varsa gönder (Zamanlayıcı ile çakışmayı önle)
-        if(formValues.text !== (item.text || '').replace(/<br>/g,'\n')) setTimeout(() => sendUpdate(item.title, "Text", formValues.text, 'card'), 500);
-        if(formValues.script !== (item.script || '').replace(/<br>/g,'\n')) setTimeout(() => sendUpdate(item.title, "Script", formValues.script, 'card'), 1000);
-        if(formValues.code !== (item.code || '')) setTimeout(() => sendUpdate(item.title, "Code", formValues.code, 'card'), 1500);
-        if(formValues.link !== (item.link || '')) setTimeout(() => sendUpdate(item.title, "Link", formValues.link, 'card'), 2000);
-        
-        // Başlık değiştiyse en son gönder (Çünkü referans anahtarımız başlık)
-        if(formValues.title !== item.title) setTimeout(() => sendUpdate(item.title, "Title", formValues.title, 'card'), 2500);
-    }
-}
-
-      async function addNewCardPopup() {
-    // Kategori seçimi için HTML'i alalım ama stilini özelleştireceğiz
-    const catSelectHTML = getCategorySelectHtml('Bilgi', 'swal-new-cat');
-
-    const { value: formValues } = await Swal.fire({
-        title: 'Yeni Kart Oluştur',
-        // HTML yapısını normal kart tasarımına benzettik
-        html: `
-            <div id="preview-card" class="card Bilgi" style="text-align:left; box-shadow:none; border:1px solid #e0e0e0; margin-top:10px;">
-                
-                <div class="card-header" style="align-items: center; gap: 10px;">
-                    <input id="swal-new-title" class="swal2-input" 
-                        style="margin:0; height:40px; flex-grow:1; border:none; border-bottom:2px solid #eee; padding:0 5px; font-weight:bold; color:#0e1b42;" 
-                        placeholder="Kart Başlığı Giriniz...">
-                    
-                    <div style="width: 110px;">
-                        ${catSelectHTML}
+        async function addNewCardPopup() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Yeni Kart Ekle',
+                html: `
+                    <div style="display:flex; gap:15px; margin-bottom:15px;">
+                        <div style="flex:1;">
+                            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Kategori</label>
+                            ${getCategorySelectHtml('Bilgi', 'swal-new-cat')}
+                        </div>
+                        <div style="flex:2;">
+                             <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:3px;">Başlık</label>
+                            <input id="swal-new-title" class="swal2-input" style="width:100%;" placeholder="Başlık">
+                        </div>
                     </div>
-                </div>
-
-                <div class="card-content" style="margin-bottom:10px;">
-                    <textarea id="swal-new-text" class="swal2-textarea" 
-                        style="margin:0; width:100%; box-sizing:border-box; border:none; resize:none; font-family:inherit; min-height:100px; padding:10px; background:#f9f9f9;" 
-                        placeholder="Buraya ana içerik metnini veya açıklamayı yazınız..."></textarea>
-                </div>
-
-                <div class="script-box" style="padding:0; border:1px solid #f0e68c;">
-                    <textarea id="swal-new-script" class="swal2-textarea" 
-                        style="margin:0; width:100%; box-sizing:border-box; border:none; background:transparent; font-style:italic; min-height:80px; font-size:0.9rem;" 
-                        placeholder="Varsa script (okuma metni) buraya..."></textarea>
-                </div>
-
-                <div class="card-actions" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div style="position:relative;">
-                        <i class="fas fa-code" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
-                        <input id="swal-new-code" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Kod (Örn: LOCA123)">
-                    </div>
-                    <div style="position:relative;">
-                        <i class="fas fa-link" style="position:absolute; left:10px; top:10px; color:#aaa;"></i>
-                        <input id="swal-new-link" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Link (URL)">
-                    </div>
-                </div>
-            </div>
-        `,
-        width: '700px',
-        showCancelButton: true,
-        confirmButtonText: '<i class="fas fa-plus"></i> Kartı Ekle',
-        cancelButtonText: 'İptal',
-        focusConfirm: false,
-        // Popup açıldığında çalışacak script (Kategori değişince renk değişsin diye)
-        didOpen: () => {
-            const selectEl = document.getElementById('swal-new-cat');
-            const cardEl = document.getElementById('preview-card');
-            
-            // Select elementinin stilini düzelt (Swal default stilini ezmek için)
-            selectEl.style.margin = "0";
-            selectEl.style.height = "30px";
-            selectEl.style.fontSize = "0.8rem";
-            selectEl.style.padding = "0 5px";
-
-            // Kategori değiştiğinde sol border rengini (class'ı) değiştir
-            selectEl.addEventListener('change', function() {
-                // Önceki sınıfları temizle ama 'card' kalsın
-                cardEl.className = 'card ' + this.value;
+                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:10px; margin-bottom:3px;">Açıklama</label>
+                    <textarea id="swal-new-text" class="swal2-textarea" style="height: 100px;"></textarea>
+                    <label style="font-weight:bold; font-size:0.9rem; display:block; margin-top:10px; margin-bottom:3px;">Script</label>
+                    <textarea id="swal-new-script" class="swal2-textarea" style="height: 80px;"></textarea>
+                    <div style="display:flex; gap:15px; margin-top:15px;">
+                        <div style="flex:1;"><input id="swal-new-code" class="swal2-input" style="width:100%;" placeholder="Kod"></div>
+                        <div style="flex:1;"><input id="swal-new-link" class="swal2-input" style="width:100%;" placeholder="Link"></div>
+                    </div>`,
+                width: '700px', showCancelButton: true, confirmButtonText: 'Ekle',
+                preConfirm: () => {
+                    return {
+                        cardType: "card", category: document.getElementById('swal-new-cat').value,
+                        title: document.getElementById('swal-new-title').value,
+                        text: document.getElementById('swal-new-text').value,
+                        script: document.getElementById('swal-new-script').value,
+                        code: document.getElementById('swal-new-code').value,
+                        link: document.getElementById('swal-new-link').value
+                    }
+                }
             });
-        },
-        preConfirm: () => {
-            return {
-                cardType: "card",
-                category: document.getElementById('swal-new-cat').value,
-                title: document.getElementById('swal-new-title').value,
-                text: document.getElementById('swal-new-text').value,
-                script: document.getElementById('swal-new-script').value,
-                code: document.getElementById('swal-new-code').value,
-                link: document.getElementById('swal-new-link').value
+
+            if (formValues) {
+                if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
+                Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
+                
+                fetch(SCRIPT_URL, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ action: "addCard", username: currentUser, token: getToken(), ...formValues }) 
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === "success") {
+                        Swal.fire({icon: 'success', title: 'İşlem Başarılı', text: 'Kart eklendi.', timer: 3000, showConfirmButton: false});
+                        setTimeout(loadContentData, 3500); 
+                    } else {
+                        Swal.fire('Hata', data.message || 'Kart eklenemedi.', 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Hata', 'Sunucu hatası: ' + err, 'error'));
             }
         }
-    });
-
-    if (formValues) {
-        if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
-        
-        Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
-        
-        fetch(SCRIPT_URL, { 
-            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ action: "addCard", username: currentUser, ...formValues }) 
-        })
-        .then(response => {
-            Swal.fire({icon: 'success', title: 'İşlem Gönderildi', text: 'Kart başarıyla eklendi.', timer: 2000, showConfirmButton: false});
-            setTimeout(loadContentData, 2500); 
-        });
-    }
-}
 
         async function editSport(index) {
             event.stopPropagation();
@@ -884,11 +813,8 @@
             }
         }
 
-        // ----- DİĞER MODÜLLER -----
-
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Ticker
         let tickerIndex = 0;
         function startTicker() { 
             const t = document.getElementById('ticker-content'); 
@@ -943,7 +869,6 @@
             if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } 
         }
         
-        // Quiz
         let currentQuestion=0, score=0;
         function openQuiz() { 
             document.getElementById('quiz-modal').style.display='flex'; currentQuestion=0; score=0; 
@@ -975,7 +900,7 @@
             const q = quizQuestions[index];
             const { value: formValues } = await Swal.fire({
                 title: 'Soruyu Düzenle',
-                html: `<label style="font-weight:bold;">Soru</label><input id="swal-q" class="swal2-input" value="${q.q}"><label style="font-weight:bold;">Şıklar</label><textarea id="swal-opts" class="swal2-textarea">${q.opts.join(',')}</textarea><label style="font-weight:bold;">Doğru Cevap</label><input id="swal-ans" class="swal2-input" type="number" value="${q.a}">`,
+                html: `<label style="font-weight:bold;">Soru</label><input id="swal-q" class="swal2-input" value="${q.q}"><label style="font-weight:bold;">Şıklar</label><textarea id="swal-opts" class="swal2-textarea">${q.opts.join(',')}</textarea><label style="font-weight:bold;">Doğru Cevap (0 tabanlı index)</label><input id="swal-ans" class="swal2-input" type="number" value="${q.a}">`,
                 showCancelButton: true, confirmButtonText: 'Kaydet',
                 preConfirm: () => [ document.getElementById('swal-q').value, document.getElementById('swal-opts').value, document.getElementById('swal-ans').value ]
             });
@@ -986,7 +911,6 @@
             }
         }
 
-        // Wizard (İade Asistanı)
         const wizardSteps={
             start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[
                 {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"},
@@ -1029,7 +953,3 @@
     </script>
 </body>
 </html>
-
-
-
-
