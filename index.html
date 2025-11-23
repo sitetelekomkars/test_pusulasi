@@ -295,13 +295,28 @@
         function isFav(title) { return getFavs().includes(title); }
 
         // --- YENİ ETİKETİ KONTROLÜ ---
-        function isNew(dateStr) {
+   function isNew(dateStr) {
             if (!dateStr) return false;
-            const date = new Date(dateStr);
+            
+            let date;
+            // Eğer tarih "23.11.2025" gibi noktalı geliyorsa:
+            if (dateStr.indexOf('.') > -1) {
+                // Önce saati atalım, sadece tarihi alalım (23.11.2025)
+                const cleanDate = dateStr.split(' ')[0]; 
+                const parts = cleanDate.split('.'); // Noktalardan böl
+                // new Date(Yıl, Ay-1, Gün) formatına çevir
+                date = new Date(parts[2], parts[1] - 1, parts[0]);
+            } else {
+                // Nokta yoksa standart formattır, direkt işle
+                date = new Date(dateStr);
+            }
+
+            if (isNaN(date.getTime())) return false; // Hala tarih değilse boşver
+
             const now = new Date();
             const diffTime = Math.abs(now - date);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            return diffDays <= 3; // Son 3 gün içinde eklenmişse "Yeni" say
+            return diffDays <= 3; // Son 3 gün
         }
 
         function getCategorySelectHtml(currentCategory, id) {
@@ -704,4 +719,5 @@
     </script>
 </body>
 </html>
+
 
