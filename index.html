@@ -208,48 +208,150 @@
             100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); }
         }
 
-        /* --- PENALTI OYUNU STİLLERİ --- */
+        /* --- GELİŞMİŞ PENALTI OYUNU STİLLERİ (3D) --- */
         .penalty-field {
-            background: #2e7d32; /* Çim Yeşili */
-            border: 2px solid #fff;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
+            background: 
+                repeating-linear-gradient(
+                    180deg,
+                    #2e7d32 0%,
+                    #2e7d32 40px,
+                    #388e3c 40px,
+                    #388e3c 80px
+                );
+            border: 4px solid #fff;
+            border-radius: 8px;
+            height: 450px;
             position: relative;
             overflow: hidden;
-            height: 400px;
+            perspective: 800px; /* 3D Derinlik Efekti */
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
+            padding-top: 20px;
         }
-        .goal-post {
-            width: 240px;
-            height: 120px;
-            border-top: 8px solid #ddd;
-            border-left: 8px solid #ddd;
-            border-right: 8px solid #ddd;
-            margin: 0 auto;
-            position: relative;
-            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.2) 10px, rgba(255,255,255,0.2) 20px);
-        }
-        .goalkeeper {
-            font-size: 60px;
+
+        /* Ceza Sahası Çizgileri */
+        .penalty-area {
             position: absolute;
             bottom: 0;
             left: 50%;
-            transform: translateX(-50%);
-            transition: transform 0.4s ease-out;
+            transform: translateX(-50%) rotateX(40deg);
+            width: 70%;
+            height: 200px;
+            border: 4px solid rgba(255,255,255,0.8);
+            border-bottom: none;
+            z-index: 1;
+        }
+
+        /* Kale Yapısı */
+        .goal-container {
+            position: relative;
+            width: 280px;
+            height: 140px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
             z-index: 2;
         }
-        .football {
-            font-size: 40px;
+
+        .goal-top-bar {
             position: absolute;
-            bottom: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+        .goal-post-left, .goal-post-right {
+            position: absolute;
+            top: 0;
+            width: 10px;
+            height: 100%;
+            background: #ddd;
+            border-radius: 5px;
+            z-index: 5;
+        }
+        .goal-post-left { left: 0; }
+        .goal-post-right { right: 0; }
+
+        .goal-net {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 270px;
+            height: 135px;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.3) 4px, rgba(255,255,255,0.3) 6px),
+                repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(255,255,255,0.3) 4px, rgba(255,255,255,0.3) 6px);
+            background-color: rgba(0,0,0,0.1);
+            z-index: 1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        /* Karakterler */
+        .goalkeeper {
+            font-size: 70px;
+            position: absolute;
+            bottom: 5px; /* Çizgi üstü */
             left: 50%;
             transform: translateX(-50%);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 3;
+            transition: all 0.5s ease-out;
+            z-index: 10;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.4));
         }
+
+        .shooter-player {
+            font-size: 80px;
+            position: absolute;
+            bottom: -20px; /* Ekran dışına yakın */
+            left: 40%; 
+            transform: translateX(-50%);
+            z-index: 20;
+            transition: all 0.3s ease-in;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+        }
+
+        .football {
+            font-size: 35px;
+            position: absolute;
+            bottom: 100px; /* Penaltı noktası */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.6s cubic-bezier(0.1, 0.5, 0.3, 1);
+            z-index: 15;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+        }
+
+        .penalty-spot-mark {
+            position: absolute;
+            bottom: 105px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(50deg);
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+
+        .goal-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem;
+            color: #fabb00;
+            font-weight: 900;
+            text-shadow: 0 0 20px black;
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .goal-message.show { transform: translate(-50%, -50%) scale(1); }
+
         .penalty-stats {
             display: flex;
             justify-content: space-between;
@@ -278,30 +380,31 @@
         }
         .penalty-btn:hover { background: #fabb00; color: #000; }
         .penalty-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        
-        /* Animasyon Sınıfları */
-        .shoot-goal-left { bottom: 250px !important; left: 40% !important; transform: scale(0.6) !important; }
-        .shoot-goal-right { bottom: 250px !important; left: 60% !important; transform: scale(0.6) !important; }
-        .shoot-miss-left { bottom: 250px !important; left: 20% !important; }
-        .shoot-miss-right { bottom: 250px !important; left: 80% !important; }
-        
-        .keeper-save-left { transform: translateX(-100px) rotate(-20deg) !important; }
-        .keeper-save-right { transform: translateX(100px) rotate(20deg) !important; }
-        .keeper-center { transform: translateX(-50%) !important; } /* Gol yediğinde */
 
-        .goal-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-size: 4rem;
-            color: #fabb00;
-            font-weight: 900;
-            text-shadow: 0 0 20px black;
-            z-index: 100;
-            transition: 0.3s;
+        /* --- Animasyonlar --- */
+        
+        /* Şutörün koşması */
+        .shooter-run {
+            bottom: 50px !important;
+            left: 45% !important;
+            transform: scale(0.9) translateX(-50%) !important;
         }
-        .goal-message.show { transform: translate(-50%, -50%) scale(1); }
+
+        /* Topun Hareketi (Derinlik efekti için scale düşürülür) */
+        .ball-shoot-left-top { bottom: 320px !important; left: 42% !important; transform: scale(0.5) rotate(720deg) !important; }
+        .ball-shoot-right-top { bottom: 320px !important; left: 58% !important; transform: scale(0.5) rotate(720deg) !important; }
+        .ball-shoot-left-low { bottom: 290px !important; left: 40% !important; transform: scale(0.55) rotate(720deg) !important; }
+        .ball-shoot-right-low { bottom: 290px !important; left: 60% !important; transform: scale(0.55) rotate(720deg) !important; }
+        
+        /* Dışarı atış */
+        .ball-miss-left { bottom: 330px !important; left: 25% !important; transform: scale(0.4) !important; opacity: 0; }
+        .ball-miss-right { bottom: 330px !important; left: 75% !important; transform: scale(0.4) !important; opacity: 0; }
+
+        /* Kaleci Kurtarışları */
+        .keeper-dive-left { transform: translateX(-120px) rotate(-45deg) !important; }
+        .keeper-dive-right { transform: translateX(120px) rotate(45deg) !important; }
+        .keeper-center-save { transform: translateY(-30px) scale(1.1) !important; }
+        .keeper-upset { filter: grayscale(100%); transform: rotateX(20deg); } /* Gol yiyince üzülme */
 
         @media (max-width: 768px) { .header { padding: 15px 15px; } .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } .control-wrapper { flex-direction: column; } }
     </style>
@@ -426,9 +529,9 @@
     </div>
 
     <div id="penalty-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 500px; background: #222;">
+        <div class="modal-content" style="max-width: 600px; background: #222;">
             <span class="close-modal" style="color:white;" onclick="closeModal('penalty-modal')">&times;</span>
-            <h2 style="text-align:center; color:#fabb00; margin-top:0;">⚽ S Sport Penaltı Challenge</h2>
+            <h2 style="text-align:center; color:#fabb00; margin-top:0;">⚽ S Sport Penaltı Arena</h2>
             
             <div class="penalty-stats">
                 <span>SKOR: <span id="p-score">0</span></span>
@@ -436,13 +539,23 @@
             </div>
 
             <div class="penalty-field">
+                <div class="goal-container">
+                    <div class="goal-net"></div>
+                    <div class="goal-top-bar"></div>
+                    <div class="goal-post-left"></div>
+                    <div class="goal-post-right"></div>
+                    <div id="keeper" class="goalkeeper">👕</div> </div>
+
                 <div class="goal-message" id="goal-msg">GOL!</div>
-                <div class="goal-post"></div>
-                <div id="keeper" class="goalkeeper">🧤</div>
+                
+                <div class="penalty-area"></div>
+                <div class="penalty-spot-mark"></div>
+
                 <div id="ball" class="football">⚽</div>
+                <div id="shooter" class="shooter-player">🏃</div>
             </div>
 
-            <div style="margin-top:15px; color:white; min-height:50px; font-weight:bold; text-align:center;" id="p-question-text">
+            <div style="margin-top:15px; color:white; min-height:50px; font-weight:bold; text-align:center; font-size:1.1rem;" id="p-question-text">
                 Soru yükleniyor...
             </div>
 
@@ -1196,65 +1309,117 @@
         }
 
         function shootBall(userAnswerIndex) {
-            // Butonları kilitle
+            // 1. Butonları kilitle
             const btns = document.querySelectorAll('.penalty-btn');
             btns.forEach(b => b.disabled = true);
 
             const ball = document.getElementById('ball');
             const keeper = document.getElementById('keeper');
+            const shooter = document.getElementById('shooter');
             const goalMsg = document.getElementById('goal-msg');
+            
             const isCorrect = (userAnswerIndex === pCurrentQ.a);
             
-            // Rastgele yön (Sol veya Sağ köşe)
-            const direction = Math.random() < 0.5 ? 'left' : 'right';
+            // Rastgele Yön Belirleme (0: Sol Üst, 1: Sağ Üst, 2: Sol Alt, 3: Sağ Alt)
+            const shotDir = Math.floor(Math.random() * 4); 
+            
+            // Kaleci nereye atlayacak? (Rastgele)
+            const keeperDir = Math.random() < 0.5 ? 'left' : 'right';
 
-            if (isCorrect) {
-                // GOL!
-                // Top köşeye gider, kaleci ters köşeye yatar
-                ball.classList.add(direction === 'left' ? 'shoot-goal-left' : 'shoot-goal-right');
-                keeper.classList.add(direction === 'left' ? 'keeper-save-right' : 'keeper-save-left');
-                
-                setTimeout(() => {
-                    goalMsg.innerText = "GOL!!!";
-                    goalMsg.classList.add('show');
-                    pScore++;
-                    document.getElementById('p-score').innerText = pScore;
-                    Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Mükemmel Şut!', showConfirmButton: false, timer: 1000, background: '#a5d6a7' });
-                }, 400);
+            // --- ANİMASYON BAŞLIYOR ---
+            
+            // Adım 1: Oyuncu koşar
+            shooter.classList.add('shooter-run');
 
-            } else {
-                // KURTARDI!
-                // Top kalecinin üstüne veya dışarı, kaleci topun olduğu yere
-                ball.classList.add(direction === 'left' ? 'shoot-goal-left' : 'shoot-goal-right'); // Top kaleye yönelir
-                keeper.classList.add(direction === 'left' ? 'keeper-save-left' : 'keeper-save-right'); // Kaleci oraya uçar
+            // Adım 2: 300ms sonra topa vurur
+            setTimeout(() => {
                 
-                setTimeout(() => {
-                    goalMsg.innerText = "KURTARDI!";
-                    goalMsg.style.color = "#ef5350";
-                    goalMsg.classList.add('show');
-                    Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaleci Çıkardı!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
-                }, 400);
-            }
+                // Kaleci Hareketi
+                if(isCorrect) {
+                     if(shotDir === 0 || shotDir === 2) keeper.classList.add('keeper-dive-right'); // Sola atılan şutta sağa yatır
+                     else keeper.classList.add('keeper-dive-left');
+                     
+                     keeper.innerText = "😫"; // Üzgün surat
+                } else {
+                    if(shotDir === 0 || shotDir === 2) keeper.classList.add('keeper-dive-left');
+                    else keeper.classList.add('keeper-dive-right');
+                    
+                    keeper.innerText = "😎"; // Havalı surat
+                }
+
+                // Top Hareketi
+                if (isCorrect) {
+                    // GOL POZİSYONLARI
+                    if(shotDir === 0) ball.classList.add('ball-shoot-left-top');
+                    else if(shotDir === 1) ball.classList.add('ball-shoot-right-top');
+                    else if(shotDir === 2) ball.classList.add('ball-shoot-left-low');
+                    else ball.classList.add('ball-shoot-right-low');
+
+                    setTimeout(() => {
+                        goalMsg.innerText = "GOL!!!";
+                        goalMsg.style.color = "#fabb00";
+                        goalMsg.classList.add('show');
+                        pScore++;
+                        document.getElementById('p-score').innerText = pScore;
+                        Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Harika Gol!', showConfirmButton: false, timer: 1000, background: '#a5d6a7' });
+                    }, 500);
+
+                } else {
+                    // HATALI CEVAP
+                    if(Math.random() > 0.5) {
+                        // Kaleci tuttu
+                        ball.style.bottom = "280px";
+                        ball.style.left = keeperDir === 'left' ? "40%" : "60%";
+                        ball.style.transform = "scale(0.6)";
+                        
+                        setTimeout(() => {
+                            goalMsg.innerText = "KURTARDI!";
+                            goalMsg.style.color = "#ef5350";
+                            goalMsg.classList.add('show');
+                        }, 500);
+                    } else {
+                        // Dışarı attı
+                        ball.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right');
+                        setTimeout(() => {
+                            goalMsg.innerText = "DIŞARI!";
+                            goalMsg.style.color = "#ef5350";
+                            goalMsg.classList.add('show');
+                        }, 500);
+                    }
+                    
+                    Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
+                }
+
+            }, 300); // Koşma süresi sonrası vuruş
 
             pBalls--;
             document.getElementById('p-balls').innerText = pBalls;
 
-            // Sonraki atışa hazırlan
+            // Sonraki atışa hazırlık
             setTimeout(() => {
                 resetField();
                 loadPenaltyQuestion();
-            }, 2000);
+            }, 2500);
         }
 
         function resetField() {
             const ball = document.getElementById('ball');
             const keeper = document.getElementById('keeper');
+            const shooter = document.getElementById('shooter');
             const goalMsg = document.getElementById('goal-msg');
 
             ball.className = 'football';
+            ball.style.transform = 'translateX(-50%)';
+            ball.style.bottom = '100px';
+            ball.style.left = '50%';
+            ball.style.opacity = '1';
+
             keeper.className = 'goalkeeper';
+            keeper.innerText = "👕"; 
+
+            shooter.className = 'shooter-player'; 
+
             goalMsg.classList.remove('show');
-            goalMsg.style.color = "#fabb00";
         }
 
         function finishPenaltyGame() {
