@@ -65,13 +65,12 @@
             letter-spacing: 0.5px;
         }
         
-      .filter-btn:hover, .filter-btn.active { 
+       .filter-btn:hover, .filter-btn.active { 
             background-color: #fabb00; 
             color: #0e1b42; 
             border-color: #fabb00; 
             transform: translateY(-2px); 
             box-shadow: 0 4px 10px rgba(250, 187, 0, 0.3);
-            /* font-weight: 700;  <-- BU SATIRI SİLDİK, ARTIK TİTREMEYECEK */
         }
 
         .btn-fav { border-color: #fabb00; color: #fabb00; }
@@ -209,6 +208,101 @@
             100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); }
         }
 
+        /* --- PENALTI OYUNU STİLLERİ --- */
+        .penalty-field {
+            background: #2e7d32; /* Çim Yeşili */
+            border: 2px solid #fff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .goal-post {
+            width: 240px;
+            height: 120px;
+            border-top: 8px solid #ddd;
+            border-left: 8px solid #ddd;
+            border-right: 8px solid #ddd;
+            margin: 0 auto;
+            position: relative;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.2) 10px, rgba(255,255,255,0.2) 20px);
+        }
+        .goalkeeper {
+            font-size: 60px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 0.4s ease-out;
+            z-index: 2;
+        }
+        .football {
+            font-size: 40px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3;
+        }
+        .penalty-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .penalty-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            z-index: 10;
+        }
+        .penalty-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #333;
+            transition: 0.2s;
+        }
+        .penalty-btn:hover { background: #fabb00; color: #000; }
+        .penalty-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        /* Animasyon Sınıfları */
+        .shoot-goal-left { bottom: 250px !important; left: 40% !important; transform: scale(0.6) !important; }
+        .shoot-goal-right { bottom: 250px !important; left: 60% !important; transform: scale(0.6) !important; }
+        .shoot-miss-left { bottom: 250px !important; left: 20% !important; }
+        .shoot-miss-right { bottom: 250px !important; left: 80% !important; }
+        
+        .keeper-save-left { transform: translateX(-100px) rotate(-20deg) !important; }
+        .keeper-save-right { transform: translateX(100px) rotate(20deg) !important; }
+        .keeper-center { transform: translateX(-50%) !important; } /* Gol yediğinde */
+
+        .goal-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem;
+            color: #fabb00;
+            font-weight: 900;
+            text-shadow: 0 0 20px black;
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .goal-message.show { transform: translate(-50%, -50%) scale(1); }
+
         @media (max-width: 768px) { .header { padding: 15px 15px; } .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } .control-wrapper { flex-direction: column; } }
     </style>
 </head>
@@ -269,6 +363,7 @@
                         <button class="filter-btn wizard-btn" onclick="openWizard()">⚖️ İade Asistanı</button>
                         <button class="filter-btn sales-btn" onclick="openSales()">📞 TeleSatış</button>
                         <button class="filter-btn quiz-btn" onclick="openQuiz()">🎮 Yarışma</button>
+                        <button class="filter-btn" style="border-color:#2e7d32; color:#a5d6a7;" onclick="openPenaltyGame()">⚽ Penaltı</button>
                     </div>
                 </div>
                 <div class="right-panel">
@@ -327,6 +422,34 @@
             <span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span>
             <h2 style="text-align:center; color:var(--quiz);">🎮 Bilgi Yarışması</h2>
             <div id="quiz-body"></div>
+        </div>
+    </div>
+
+    <div id="penalty-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px; background: #222;">
+            <span class="close-modal" style="color:white;" onclick="closeModal('penalty-modal')">&times;</span>
+            <h2 style="text-align:center; color:#fabb00; margin-top:0;">⚽ S Sport Penaltı Challenge</h2>
+            
+            <div class="penalty-stats">
+                <span>SKOR: <span id="p-score">0</span></span>
+                <span>KALAN TOP: <span id="p-balls">5</span></span>
+            </div>
+
+            <div class="penalty-field">
+                <div class="goal-message" id="goal-msg">GOL!</div>
+                <div class="goal-post"></div>
+                <div id="keeper" class="goalkeeper">🧤</div>
+                <div id="ball" class="football">⚽</div>
+            </div>
+
+            <div style="margin-top:15px; color:white; min-height:50px; font-weight:bold; text-align:center;" id="p-question-text">
+                Soru yükleniyor...
+            </div>
+
+            <div class="penalty-options" id="p-options">
+                </div>
+            
+            <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="startPenaltySession()">YENİ MAÇ 🔄</button>
         </div>
     </div>
 
@@ -537,7 +660,7 @@
                 // --- KALIN YAZI ÖZELLİĞİ EKLENDİ ---
                 let rawText = item.text || "";
                   let formattedText = rawText
-                 .replace(/\n/g, '<br>')              // 1. Adım: Enter'a basılan yerleri <br> yapar
+                  .replace(/\n/g, '<br>')              // 1. Adım: Enter'a basılan yerleri <br> yapar
                   .replace(/\*(.*?)\*/g, '<b>$1</b>'); // 2. Adım: *kelime* olanları kalın yapar
                 
                 let html = `
@@ -1033,12 +1156,126 @@
         
         function openQuizEditor() { let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">'; quizQuestions.forEach((q, i) => { const safeQ = cleanData(q.q); html += `<div style="border-bottom:1px solid #eee; padding:10px; cursor:pointer;" onclick="editQuizQuestion(${i})"><b>${i+1}. ${safeQ}</b><br><span style="font-size:0.8rem; color:#fabb00;"><i class="fas fa-pencil-alt"></i> Düzenle</span></div>`; }); html += '</div>'; Swal.fire({ title: 'Soruları Düzenle', html: html, showConfirmButton: false, showCloseButton: true }); }
         
+        // --- PENALTI OYUNU MANTIĞI ---
+        let pScore = 0;
+        let pBalls = 5;
+        let pCurrentQ = null;
+
+        function openPenaltyGame() {
+            document.getElementById('penalty-modal').style.display = 'flex';
+            startPenaltySession();
+        }
+
+        function startPenaltySession() {
+            pScore = 0;
+            pBalls = 5;
+            document.getElementById('p-score').innerText = pScore;
+            document.getElementById('p-balls').innerText = pBalls;
+            document.getElementById('p-restart-btn').style.display = 'none';
+            document.getElementById('p-options').style.display = 'grid';
+            resetField();
+            loadPenaltyQuestion();
+        }
+
+        function loadPenaltyQuestion() {
+            if (pBalls <= 0) {
+                finishPenaltyGame();
+                return;
+            }
+            // Rastgele soru seç
+            if (quizQuestions.length === 0) { Swal.fire('Hata', 'Soru havuzu boş!', 'warning'); return; }
+            pCurrentQ = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            document.getElementById('p-question-text').innerText = pCurrentQ.q;
+            
+            let html = '';
+            pCurrentQ.opts.forEach((opt, index) => {
+                html += `<button class="penalty-btn" onclick="shootBall(${index})">${opt}</button>`;
+            });
+            document.getElementById('p-options').innerHTML = html;
+        }
+
+        function shootBall(userAnswerIndex) {
+            // Butonları kilitle
+            const btns = document.querySelectorAll('.penalty-btn');
+            btns.forEach(b => b.disabled = true);
+
+            const ball = document.getElementById('ball');
+            const keeper = document.getElementById('keeper');
+            const goalMsg = document.getElementById('goal-msg');
+            const isCorrect = (userAnswerIndex === pCurrentQ.a);
+            
+            // Rastgele yön (Sol veya Sağ köşe)
+            const direction = Math.random() < 0.5 ? 'left' : 'right';
+
+            if (isCorrect) {
+                // GOL!
+                // Top köşeye gider, kaleci ters köşeye yatar
+                ball.classList.add(direction === 'left' ? 'shoot-goal-left' : 'shoot-goal-right');
+                keeper.classList.add(direction === 'left' ? 'keeper-save-right' : 'keeper-save-left');
+                
+                setTimeout(() => {
+                    goalMsg.innerText = "GOL!!!";
+                    goalMsg.classList.add('show');
+                    pScore++;
+                    document.getElementById('p-score').innerText = pScore;
+                    Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Mükemmel Şut!', showConfirmButton: false, timer: 1000, background: '#a5d6a7' });
+                }, 400);
+
+            } else {
+                // KURTARDI!
+                // Top kalecinin üstüne veya dışarı, kaleci topun olduğu yere
+                ball.classList.add(direction === 'left' ? 'shoot-goal-left' : 'shoot-goal-right'); // Top kaleye yönelir
+                keeper.classList.add(direction === 'left' ? 'keeper-save-left' : 'keeper-save-right'); // Kaleci oraya uçar
+                
+                setTimeout(() => {
+                    goalMsg.innerText = "KURTARDI!";
+                    goalMsg.style.color = "#ef5350";
+                    goalMsg.classList.add('show');
+                    Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaleci Çıkardı!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
+                }, 400);
+            }
+
+            pBalls--;
+            document.getElementById('p-balls').innerText = pBalls;
+
+            // Sonraki atışa hazırlan
+            setTimeout(() => {
+                resetField();
+                loadPenaltyQuestion();
+            }, 2000);
+        }
+
+        function resetField() {
+            const ball = document.getElementById('ball');
+            const keeper = document.getElementById('keeper');
+            const goalMsg = document.getElementById('goal-msg');
+
+            ball.className = 'football';
+            keeper.className = 'goalkeeper';
+            goalMsg.classList.remove('show');
+            goalMsg.style.color = "#fabb00";
+        }
+
+        function finishPenaltyGame() {
+            let title = pScore >= 4 ? "ŞAMPİYON! 🏆" : (pScore >= 2 ? "İyi Maçtı! 👏" : "Antrenman Lazım 🤕");
+            document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>${title}<br>Toplam Skor: ${pScore}/5`;
+            document.getElementById('p-options').style.display = 'none';
+            document.getElementById('p-restart-btn').style.display = 'block';
+            
+             // Skoru logla
+             fetch(SCRIPT_URL, {
+                method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    action: "logQuiz", username: currentUser, token: getToken(),
+                    score: pScore * 10, total: 50 // Penaltı puanı quiz gibi loglansın
+                })
+            });
+        }
+        
         const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
         function openWizard(){ document.getElementById('wizard-modal').style.display='flex'; renderStep('start'); }
         function renderStep(k){ const s=wizardSteps[k]; const b=document.getElementById('wizard-body'); let h=`<h2>${s.title||''}</h2>`; if(s.result){ let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️'); let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow'); h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`; }else{ h+=`<p>${s.text}</p><div class="wizard-options">`; s.options.forEach(o=>{ h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`; }); h+=`</div>`; if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`; } b.innerHTML=h; }
     </script>
 </body>
 </html>
-
-
-
