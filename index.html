@@ -15,7 +15,7 @@
         :root { --primary: #0e1b42; --secondary: #fabb00; --bg: #f0f2f5; --card-bg: #ffffff; --accent: #d32f2f; --success: #2e7d32; --info: #0288d1; --warning: #ed6c02; --sales: #10b981; --quiz: #8e24aa; }
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; user-select: none; }
         
-        /* --- TEMEL STİLLER (Login, Header, Cards vb. aynı kalıyor) --- */
+        /* --- TEMEL STİLLER --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0e1b42 0%, #1a2f6e 100%); }
         .login-card { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; text-align: center; box-sizing: border-box; }
@@ -38,11 +38,18 @@
         .search-container { position: relative; width: 100%; margin-bottom: 15px; }
         #searchInput { width: 100%; padding: 12px 20px 12px 45px; border-radius: 4px; border: none; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #0e1b42; }
+        
+        /* FİLTRE BUTONLARI GÜNCEL */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; }
         .filter-btn { background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #eceff1; padding: 10px 18px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
        .filter-btn:hover, .filter-btn.active { background-color: #fabb00; color: #0e1b42; border-color: #fabb00; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(250, 187, 0, 0.3); }
         .btn-fav { border-color: #fabb00; color: #fabb00; }
         .btn-fav:hover, .btn-fav.active { color: #0e1b42; }
+        
+        /* OYUN BUTONU STİLİ (Diğerleriyle aynı yapıldı) */
+        .game-btn { border-color: #8e24aa !important; color: #e1bee7 !important; }
+        .game-btn:hover, .game-btn.active { background-color: #8e24aa !important; color: white !important; border-color: #8e24aa !important; }
+
         .news-ticker-box { background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-left: 5px solid #fabb00; border-radius: 6px; padding: 15px; height: 85px; position: relative; cursor: pointer; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .news-ticker-box:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .ticker-label { font-size: 0.75rem; color: #fabb00; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -98,9 +105,6 @@
         .sales-text { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #a7f3d0; font-size: 1rem; color: #374151; line-height: 1.6; animation: fadeIn 0.4s ease-in; }
         .sales-item.active .sales-text { display: block; }
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .quiz-btn-opt { padding: 15px; border: 2px solid #eee; background: white; border-radius: 8px; cursor: pointer; }
-        .quiz-btn-opt.correct { background: #c8e6c9; border-color: #2e7d32; color: #1b5e20; }
-        .quiz-btn-opt.wrong { background: #ffcdd2; border-color: #c62828; color: #b71c1c; }
         .wizard-options { display: flex; flex-direction: column; gap: 10px; }
         .option-btn { padding: 15px; border: 2px solid #eee; border-radius: 8px; background: white; font-size: 1rem; cursor: pointer; text-align: left; }
         .option-btn:hover { border-color: var(--primary); background: #f0f4ff; }
@@ -117,16 +121,15 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes intense-pulse { 0% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0.7); } 70% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(250, 187, 0, 0); } 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); } }
 
-        /* --- 3D STADYUM VE GELİŞMİŞ OYUN STİLLERİ --- */
+        /* --- 3D STADYUM VE OYUN STİLLERİ --- */
         .penalty-field {
-            /* Gece maçı atmosferi için spot ışığı efekti */
             background: radial-gradient(circle at 50% 30%, #4caf50 0%, #2e7d32 60%, #1b5e20 100%);
             border: 4px solid #fff;
             border-radius: 8px;
-            height: 480px; /* Yükseklik biraz arttırıldı */
+            height: 480px;
             position: relative;
             overflow: hidden;
-            perspective: 900px; /* Derinlik arttırıldı */
+            perspective: 900px; /* Derinlik */
             box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
@@ -134,39 +137,28 @@
             padding-top: 0;
         }
 
-        /* Tribünler (Arka Plan) */
         .stadium-stands {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 120px;
-            background: 
-                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), /* Seyirci ışıkları */
-                linear-gradient(to bottom, #111 0%, #222 100%);
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, #111 0%, #222 100%);
             background-size: 10px 10px, 100% 100%;
             z-index: 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        /* Çim Çizgileri (Daha yumuşak geçiş) */
         .grass-stripes {
             position: absolute;
-            top: 120px; /* Tribün altından başla */
+            top: 120px;
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                180deg,
-                rgba(255,255,255,0.03) 0%,
-                rgba(255,255,255,0.03) 40px,
-                transparent 40px,
-                transparent 80px
-            );
+            background: repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.03) 40px, transparent 40px, transparent 80px);
             z-index: 0;
         }
 
-        /* Ceza Sahası Çizgileri */
         .penalty-area {
             position: absolute;
             bottom: -50px;
@@ -180,12 +172,11 @@
             box-shadow: 0 0 15px rgba(255,255,255,0.1);
         }
 
-        /* Kale Yapısı (3D Direkler) */
         .goal-container {
             position: relative;
             width: 300px;
             height: 150px;
-            margin: 60px auto 0 auto; /* Tribün payı */
+            margin: 60px auto 0 auto;
             transform-style: preserve-3d;
             z-index: 2;
         }
@@ -214,45 +205,67 @@
         .goal-post-left { left: 0; }
         .goal-post-right { right: 0; }
 
-        /* Kale Filesi (Daha belirgin) */
         .goal-net {
             position: absolute;
             top: 6px;
             left: 6px;
             width: 288px;
             height: 145px;
-            background: 
-                repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.2) 5px, rgba(255,255,255,0.2) 6px),
-                repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(255,255,255,0.2) 5px, rgba(255,255,255,0.2) 6px);
+            background: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.2) 5px, rgba(255,255,255,0.2) 6px), repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(255,255,255,0.2) 5px, rgba(255,255,255,0.2) 6px);
             background-color: rgba(0,0,0,0.15);
             z-index: 1;
             box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
         }
 
-        /* KARAKTERLER */
+        /* --- 3D Karakterler (Dik duran) --- */
+        /* Bu container, karakterin sahanın açısına ters dönerek dik durmasını sağlar */
+        .character-3d-container {
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg); /* Hafif dikleştirme, perspektife göre ayarlanır */
+        }
+
+        /* KALECİ */
         .keeper-wrapper {
             position: absolute;
             bottom: 10px;
             left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 80px;
+            transform: translateX(-50%); /* Dik duruş için */
+            width: 100px;
+            height: 100px;
             z-index: 10;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-end;
         }
-        .keeper-body { font-size: 60px; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5)); }
+        
+        /* Kaleciyi oluşturan emoji grubu */
+        .keeper-body {
+            font-size: 80px;
+            line-height: 1;
+            filter: drop-shadow(0 5px 0px rgba(0,0,0,0.3)); /* 3D derinlik hissi */
+            z-index: 2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Kaleciye forma giydirmek için üst üste emoji */
+        .keeper-head { font-size: 40px; z-index: 3; margin-bottom: -15px; }
+        .keeper-shirt { font-size: 50px; z-index: 2; }
+        
         .keeper-shadow {
-            width: 60px; height: 10px; background: rgba(0,0,0,0.5); border-radius: 50%;
-            margin-top: -10px; filter: blur(2px);
+            width: 60px; height: 12px; background: rgba(0,0,0,0.5); border-radius: 50%;
+            margin-top: -5px; filter: blur(4px); transform: rotateX(60deg); /* Yere yapışık gölge */
         }
 
+        /* ŞUTÖR */
         .shooter-wrapper {
             position: absolute;
             bottom: -30px;
-            left: 35%;
+            left: 45%;
             transform: translateX(-50%);
             z-index: 20;
             transition: all 0.3s ease-in;
@@ -260,8 +273,12 @@
             flex-direction: column;
             align-items: center;
         }
-        .shooter-body { font-size: 85px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.6)); }
-        
+        .shooter-body { 
+            font-size: 90px; 
+            filter: drop-shadow(0 5px 0 rgba(0,0,0,0.3)); 
+            transform: scaleX(-1); /* Yüzü kaleye dönsün */
+        }
+
         /* TOP */
         .ball-wrapper {
             position: absolute;
@@ -271,20 +288,25 @@
             z-index: 15;
             transition: all 0.6s cubic-bezier(0.1, 0.5, 0.3, 1);
         }
-        .football { font-size: 38px; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); }
+        .football { 
+            font-size: 40px; 
+            background: white;
+            border-radius: 50%;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); /* Topa hacim ver */
+        }
         .ball-shadow {
-            width: 25px; height: 6px; background: rgba(0,0,0,0.6); border-radius: 50%;
-            margin: -5px auto 0 auto; filter: blur(3px); transition: all 0.6s;
+            width: 30px; height: 8px; background: rgba(0,0,0,0.6); border-radius: 50%;
+            margin: -5px auto 0 auto; filter: blur(4px); transition: all 0.6s;
+            transform: rotateX(50deg);
         }
 
-        /* Penaltı Noktası */
         .penalty-spot-mark {
             position: absolute;
             bottom: 120px;
             left: 50%;
             transform: translateX(-50%) rotateX(50deg);
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             background: radial-gradient(circle, #fff, #ccc);
             border-radius: 50%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
@@ -336,27 +358,17 @@
         .penalty-btn:active { transform: translateY(2px); box-shadow: 0 0 0; }
         .penalty-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* --- Animasyonlar --- */
-        .shooter-run { bottom: 60px !important; left: 48% !important; transform: scale(0.85) translateX(-50%) !important; }
-
-        /* Topun Hareketi (Scale ile uzaklaşma efekti) */
+        /* Animasyonlar */
+        .shooter-run { bottom: 60px !important; left: 50% !important; transform: scale(0.85) translateX(-50%) !important; }
         .ball-shoot-left-top { bottom: 350px !important; left: 40% !important; transform: scale(0.45) rotate(720deg) !important; }
         .ball-shoot-right-top { bottom: 350px !important; left: 60% !important; transform: scale(0.45) rotate(720deg) !important; }
         .ball-shoot-left-low { bottom: 320px !important; left: 38% !important; transform: scale(0.5) rotate(720deg) !important; }
         .ball-shoot-right-low { bottom: 320px !important; left: 62% !important; transform: scale(0.5) rotate(720deg) !important; }
-        
         .ball-miss-left { bottom: 360px !important; left: 20% !important; transform: scale(0.35) !important; opacity: 0; }
         .ball-miss-right { bottom: 360px !important; left: 80% !important; transform: scale(0.35) !important; opacity: 0; }
-
-        /* Gölgeyi topla birlikte küçült */
         .ball-shadow-move { transform: scale(0.4); opacity: 0.5; }
-
-        /* Kaleci Kurtarışları */
-        .keeper-dive-left { transform: translateX(-130px) rotate(-55deg) !important; }
-        .keeper-dive-right { transform: translateX(130px) rotate(55deg) !important; }
-        .keeper-center-save { transform: translateY(-40px) scale(1.1) !important; }
-        
-        /* Emoji ifadeleri class ile kontrol edilecek */
+        .keeper-dive-left { transform: translateX(-130px) rotate(-20deg) !important; }
+        .keeper-dive-right { transform: translateX(130px) rotate(20deg) !important; }
 
         @media (max-width: 768px) { .header { padding: 15px 15px; } .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } .control-wrapper { flex-direction: column; } .penalty-field { height: 400px; } .goal-container { width: 240px; height: 120px; margin-top: 50px; } .goal-net { width: 230px; height: 115px; } }
     </style>
@@ -417,8 +429,7 @@
                         <button class="filter-btn guide-btn" onclick="openGuide()">📖 Spor Rehberi</button>
                         <button class="filter-btn wizard-btn" onclick="openWizard()">⚖️ İade Asistanı</button>
                         <button class="filter-btn sales-btn" onclick="openSales()">📞 TeleSatış</button>
-                        <button class="filter-btn quiz-btn" onclick="openQuiz()">🎮 Yarışma</button>
-                        <button class="filter-btn" style="border-color:#2e7d32; color:#a5d6a7;" onclick="openPenaltyGame()">⚽ Penaltı</button>
+                        <button class="filter-btn game-btn" onclick="openPenaltyGame()">⚽ OYUN</button>
                     </div>
                 </div>
                 <div class="right-panel">
@@ -472,22 +483,14 @@
         </div>
     </div>
 
-    <div id="quiz-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 600px;">
-            <span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span>
-            <h2 style="text-align:center; color:var(--quiz);">🎮 Bilgi Yarışması</h2>
-            <div id="quiz-body"></div>
-        </div>
-    </div>
-
     <div id="penalty-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 600px; background: #1a1a1a; border: 1px solid #333;">
+        <div class="modal-content" style="max-width: 650px; background: #1a1a1a; border: 1px solid #333;">
             <span class="close-modal" style="color:white;" onclick="closeModal('penalty-modal')">&times;</span>
             <h2 style="text-align:center; color:#fabb00; margin-top:0; text-shadow:0 0 10px rgba(250,187,0,0.3);">⚽ S Sport Arena</h2>
             
             <div class="penalty-stats">
                 <span>SKOR: <span id="p-score" style="color:white;">0</span></span>
-                <span>KALAN: <span id="p-balls" style="color:white;">5</span></span>
+                <span>KALAN ŞUT: <span id="p-balls" style="color:white;">10</span></span>
             </div>
 
             <div class="penalty-field">
@@ -501,7 +504,10 @@
                     <div class="goal-post-right"></div>
                     
                     <div id="keeper-wrap" class="keeper-wrapper">
-                        <div id="keeper-body" class="keeper-body">🧤</div> 
+                        <div class="keeper-body">
+                            <div class="keeper-head">👦</div>
+                            <div class="keeper-shirt">👕</div>
+                        </div>
                         <div class="keeper-shadow"></div>
                     </div>
                 </div>
@@ -772,7 +778,6 @@
             if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); else renderCards(activeCards.length > 0 ? activeCards : database);
             if(document.getElementById('guide-modal').style.display === 'flex') openGuide();
             if(document.getElementById('sales-modal').style.display === 'flex') openSales();
-            if(document.getElementById('quiz-modal').style.display === 'flex') openQuiz();
             if(document.getElementById('news-modal').style.display === 'flex') openNews();
         }
         function sendUpdate(originalTitle, column, value, type = 'card') {
@@ -784,13 +789,12 @@
                 else { Swal.fire('Hata', data.message || 'Güncelleme başarısız.', 'error'); }
             }).catch(err => Swal.fire('Hata', 'Güncelleme hatası: ' + err, 'error'));
         }
-        // ... [DİĞER EKLE/DÜZENLE FONKSİYONLARI BURADA AYNI KALACAK - Kısaltıldı] ...
-        async function addNewCardPopup() { /* Mevcut kod */ } 
-        async function editContent(index) { /* Mevcut kod */ }
-        async function editSport(index) { /* Mevcut kod */ }
-        async function editSales(index) { /* Mevcut kod */ }
-        async function editNews(index) { /* Mevcut kod */ }
-        async function editQuizQuestion(index) { /* Mevcut kod */ }
+        // ... [DİĞER EKLE/DÜZENLE FONKSİYONLARI MEVCUT ŞEKİLDE KALACAK] ...
+        async function addNewCardPopup() { /* ... */ } 
+        async function editContent(index) { /* ... */ }
+        async function editSport(index) { /* ... */ }
+        async function editSales(index) { /* ... */ }
+        async function editNews(index) { /* ... */ }
         
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         let tickerIndex = 0;
@@ -801,20 +805,9 @@
         function openSales() { document.getElementById('sales-modal').style.display = 'flex'; const c = document.getElementById('sales-grid'); c.innerHTML = ''; salesScripts.forEach((s, index) => { let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="display:block !important; top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales(${index})"></i>` : ''; c.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">${editBtn}<div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div><div class="sales-text">${(s.text || '').replace(/\n/g,'<br>')}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text || '')}')"><i class="fas fa-copy"></i> Kopyala</button></div></div></div>`; }); }
         function toggleSales(index) { const item = document.getElementById(`sales-${index}`); const icon = document.getElementById(`icon-${index}`); item.classList.toggle('active'); if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } }
         
-        // --- QUIZ LOGIC ---
-        let currentQuestion = 0, score = 0;
-        let sessionQuestions = []; 
-        function openQuiz() { document.getElementById('quiz-modal').style.display = 'flex'; if(isAdminMode) { openQuizEditor(); return; } else { showStartScreen(); } }
-        function showStartScreen() { document.getElementById('quiz-body').innerHTML = `<div class="quiz-final"><h3>Hazır mısın?</h3><p style="color:#666; margin-bottom:20px;">Havuzdan rastgele 10 soru sorulacak.</p><button class="restart-btn" style="background:var(--quiz);" onclick="startQuizSession()">BAŞLA</button></div>`; }
-        function startQuizSession() { currentQuestion = 0; score = 0; let allQuestions = [...quizQuestions]; allQuestions.sort(() => Math.random() - 0.5); sessionQuestions = allQuestions.slice(0, 10); showQuestion(); }
-        function showQuestion() { if(currentQuestion >= sessionQuestions.length) { showResult(); return; } const q = sessionQuestions[currentQuestion]; let html = `<div class="quiz-score">Soru: ${currentQuestion + 1} / ${sessionQuestions.length}</div><div class="quiz-question">${q.q}</div><div class="quiz-options">`; q.opts.forEach((opt, i) => { html += `<button class="quiz-btn-opt" onclick="checkAnswer(this, ${i})">${opt}</button>`; }); html += `</div>`; document.getElementById('quiz-body').innerHTML = html; }
-        function checkAnswer(btn, i) { const correct = sessionQuestions[currentQuestion].a; document.querySelectorAll('.quiz-btn-opt').forEach(b => b.disabled = true); if(i === correct) { btn.classList.add('correct'); score += 10; Swal.fire({icon:'success', title:'Doğru!', timer:1000, toast:true, position:'top', showConfirmButton:false}); } else { btn.classList.add('wrong'); Swal.fire({icon:'error', title:'Yanlış!', timer:1000, toast:true, position:'top', showConfirmButton:false}); } setTimeout(() => { currentQuestion++; showQuestion(); }, 1500); }
-        function showResult() { document.getElementById('quiz-body').innerHTML = `<div class="quiz-final"><h3>Bitti! Puan: ${score}</h3><div id="quiz-save-status" style="font-size:0.9rem; color:#666; margin:10px 0;"><i class="fas fa-spinner fa-spin"></i> Sonuç sisteme kaydediliyor...</div><button class="restart-btn" onclick="openQuiz()">Tekrar Oyna</button></div>`; fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: score, total: sessionQuestions.length }) }).then(response => response.json()).then(data => { const statusEl = document.getElementById('quiz-save-status'); if (data.result === "success") { statusEl.innerHTML = '<span style="color:green; font-weight:bold;"><i class="fas fa-check"></i> Skor başarıyla kaydedildi!</span>'; } else { statusEl.innerHTML = '<span style="color:red;">Kayıt sırasında hata oluştu.</span>'; } }).catch(error => { console.error("Quiz Log Hatası:", error); document.getElementById('quiz-save-status').innerHTML = '<span style="color:red;">Sunucu bağlantı hatası.</span>'; }); }
-        function openQuizEditor() { let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">'; quizQuestions.forEach((q, i) => { const safeQ = cleanData(q.q); html += `<div style="border-bottom:1px solid #eee; padding:10px; cursor:pointer;" onclick="editQuizQuestion(${i})"><b>${i+1}. ${safeQ}</b><br><span style="font-size:0.8rem; color:#fabb00;"><i class="fas fa-pencil-alt"></i> Düzenle</span></div>`; }); html += '</div>'; Swal.fire({ title: 'Soruları Düzenle', html: html, showConfirmButton: false, showCloseButton: true }); }
-        
-        // --- PENALTI OYUNU MANTIĞI ---
+        // --- PENALTI OYUNU MANTIĞI (GÜNCELLENDİ: 10 Şut) ---
         let pScore = 0;
-        let pBalls = 5;
+        let pBalls = 10; // 10 Şut Hakkı
         let pCurrentQ = null;
 
         function openPenaltyGame() {
@@ -824,7 +817,7 @@
 
         function startPenaltySession() {
             pScore = 0;
-            pBalls = 5;
+            pBalls = 10; // 10 Şut
             document.getElementById('p-score').innerText = pScore;
             document.getElementById('p-balls').innerText = pBalls;
             document.getElementById('p-restart-btn').style.display = 'none';
@@ -851,11 +844,10 @@
             btns.forEach(b => b.disabled = true);
 
             const ballWrap = document.getElementById('ball-wrap');
-            const ball = ballWrap.querySelector('.football');
             const shadow = ballWrap.querySelector('.ball-shadow');
             
             const keeperWrap = document.getElementById('keeper-wrap');
-            const keeperBody = document.getElementById('keeper-body');
+            const keeperHead = keeperWrap.querySelector('.keeper-head');
             const shooterWrap = document.getElementById('shooter-wrap');
             const goalMsg = document.getElementById('goal-msg');
             
@@ -871,15 +863,15 @@
                 if(isCorrect) {
                      if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right');
                      else keeperWrap.classList.add('keeper-dive-left');
-                     keeperBody.innerText = "😫"; 
+                     keeperHead.innerText = "😫"; 
                 } else {
                     if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left');
                     else keeperWrap.classList.add('keeper-dive-right');
-                    keeperBody.innerText = "😎"; 
+                    keeperHead.innerText = "😎"; 
                 }
 
                 // Top Hareketi & Gölge
-                shadow.classList.add('ball-shadow-move'); // Gölge küçülür ve silikleşir
+                shadow.classList.add('ball-shadow-move'); 
 
                 if (isCorrect) {
                     // GOL
@@ -936,7 +928,7 @@
             const ballWrap = document.getElementById('ball-wrap');
             const shadow = ballWrap.querySelector('.ball-shadow');
             const keeperWrap = document.getElementById('keeper-wrap');
-            const keeperBody = document.getElementById('keeper-body');
+            const keeperHead = keeperWrap.querySelector('.keeper-head');
             const shooterWrap = document.getElementById('shooter-wrap');
             const goalMsg = document.getElementById('goal-msg');
 
@@ -950,7 +942,7 @@
 
             // Reset Keeper
             keeperWrap.className = 'keeper-wrapper';
-            keeperBody.innerText = "🧤"; 
+            keeperHead.innerText = "👦"; 
 
             // Reset Shooter
             shooterWrap.className = 'shooter-wrapper'; 
@@ -959,11 +951,12 @@
         }
 
         function finishPenaltyGame() {
-            let title = pScore >= 4 ? "ŞAMPİYON! 🏆" : (pScore >= 2 ? "İyi Maçtı! 👏" : "Antrenman Lazım 🤕");
-            document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>${title}<br>Toplam Skor: ${pScore}/5`;
+            let title = pScore >= 8 ? "EFSANE! 🏆" : (pScore >= 5 ? "İyi Maçtı! 👏" : "Antrenman Lazım 🤕");
+            document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>${title}<br>Toplam Skor: ${pScore}/10`;
             document.getElementById('p-options').style.display = 'none';
             document.getElementById('p-restart-btn').style.display = 'block';
-            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: pScore * 10, total: 50 }) });
+            // Skoru logla (Her soru 10 puan = Max 100)
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: pScore * 10, total: 100 }) });
         }
         
         const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
