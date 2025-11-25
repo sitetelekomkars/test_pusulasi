@@ -186,6 +186,14 @@
         .keeper-dive-left { transform: translateX(-130px) rotate(-20deg) !important; }
         .keeper-dive-right { transform: translateX(130px) rotate(20deg) !important; }
 
+        /* Leaderboard Stilleri */
+        #leaderboard-table th { font-size: 0.9rem; letter-spacing: 1px; }
+        #leaderboard-table td { padding: 12px; border-bottom: 1px solid #333; font-weight: 500; }
+        #leaderboard-table tr:first-child td { color: #ffd700; font-weight:bold; font-size:1.1rem; text-shadow:0 0 10px rgba(255, 215, 0, 0.5); } /* 1. Sıra Altın */
+        #leaderboard-table tr:nth-child(2) td { color: #c0c0c0; } /* 2. Sıra Gümüş */
+        #leaderboard-table tr:nth-child(3) td { color: #cd7f32; } /* 3. Sıra Bronz */
+        .rank-badge { display:inline-block; width:24px; height:24px; line-height:24px; border-radius:50%; background:#333; text-align:center; font-size:0.8rem; }
+
         @media (max-width: 768px) { .header { padding: 15px 15px; } .header-top { flex-direction: column; align-items: flex-start; gap: 10px; } .control-wrapper { flex-direction: column; } .penalty-field { height: 400px; } .goal-container { width: 240px; height: 120px; margin-top: 50px; } .goal-net { width: 230px; height: 115px; } }
     </style>
 </head>
@@ -300,49 +308,69 @@
     </div>
 
     <div id="penalty-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 650px; background: #1a1a1a; border: 1px solid #333;">
-            <span class="close-modal" style="color:white;" onclick="closeModal('penalty-modal')">&times;</span>
-            <h2 style="text-align:center; color:#fabb00; margin-top:0; text-shadow:0 0 10px rgba(250,187,0,0.3);">⚽ S Sport Arena</h2>
+        <div class="modal-content" style="max-width: 650px; background: #1a1a1a; border: 1px solid #333; min-height:600px; display:flex; flex-direction:column;">
+            <span class="close-modal" style="color:white; z-index:1000;" onclick="closeModal('penalty-modal')">&times;</span>
             
-            <div class="penalty-stats">
-                <span>SKOR: <span id="p-score" style="color:white;">0</span></span>
-                <span>KALAN ŞUT: <span id="p-balls" style="color:white;">10</span></span>
+            <h2 style="text-align:center; color:#fabb00; margin-top:0; text-shadow:0 0 10px rgba(250,187,0,0.3);">⚽ S Sport Arena</h2>
+
+            <div id="penalty-lobby" style="text-align:center; padding:20px; flex-grow:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <h3 style="color:white; margin-bottom:15px;">🏆 Liderlik Tablosu (Top 5)</h3>
+                <div id="leaderboard-loader" style="color:#aaa;">Veriler yükleniyor...</div>
+                <table id="leaderboard-table" style="width:100%; color:#eee; border-collapse:collapse; margin-bottom:30px; display:none;">
+                    <thead>
+                        <tr style="border-bottom:1px solid #555; color:#fabb00;">
+                            <th style="padding:10px;">#</th>
+                            <th style="padding:10px; text-align:left;">Temsilci</th>
+                            <th style="padding:10px;">Maç</th>
+                            <th style="padding:10px;">Ort. Puan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+                <button class="penalty-btn" style="width:200px; background:#2e7d32; color:white; border-color:#1b5e20;" onclick="startGameFromLobby()">MAÇA BAŞLA 🏃‍♂️⚽</button>
             </div>
 
-            <div class="penalty-field">
-                <div class="stadium-stands"></div>
-                <div class="grass-stripes"></div>
-                <div class="goal-container">
-                    <div class="goal-net"></div>
-                    <div class="goal-top-bar"></div>
-                    <div class="goal-post-left"></div>
-                    <div class="goal-post-right"></div>
-                    <div id="keeper-wrap" class="keeper-wrapper">
-                        <div class="keeper-body">
-                            <div class="keeper-head">👦</div>
-                            <div class="keeper-shirt">👕</div>
+            <div id="penalty-game-area" style="display:none;">
+                <div class="penalty-stats">
+                    <span>SKOR: <span id="p-score" style="color:white;">0</span></span>
+                    <span>KALAN ŞUT: <span id="p-balls" style="color:white;">10</span></span>
+                </div>
+
+                <div class="penalty-field">
+                    <div class="stadium-stands"></div>
+                    <div class="grass-stripes"></div>
+                    <div class="goal-container">
+                        <div class="goal-net"></div>
+                        <div class="goal-top-bar"></div>
+                        <div class="goal-post-left"></div>
+                        <div class="goal-post-right"></div>
+                        <div id="keeper-wrap" class="keeper-wrapper">
+                            <div class="keeper-body">
+                                <div class="keeper-head">👦</div>
+                                <div class="keeper-shirt">👕</div>
+                            </div>
+                            <div class="keeper-shadow"></div>
                         </div>
-                        <div class="keeper-shadow"></div>
+                    </div>
+                    <div class="goal-message" id="goal-msg">GOL!</div>
+                    <div class="penalty-area"></div>
+                    <div class="penalty-spot-mark"></div>
+                    <div id="ball-wrap" class="ball-wrapper">
+                        <div class="football">⚽</div>
+                        <div class="ball-shadow"></div>
+                    </div>
+                    <div id="shooter-wrap" class="shooter-wrapper">
+                        <div class="shooter-body">🏃</div>
                     </div>
                 </div>
-                <div class="goal-message" id="goal-msg">GOL!</div>
-                <div class="penalty-area"></div>
-                <div class="penalty-spot-mark"></div>
-                <div id="ball-wrap" class="ball-wrapper">
-                    <div class="football">⚽</div>
-                    <div class="ball-shadow"></div>
-                </div>
-                <div id="shooter-wrap" class="shooter-wrapper">
-                    <div class="shooter-body">🏃</div>
-                </div>
-            </div>
 
-            <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; font-size:1.1rem; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">
-                Soru yükleniyor...
-            </div>
+                <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; font-size:1.1rem; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">
+                    Soru yükleniyor...
+                </div>
 
-            <div class="penalty-options" id="p-options"></div>
-            <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="startPenaltySession()">YENİ MAÇ 🔄</button>
+                <div class="penalty-options" id="p-options"></div>
+                <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="showLobby()">LOBİYE DÖN 🏠</button>
+            </div>
         </div>
     </div>
 
@@ -449,7 +477,6 @@
                     localStorage.setItem("sSportToken", data.token);
                     localStorage.setItem("sSportRole", data.role); 
                     
-                    // Şifre değiştirme zorunluluğu var mı?
                     if (data.forceChange === true) {
                         Swal.fire({
                             icon: 'warning',
@@ -459,7 +486,7 @@
                             allowEscapeKey: false,
                             confirmButtonText: 'Şifremi Değiştir'
                         }).then(() => {
-                            changePasswordPopup(true); // Zorunlu mod
+                            changePasswordPopup(true); 
                         });
                     } else {
                         document.getElementById("login-screen").style.display = "none"; 
@@ -648,7 +675,7 @@
             }).catch(err => Swal.fire('Hata', 'Güncelleme hatası: ' + err, 'error'));
         }
 
-        // --- CRUD FONKSİYONLARI (EKSİKSİZ GERİ EKLENDİ) ---
+        // --- CRUD FONKSİYONLARI ---
         async function addNewCardPopup() {
             const catSelectHTML = getCategorySelectHtml('Bilgi', 'swal-new-cat');
             const { value: formValues } = await Swal.fire({
@@ -908,7 +935,64 @@
 
         function openPenaltyGame() {
             document.getElementById('penalty-modal').style.display = 'flex';
+            showLobby();
+        }
+
+        function showLobby() {
+            document.getElementById('penalty-lobby').style.display = 'flex';
+            document.getElementById('penalty-game-area').style.display = 'none';
+            fetchLeaderboard();
+        }
+
+        function startGameFromLobby() {
+            document.getElementById('penalty-lobby').style.display = 'none';
+            document.getElementById('penalty-game-area').style.display = 'block';
             startPenaltySession();
+        }
+
+        function fetchLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            const loader = document.getElementById('leaderboard-loader');
+            const table = document.getElementById('leaderboard-table');
+            
+            tbody.innerHTML = '';
+            loader.style.display = 'block';
+            table.style.display = 'none';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "getLeaderboard" })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.result === "success") {
+                    table.style.display = 'table';
+                    let html = '';
+                    if(data.leaderboard.length === 0) {
+                        html = '<tr><td colspan="4" style="text-align:center; color:#666;">Henüz maç yapılmadı.</td></tr>';
+                    } else {
+                        data.leaderboard.forEach((u, i) => {
+                            let medal = '';
+                            if(i===0) medal = '🥇';
+                            else if(i===1) medal = '🥈';
+                            else if(i===2) medal = '🥉';
+                            else medal = `<span class="rank-badge">${i+1}</span>`;
+                            let bgStyle = (u.username === currentUser) ? 'background:rgba(250, 187, 0, 0.1);' : '';
+                            html += `<tr style="${bgStyle}"><td>${medal}</td><td style="text-align:left;">${u.username}</td><td>${u.games}</td><td>${u.average}</td></tr>`;
+                        });
+                    }
+                    tbody.innerHTML = html;
+                } else {
+                    loader.innerText = "Sıralama yüklenemedi.";
+                    loader.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                loader.innerText = "Bağlantı hatası.";
+            });
         }
 
         function startPenaltySession() {
@@ -1048,4 +1132,3 @@
     </script>
 </body>
 </html>
-
