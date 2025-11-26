@@ -322,27 +322,12 @@
             cursor: not-allowed;
         }
 
-        /* YENİ EKLENEN SINIFLAR: Doğru cevabın yeşil yanması için */
-        .btn-correct {
-            background-color: #2e7d32 !important;
-            color: white !important;
-            border-color: #1b5e20 !important;
-            opacity: 1 !important;
-            box-shadow: 0 0 15px rgba(46, 125, 50, 0.5) !important;
-        }
-
-        .btn-wrong {
-            background-color: #d32f2f !important;
-            color: white !important;
-            border-color: #b71c1c !important;
-            opacity: 1 !important;
-        }
-
         /* Yanlış cevapta çift hak jokeri için */
-        .wrong-first-try {
-            background-color: #d32f2f !important;
-            color: white !important;
-            opacity: 0.8 !important;
+        .penalty-btn.wrong-first-try {
+            background: #d32f2f;
+            color: white;
+            opacity: 0.8;
+            cursor: not-allowed;
         }
         
         .penalty-field {
@@ -1396,6 +1381,7 @@
                     localStorage.setItem("sSportRole", data.role); 
 
                     
+
                     if (data.forceChange === true) {
 
                         Swal.fire({
@@ -1740,6 +1726,7 @@
         function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
 
         
+
         function toggleEditMode() {
 
             isAdminMode = !isAdminMode; document.body.classList.toggle('editing', isAdminMode); const btn = document.getElementById('quickEditBtn'); 
@@ -2283,7 +2270,8 @@
         function openQuizEditor() { let html = '<div style="text-align:left; max-height:400px; overflow-y:auto;">'; quizQuestions.forEach((q, i) => { const safeQ = cleanData(q.q); html += `<div style="border-bottom:1px solid #eee; padding:10px; cursor:pointer;" onclick="editQuizQuestion(${i})"><b>${i+1}. ${safeQ}</b><br><span style="font-size:0.8rem; color:#fabb00;"><i class="fas fa-pencil-alt"></i> Düzenle</span></div>`; }); html += '</div>'; Swal.fire({ title: 'Soruları Düzenle', html: html, showConfirmButton: false, showCloseButton: true }); }
 
         
-        // --- PENALTI OYUNU MANTIĞI (GÜNCELLENMİŞ) ---
+
+        // --- PENALTI OYUNU MANTIĞI (JOKERLİ GÜNCEL) ---
 
         let pScore = 0;
 
@@ -2415,6 +2403,7 @@
             const table = document.getElementById('leaderboard-table');
 
             
+
             tbody.innerHTML = '';
 
             loader.style.display = 'block';
@@ -2503,17 +2492,19 @@
             jokers = { call: 1, half: 1, double: 1 };
             doubleChanceUsed = false;
             firstAnswerIndex = -1;
-            
-            // UI elemanlarını sıfırla/göster
-            document.getElementById('p-score').innerText = pScore;
-            document.getElementById('p-balls').innerText = pBalls;
-            document.getElementById('p-restart-btn').style.display = 'none';
-            document.getElementById('p-options').style.display = 'grid';
-            document.getElementById('p-question-text').innerText = "Soru yükleniyor...";
-
-
             updateJokerButtons(); // Joker butonlarını güncelle
+
+
+            document.getElementById('p-score').innerText = pScore;
+
+            document.getElementById('p-balls').innerText = pBalls;
+
+            document.getElementById('p-restart-btn').style.display = 'none';
+
+            document.getElementById('p-options').style.display = 'grid';
+
             resetField();
+
             loadPenaltyQuestion();
 
         }
@@ -2556,9 +2547,8 @@
             const isCorrect = (userAnswerIndex === pCurrentQ.a);
             
             // 1. Çift Cevap Jokeri Kontrolü (Hata durumunda)
-            if (!isCorrect && jokers.double === 1 && firstAnswerIndex === -1) {
+            if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) {
                 
-                jokers.double = 0; // Jokeri kullanıldı olarak işaretle
                 firstAnswerIndex = userAnswerIndex;
                 btns[userAnswerIndex].classList.add('wrong-first-try'); // İlk yanlış cevabı işaretle
                 btns[userAnswerIndex].disabled = true;
@@ -2610,8 +2600,7 @@
 
 
                 if (isCorrect) {
-                    // DOĞRU CEVAP İÇİN YENİ SINIF
-                    btns[userAnswerIndex].classList.add('btn-correct'); 
+                    btns[userAnswerIndex].style.background = '#2e7d32'; // Cevabı yeşil yap
 
                     // Şut Animasyonları
                     if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top');
@@ -2638,12 +2627,10 @@
 
 
                 } else {
-                    // YANLIŞ CEVAP İÇİN YENİ SINIF
-                    btns[userAnswerIndex].classList.add('btn-wrong'); 
+                    // İkinci deneme (veya çift hak yokken ilk deneme) yanlış
                     
-                    // Doğru cevabı da işaretle
-                    btns[pCurrentQ.a].classList.add('btn-correct');
-
+                    btns[userAnswerIndex].style.background = '#d32f2f'; // Cevabı kırmızı yap
+                    
                     if(Math.random() > 0.5) {
 
                         // Kaleci kurtardı animasyonu (top kaleciye çarpar gibi durur)
@@ -2685,6 +2672,10 @@
                         Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
 
                     }
+                    
+                    // Doğru cevabı da işaretle
+                    btns[pCurrentQ.a].style.background = '#2e7d32';
+
                 }
 
             }, 300); 
@@ -2719,27 +2710,31 @@
             const goalMsg = document.getElementById('goal-msg');
 
 
-            // Sınıfları temizle ve sıfırla
+            // Sınıfları temizle
+
             ballWrap.className = 'ball-wrapper';
-            ballWrap.style = ""; // Inline stilleri (transform vs) temizle
+
+            ballWrap.style = ""; // Inline stilleri temizle
+
             shadow.className = 'ball-shadow';
 
+
             keeperWrap.className = 'keeper-wrapper';
+
+            
+
             shooterWrap.className = 'shooter-wrapper'; 
+
 
             goalMsg.classList.remove('show');
             
-            // Tarayıcıyı Reflow'a zorla (CSS animasyonlarının sıfırlanması için kritik)
-            void ballWrap.offsetWidth;
-
-            // Tüm buton stillerini sıfırla 
+            // Tüm buton stillerini sıfırla (Çift cevap jokeri için önemli)
             document.querySelectorAll('.penalty-btn').forEach(b => {
-                b.classList.remove('btn-correct', 'btn-wrong', 'wrong-first-try');
+                b.classList.remove('wrong-first-try');
                 b.style.textDecoration = '';
                 b.style.opacity = '';
-                b.style.background = ''; // Butonun arka plan stilini sıfırla
+                b.style.background = '';
                 b.style.color = '';
-                b.disabled = false;
             });
 
         }
