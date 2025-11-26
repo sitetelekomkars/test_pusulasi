@@ -336,8 +336,8 @@
 
         /* Yanlış cevapta çift hak jokeri için */
         .penalty-btn.wrong-first-try {
-            background: #d32f2f;
-            color: white;
+            background: #d32f2f !important; /* İlk yanlış deneme */
+            color: white !important;
             opacity: 0.8;
             cursor: not-allowed;
         }
@@ -2041,7 +2041,7 @@
 
                         </div>
 
-                        <div id="extra-container" class="card-actions" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div class="card-actions" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
 
                             <div style="position:relative;"><i class="fas fa-code" style="position:absolute; left:10px; top:10px; color:#aaa;"></i><input id="swal-code" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" value="${item.code || ''}" placeholder="Kod"></div>
 
@@ -2564,7 +2564,7 @@
             if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) {
                 
                 firstAnswerIndex = userAnswerIndex;
-                btns[userAnswerIndex].classList.add('wrong-first-try'); // İlk yanlış cevabı işaretle
+                btns[userAnswerIndex].classList.add('wrong-first-try'); // İlk yanlış cevabı kırmızı işaretle
                 btns[userAnswerIndex].disabled = true;
                 
                 Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'İlk Hata! Kalan Hakkınız: 1', showConfirmButton: false, timer: 1500, background: '#ffc107' });
@@ -2643,16 +2643,7 @@
 
                 } else {
                     
-                    // YANLIŞ CEVAP VERİLDİĞİNDE: Kendi cevabı KIRMIZI, Doğru cevap YEŞİL renklenecek.
-                    
-                    // Yanlış cevabı kırmızı yap
-                    btns[userAnswerIndex].style.background = '#d32f2f';
-                    btns[userAnswerIndex].style.color = 'white';
-                    
-                    // Doğru cevabı yeşil yap (Öğrenme mekanizması)
-                    btns[pCurrentQ.a].style.background = '#2e7d32';
-                    btns[pCurrentQ.a].style.color = 'white';
-                    
+                    // YANLIŞ CEVAP VERİLDİĞİNDE: Renklendirme YOK. Sadece mesaj gösterilecek.
                     
                     if(Math.random() > 0.5) {
 
@@ -2671,10 +2662,19 @@
                             goalMsg.style.color = "#ef5350";
 
                             goalMsg.classList.add('show');
+                            
+                            // Öğrenme amaçlı doğru cevabı göster
+                            Swal.fire({ 
+                                icon: 'error', 
+                                title: 'Kaçırdın!', 
+                                text: `Doğru cevap: ${String.fromCharCode(65 + pCurrentQ.a)}. ${pCurrentQ.opts[pCurrentQ.a]}`, 
+                                showConfirmButton: true, 
+                                timer: 2500, 
+                                background: '#ef9a9a' 
+                            });
 
                         }, 500);
 
-                        Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
 
                     } else {
 
@@ -2689,10 +2689,18 @@
                             goalMsg.style.color = "#ef5350";
 
                             goalMsg.classList.add('show');
+                            
+                            // Öğrenme amaçlı doğru cevabı göster
+                            Swal.fire({ 
+                                icon: 'error', 
+                                title: 'Kaçırdın!', 
+                                text: `Doğru cevap: ${String.fromCharCode(65 + pCurrentQ.a)}. ${pCurrentQ.opts[pCurrentQ.a]}`, 
+                                showConfirmButton: true, 
+                                timer: 2500, 
+                                background: '#ef9a9a' 
+                            });
 
                         }, 500);
-
-                        Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
 
                     }
 
@@ -2753,7 +2761,7 @@
                 b.classList.remove('wrong-first-try');
                 b.style.textDecoration = '';
                 b.style.opacity = '';
-                // BUTONLARIN ARKA PLAN VE YAZI RENGİNİ SIFIRLA
+                // BUTONLARIN ARKA PLAN VE YAZI RENGİNİ VARSAYILANA DÖNDÜR
                 b.style.background = '#fabb00'; 
                 b.style.color = '#0e1b42';
                 // Kenarlık da sıfırlanmalı
