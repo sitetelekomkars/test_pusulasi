@@ -2390,153 +2390,107 @@
         }
 
 
-        function shootBall(userAnswerIndex) {
-
-            const btns = document.querySelectorAll('.penalty-btn');
-
-            btns.forEach(b => b.disabled = true);
-
-
-            const ballWrap = document.getElementById('ball-wrap');
-
-            const shadow = ballWrap.querySelector('.ball-shadow');
-
-            const keeperWrap = document.getElementById('keeper-wrap');
-
-            const shooterWrap = document.getElementById('shooter-wrap');
-
-            const goalMsg = document.getElementById('goal-msg');
-
-            
-
-            const isCorrect = (userAnswerIndex === pCurrentQ.a);
-
-            const shotDir = Math.floor(Math.random() * 4); 
-
-
-            shooterWrap.classList.add('shooter-run');
-
-
-            setTimeout(() => {
-
-                // Kaleci Hareketi
-
-                if(isCorrect) {
-
-                     // Gol olduğunda kaleci ters köşeye uçar
-
-                     if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right');
-
-                     else keeperWrap.classList.add('keeper-dive-left');
-
-                } else {
-
-                    // Kurtarışta kaleci topun olduğu yere uçar
-
-                    if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left');
-
-                    else keeperWrap.classList.add('keeper-dive-right');
-
-                }
-
-
-                shadow.classList.add('ball-shadow-move'); 
-
-
-                if (isCorrect) {
-
-                    // Şut Animasyonları
-
-                    if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top');
-
-                    else if(shotDir === 1) ballWrap.classList.add('ball-shoot-right-top');
-
-                    else if(shotDir === 2) ballWrap.classList.add('ball-shoot-left-low');
-
-                    else ballWrap.classList.add('ball-shoot-right-low');
-
-
-                    setTimeout(() => {
-
-                        goalMsg.innerText = "GOL!!!";
-
-                        goalMsg.style.color = "#fabb00";
-
-                        goalMsg.classList.add('show');
-
-                        pScore++;
-
-                        document.getElementById('p-score').innerText = pScore;
-
-                        Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Mükemmel Şut!', showConfirmButton: false, timer: 1000, background: '#a5d6a7' });
-
-                    }, 500);
-
-
-                } else {
-
-                    if(Math.random() > 0.5) {
-
-                        // Kaleci kurtardı animasyonu (top kaleciye çarpar gibi durur)
-
-                        ballWrap.style.bottom = "160px"; // Yükseklik ayarı
-
-                        ballWrap.style.left = (shotDir === 0 || shotDir === 2) ? "40%" : "60%";
-
-                        ballWrap.style.transform = "scale(0.6)";
-
-                        setTimeout(() => {
-
-                            goalMsg.innerText = "KURTARDI!";
-
-                            goalMsg.style.color = "#ef5350";
-
-                            goalMsg.classList.add('show');
-
-                        }, 500);
-
-                        Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
-
-                    } else {
-
-                        // Dışarı attı
-
-                        ballWrap.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right');
-
-                        setTimeout(() => {
-
-                            goalMsg.innerText = "DIŞARI!";
-
-                            goalMsg.style.color = "#ef5350";
-
-                            goalMsg.classList.add('show');
-
-                        }, 500);
-
-                        Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
-
-                    }
-
-                }
-
-            }, 300); 
-
-
-            pBalls--;
-
-            document.getElementById('p-balls').innerText = pBalls;
-
-
-            setTimeout(() => {
-
-                resetField();
-
-                loadPenaltyQuestion();
-
-            }, 2500);
-
+        // Orijinal kodunuzun 1528. satırından itibaren:
+function shootBall(userAnswerIndex) {
+    const btns = document.querySelectorAll('.penalty-btn');
+    btns.forEach(b => b.disabled = true);
+
+    const ballWrap = document.getElementById('ball-wrap');
+    const shadow = ballWrap.querySelector('.ball-shadow');
+    const keeperWrap = document.getElementById('keeper-wrap');
+    const shooterWrap = document.getElementById('shooter-wrap');
+    const goalMsg = document.getElementById('goal-msg');
+    
+    // --- BURADAN İTİBAREN GÜNCELLEME BAŞLIYOR ---
+
+    const correctAnswerIndex = pCurrentQ.a;
+    const isCorrect = (userAnswerIndex === correctAnswerIndex);
+    const shotDir = Math.floor(Math.random() * 4); 
+
+    // 1. Cevap butonlarını renklendir
+    btns.forEach((btn, index) => {
+        // Doğru şıkkı vurgula
+        if (index === correctAnswerIndex) {
+            btn.style.backgroundColor = '#a5d6a7'; // Yeşil Tonu
+            btn.style.borderColor = '#2e7d32'; 
+            btn.style.color = '#1b5e20';
+        }
+        
+        // Kullanıcının seçtiği şık yanlışsa, onu kırmızı yap
+        if (index === userAnswerIndex && !isCorrect) {
+            btn.style.backgroundColor = '#ffcdd2'; // Kırmızı Tonu
+            btn.style.borderColor = '#c62828';
+            btn.style.color = '#b71c1c';
+        }
+    });
+    
+    // Animatörü çalıştır
+    shooterWrap.classList.add('shooter-run');
+
+    setTimeout(() => {
+        // Kaleci Hareketi
+        if(isCorrect) {
+            // Gol olduğunda kaleci ters köşeye uçar
+            if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right');
+            else keeperWrap.classList.add('keeper-dive-left');
+        } else {
+            // Kurtarışta kaleci topun olduğu yere uçar
+            if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left');
+            else keeperWrap.classList.add('keeper-dive-right');
         }
 
+        shadow.classList.add('ball-shadow-move'); 
+
+        if (isCorrect) {
+            // Şut Animasyonları
+            if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top');
+            else if(shotDir === 1) ballWrap.classList.add('ball-shoot-right-top');
+            else if(shotDir === 2) ballWrap.classList.add('ball-shoot-left-low');
+            else ballWrap.classList.add('ball-shoot-right-low');
+
+            setTimeout(() => {
+                goalMsg.innerText = "GOL!!!";
+                goalMsg.style.color = "#fabb00";
+                goalMsg.classList.add('show');
+                pScore++;
+                document.getElementById('p-score').innerText = pScore;
+                Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Mükemmel Şut!', showConfirmButton: false, timer: 1000, background: '#a5d6a7' });
+            }, 500);
+
+        } else {
+            if(Math.random() > 0.5) {
+                // Kaleci kurtardı animasyonu (top kaleciye çarpar gibi durur)
+                ballWrap.style.bottom = "160px"; // Yükseklik ayarı
+                ballWrap.style.left = (shotDir === 0 || shotDir === 2) ? "40%" : "60%";
+                ballWrap.style.transform = "scale(0.6)";
+                setTimeout(() => {
+                    goalMsg.innerText = "KURTARDI!";
+                    goalMsg.style.color = "#ef5350";
+                    goalMsg.classList.add('show');
+                }, 500);
+                Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
+            } else {
+                // Dışarı attı
+                ballWrap.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right');
+                setTimeout(() => {
+                    goalMsg.innerText = "DIŞARI!";
+                    goalMsg.style.color = "#ef5350";
+                    goalMsg.classList.add('show');
+                }, 500);
+                Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
+            }
+        }
+
+    }, 300); 
+
+    pBalls--;
+    document.getElementById('p-balls').innerText = pBalls;
+
+    setTimeout(() => {
+        resetField();
+        loadPenaltyQuestion();
+    }, 2500);
+}
 
         function resetField() {
 
@@ -2599,4 +2553,5 @@
 </body>
 
 </html>
+
 
