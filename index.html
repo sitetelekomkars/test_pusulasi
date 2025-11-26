@@ -1216,9 +1216,9 @@
         
         // Yeni Global Değişkenler
         let jokers = {
-            call: 1,      // Telefon Jokeri
-            half: 1,      // Yarı Yarıya
-            double: 1     // Çift Cevap
+            call: 1,    // Telefon Jokeri
+            half: 1,    // Yarı Yarıya
+            double: 1   // Çift Cevap
         };
         let doubleChanceUsed = false; // Çift cevap hakkı kullanıldı mı?
         let firstAnswerIndex = -1;    // İlk yanlış deneme cevabı
@@ -1501,95 +1501,95 @@
 
              const { value: formValues } = await Swal.fire({
 
-                title: isMandatory ? 'Yeni Şifre Belirleyin' : 'Şifre Değiştir',
+                 title: isMandatory ? 'Yeni Şifre Belirleyin' : 'Şifre Değiştir',
 
-                html: `
+                 html: `
 
-                    ${isMandatory ? '<p style="font-size:0.9rem; color:#d32f2f;">İlk giriş şifrenizi değiştirmeden devam edemezsiniz.</p>' : ''}
+                     ${isMandatory ? '<p style="font-size:0.9rem; color:#d32f2f;">İlk giriş şifrenizi değiştirmeden devam edemezsiniz.</p>' : ''}
 
-                    <input id="swal-old-pass" type="password" class="swal2-input" placeholder="Eski Şifre (Mevcut)">
+                     <input id="swal-old-pass" type="password" class="swal2-input" placeholder="Eski Şifre (Mevcut)">
 
-                    <input id="swal-new-pass" type="password" class="swal2-input" placeholder="Yeni Şifre">
+                     <input id="swal-new-pass" type="password" class="swal2-input" placeholder="Yeni Şifre">
 
-                `,
+                 `,
 
-                focusConfirm: false, 
+                 focusConfirm: false, 
 
-                showCancelButton: !isMandatory,
+                 showCancelButton: !isMandatory,
 
-                allowOutsideClick: !isMandatory,
+                 allowOutsideClick: !isMandatory,
 
-                allowEscapeKey: !isMandatory,
+                 allowEscapeKey: !isMandatory,
 
-                confirmButtonText: 'Değiştir',
+                 confirmButtonText: 'Değiştir',
 
-                cancelButtonText: 'İptal',
+                 cancelButtonText: 'İptal',
 
-                preConfirm: () => { 
+                 preConfirm: () => { 
 
-                    const o = document.getElementById('swal-old-pass').value;
+                     const o = document.getElementById('swal-old-pass').value;
 
-                    const n = document.getElementById('swal-new-pass').value;
+                     const n = document.getElementById('swal-new-pass').value;
 
-                    if(!o || !n) { Swal.showValidationMessage('Alanlar boş bırakılamaz'); }
+                     if(!o || !n) { Swal.showValidationMessage('Alanlar boş bırakılamaz'); }
 
-                    return [ o, n ] 
+                     return [ o, n ] 
 
-                }
+                 }
 
-            });
+             });
 
-            if (formValues) {
+             if (formValues) {
 
-                Swal.fire({ title: 'İşleniyor...', didOpen: () => { Swal.showLoading() } });
+                 Swal.fire({ title: 'İşleniyor...', didOpen: () => { Swal.showLoading() } });
 
-                fetch(SCRIPT_URL, { 
+                 fetch(SCRIPT_URL, { 
 
-                    method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                     method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" },
 
-                    body: JSON.stringify({ 
+                     body: JSON.stringify({ 
 
-                        action: "changePassword", username: currentUser, oldPass: CryptoJS.SHA256(formValues[0]).toString(), newPass: CryptoJS.SHA256(formValues[1]).toString(), token: getToken()
+                         action: "changePassword", username: currentUser, oldPass: CryptoJS.SHA256(formValues[0]).toString(), newPass: CryptoJS.SHA256(formValues[1]).toString(), token: getToken()
 
-                    }) 
+                     }) 
 
-                })
+                 })
 
-                .then(response => response.json())
+                 .then(response => response.json())
 
-                .then(data => {
+                 .then(data => {
 
-                    if(data.result === "success") {
+                     if(data.result === "success") {
 
-                        Swal.fire('Başarılı!', 'Şifreniz güncellendi. Güvenlik gereği yeniden giriş yapınız.', 'success')
+                         Swal.fire('Başarılı!', 'Şifreniz güncellendi. Güvenlik gereği yeniden giriş yapınız.', 'success')
 
-                        .then(() => { logout(); }); 
+                         .then(() => { logout(); }); 
 
-                    }
+                     }
 
-                    else { 
+                     else { 
 
-                        Swal.fire('Hata', data.message || 'İşlem başarısız.', 'error')
+                         Swal.fire('Hata', data.message || 'İşlem başarısız.', 'error')
 
-                        .then(() => { if(isMandatory) changePasswordPopup(true); }); 
+                         .then(() => { if(isMandatory) changePasswordPopup(true); }); 
 
-                    }
+                     }
 
-                })
+                 })
 
-                .catch(err => {
+                 .catch(err => {
 
-                    Swal.fire('Hata', 'Sunucu hatası.', 'error');
+                     Swal.fire('Hata', 'Sunucu hatası.', 'error');
 
-                    if(isMandatory) changePasswordPopup(true);
+                     if(isMandatory) changePasswordPopup(true);
 
-                });
+                 });
 
-            } else if (isMandatory) {
+             } else if (isMandatory) {
 
-                changePasswordPopup(true);
+                 changePasswordPopup(true);
 
-            }
+             }
 
         }
 
@@ -1639,7 +1639,7 @@
 
             activeCards = data; const container = document.getElementById('cardGrid'); container.innerHTML = ''; 
 
-            if(data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok / Bulunamadı</div>'; return; } 
+            if (data.length === 0) { container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Kayıt Yok / Bulunamadı</div>'; return; } 
 
             data.forEach((item, index) => { 
 
@@ -1843,39 +1843,39 @@
 
                     <div id="news-extra" style="display:none; text-align:left; margin-top:10px;">
 
-                                 <div style="display:flex; gap:10px; margin-bottom:10px;">
+                                     <div style="display:flex; gap:10px; margin-bottom:10px;">
 
-                                    <div style="flex:1;">
+                                         <div style="flex:1;">
 
-                                        <label style="font-weight:bold; font-size:0.8rem;">Tür</label>
+                                             <label style="font-weight:bold; font-size:0.8rem;">Tür</label>
 
-                                        <select id="swal-news-type" class="swal2-input" style="width:100%; height:35px; margin:0; padding:0 5px;">
+                                             <select id="swal-news-type" class="swal2-input" style="width:100%; height:35px; margin:0; padding:0 5px;">
 
-                                            <option value="info">Bilgi</option>
+                                                 <option value="info">Bilgi</option>
 
-                                            <option value="fix">Çözüldü</option>
+                                                 <option value="fix">Çözüldü</option>
 
-                                            <option value="update">Güncelleme</option>
+                                                 <option value="update">Güncelleme</option>
 
-                                        </select>
+                                             </select>
 
-                                    </div>
+                                         </div>
 
-                                     <div style="flex:1;">
+                                          <div style="flex:1;">
 
-                                        <label style="font-weight:bold; font-size:0.8rem;">Durum</label>
+                                             <label style="font-weight:bold; font-size:0.8rem;">Durum</label>
 
-                                        <select id="swal-news-status" class="swal2-input" style="width:100%; height:35px; margin:0; padding:0 5px;">
+                                             <select id="swal-news-status" class="swal2-input" style="width:100%; height:35px; margin:0; padding:0 5px;">
 
-                                            <option value="Aktif">Aktif</option>
+                                                 <option value="Aktif">Aktif</option>
 
-                                            <option value="Pasif">Pasif</option>
+                                                 <option value="Pasif">Pasif</option>
 
-                                        </select>
+                                             </select>
 
-                                    </div>
+                                         </div>
 
-                                 </div>
+                                     </div>
 
                     </div>
 
@@ -2295,17 +2295,19 @@
         function updateJokerButtons() {
             document.getElementById('joker-call').disabled = jokers.call === 0;
             document.getElementById('joker-half').disabled = jokers.half === 0;
-            document.getElementById('joker-double').disabled = jokers.double === 0 || doubleChanceUsed;
+            // Çift cevap hakkı ilk yanlış denemeden sonra veya joker bittiyse devre dışı kalır
+            document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1;
 
             // İlk cevap yanlışsa, sadece double jokeri disable olmalı
             if (firstAnswerIndex !== -1) {
                 document.getElementById('joker-call').disabled = true;
                 document.getElementById('joker-half').disabled = true;
+                document.getElementById('joker-double').disabled = true;
             }
         }
 
         function useJoker(type) {
-            if (jokers[type] === 0) return;
+            if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return;
             
             jokers[type] = 0;
             updateJokerButtons();
@@ -2331,7 +2333,7 @@
                     icon: 'info',
                     title: '📞 Telefon Jokeri',
                     html: `${expert} soruyu cevaplıyor...<br><br>
-                           "Benim tahminim kesinlikle **${String.fromCharCode(65 + guess)}** şıkkı. Bundan ${confidence}."`,
+                            "Benim tahminim kesinlikle **${String.fromCharCode(65 + guess)}** şıkkı. Bundan ${confidence}."`,
                     confirmButtonText: 'Kapat'
                 });
                 
@@ -2558,7 +2560,7 @@
             const btns = document.querySelectorAll('.penalty-btn');
             const isCorrect = (userAnswerIndex === pCurrentQ.a);
             
-            // 1. Çift Cevap Jokeri Kontrolü (Hata durumunda)
+            // 1. Çift Cevap Jokeri Kontrolü (İlk Hata durumunda)
             if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) {
                 
                 firstAnswerIndex = userAnswerIndex;
@@ -2567,7 +2569,7 @@
                 
                 Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'İlk Hata! Kalan Hakkınız: 1', showConfirmButton: false, timer: 1500, background: '#ffc107' });
                 
-                // Diğer butonları tekrar tıklanabilir yap (yalnızca çift cevap jokeri için)
+                // Diğer butonları tekrar tıklanabilir yap (yarı yarıya elenenler hariç)
                 btns.forEach(b => {
                     if (!b.classList.contains('wrong-first-try') && !b.style.textDecoration) {
                         b.disabled = false;
@@ -2612,7 +2614,9 @@
 
 
                 if (isCorrect) {
-                    btns[userAnswerIndex].style.background = '#2e7d32'; // Cevabı yeşil yap
+                    
+                    // Buton renklendirmeyi kaldırıldı, sadece gol mesajı ve skor eklendi.
+                    // btns[userAnswerIndex].style.background = '#2e7d32'; // Bu satır kaldırıldı
 
                     // Şut Animasyonları
                     if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top');
@@ -2639,10 +2643,19 @@
 
 
                 } else {
-                    // İkinci deneme (veya çift hak yokken ilk deneme) yanlış
                     
-                    btns[userAnswerIndex].style.background = '#d32f2f'; // Cevabı kırmızı yap
+                    // YANLIŞ CEVAPTA DOĞRU CEVABI GÖSTERME (İSTENEN ÖZELLİK)
                     
+                    // Yanlış cevabı kırmızı yap
+                    btns[userAnswerIndex].style.background = '#d32f2f';
+                    btns[userAnswerIndex].style.color = 'white';
+                    
+                    // Doğru cevabı yeşil yap
+                    btns[pCurrentQ.a].style.background = '#2e7d32';
+                    btns[pCurrentQ.a].style.color = 'white';
+                    // END YENİ ÖZELLİK
+                    
+
                     if(Math.random() > 0.5) {
 
                         // Kaleci kurtardı animasyonu (top kaleciye çarpar gibi durur)
@@ -2684,9 +2697,6 @@
                         Swal.fire({ toast: true, position: 'top', icon: 'error', title: 'Kaçırdın!', showConfirmButton: false, timer: 1000, background: '#ef9a9a' });
 
                     }
-                    
-                    // Doğru cevabı da işaretle
-                    btns[pCurrentQ.a].style.background = '#2e7d32';
 
                 }
 
@@ -2745,8 +2755,9 @@
                 b.classList.remove('wrong-first-try');
                 b.style.textDecoration = '';
                 b.style.opacity = '';
-                b.style.background = '';
-                b.style.color = '';
+                b.style.background = ''; // Arka plan rengini sıfırla
+                b.style.color = ''; // Metin rengini sıfırla
+                b.disabled = false;
             });
 
         }
@@ -2768,7 +2779,6 @@
         }
 
         
-
         const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
 
         function openWizard(){ document.getElementById('wizard-modal').style.display='flex'; renderStep('start'); }
