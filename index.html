@@ -2615,8 +2615,7 @@
 
                 if (isCorrect) {
                     
-                    // Buton renklendirmeyi kaldırıldı, sadece gol mesajı ve skor eklendi.
-                    // btns[userAnswerIndex].style.background = '#2e7d32'; // Bu satır kaldırıldı
+                    // Doğru cevap verildiğinde ekstra renklendirme yok.
 
                     // Şut Animasyonları
                     if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top');
@@ -2644,18 +2643,17 @@
 
                 } else {
                     
-                    // YANLIŞ CEVAPTA DOĞRU CEVABI GÖSTERME (İSTENEN ÖZELLİK)
+                    // YANLIŞ CEVAP VERİLDİĞİNDE: Kendi cevabı KIRMIZI, Doğru cevap YEŞİL renklenecek.
                     
                     // Yanlış cevabı kırmızı yap
                     btns[userAnswerIndex].style.background = '#d32f2f';
                     btns[userAnswerIndex].style.color = 'white';
                     
-                    // Doğru cevabı yeşil yap
+                    // Doğru cevabı yeşil yap (Öğrenme mekanizması)
                     btns[pCurrentQ.a].style.background = '#2e7d32';
                     btns[pCurrentQ.a].style.color = 'white';
-                    // END YENİ ÖZELLİK
                     
-
+                    
                     if(Math.random() > 0.5) {
 
                         // Kaleci kurtardı animasyonu (top kaleciye çarpar gibi durur)
@@ -2755,7 +2753,7 @@
                 b.classList.remove('wrong-first-try');
                 b.style.textDecoration = '';
                 b.style.opacity = '';
-                b.style.background = ''; // Arka plan rengini sıfırla
+                b.style.background = ''; // Arka plan rengini sıfırla (varsayılan sPusula rengine döner)
                 b.style.color = ''; // Metin rengini sıfırla
                 b.disabled = false;
             });
