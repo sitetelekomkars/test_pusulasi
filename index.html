@@ -969,7 +969,7 @@
 
         </div>
 
-        </div>
+    </div>
 
 
     <div id="guide-modal" class="modal-overlay">
@@ -1194,7 +1194,8 @@
 
         const BAKIM_MODU = false; 
 
-        // DATA_SHEET_URL burdan kaldırıldı, Apps Script'e taşındı.
+        const DATA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7eIsOqTEhUtHWEiEJzs8mzySd9btRzCG8gsd8xvvz3JFn2bfs3rJl0M4DYdt5NNrNvvrptKYiQyWa/pub?gid=0&single=true&output=csv";
+
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxd0BsAHEhHHXIPVmx1svVi8GxbR1s_wlxW2fNABeHYvu2BRrYOn8eDMCF-7xZFqw8_BA/exec"; 
 
         
@@ -1578,50 +1579,45 @@
         }
 
 
-        // loadContentData fonksiyonu GÜNCELLENDİ
         function loadContentData() {
-            const loader = document.getElementById('loading');
-            loader.style.display = 'block';
-            loader.innerHTML = '<i class="fas fa-spinner fa-spin fa-2x"></i><br>Veriler Apps Script üzerinden güvenli bir şekilde çekiliyor...';
-            
-            // Veri çekme isteğini Apps Script'e yönlendir (Sheets URL'sini gizleyerek)
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "fetchData" }) 
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === "success") {
-                    const rawData = data.data; // Apps Script'ten gelen işlenmiş JSON verisi
-                    
-                    // Veri filtreleme ve atama işlemleri aynı kalır.
+
+            Papa.parse(DATA_SHEET_URL, {
+
+                download: true, header: true,
+
+                complete: function(results) {
+
+                    const rawData = results.data;
+
                     const fetchedCards = rawData.filter(i => ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type)).map(i => ({ title: i.Title, category: i.Category, text: i.Text, script: i.Script, code: i.Code, link: i.Link, date: i.Date })); 
+
                     const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ date: i.Date, title: i.Title, desc: i.Text, type: i.Category, status: i.Status }));
+
                     const fetchedSports = rawData.filter(i => i.Type === 'sport').map(i => ({ title: i.Title, icon: i.Icon, desc: i.Text, tip: i.Tip, detail: i.Detail, pronunciation: i.Pronunciation }));
+
                     const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
+
                     const fetchedQuiz = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions ? i.QuizOptions.split(',') : [], a: parseInt(i.QuizAnswer) }));
+
                     
+
                     database = fetchedCards; newsData = fetchedNews; sportsData = fetchedSports; salesScripts = fetchedSales; quizQuestions = fetchedQuiz;
 
                     document.getElementById('loading').style.display = 'none';
 
                     if(currentCategory === 'fav') { filterCategory(document.querySelector('.btn-fav'), 'fav'); }
+
                     else { activeCards = database; renderCards(database); }
 
                     startTicker();
 
-                } else {
-                    console.error("Apps Script Hatası:", data.message);
-                    loader.innerHTML = 'Veriler Apps Script\'ten alınamadı: ' + (data.message || 'Bilinmeyen Hata.');
-                }
-            })
-            .catch(err => { 
-                console.error("Fetch Hatası:", err); 
-                loader.innerHTML = 'Bağlantı Hatası. Lütfen sayfayı yenileyin.'; 
+                },
+
+                error: function(err) { console.error("CSV Hatası:", err); document.getElementById('loading').innerHTML = 'Veriler alınamadı. Lütfen tekrar deneyin.'; }
+
             });
+
         }
-        // loadContentData fonksiyonu SONU
 
 
         function renderCards(data) { 
@@ -1727,6 +1723,7 @@
         function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
 
         
+
         function toggleEditMode() {
 
             isAdminMode = !isAdminMode; document.body.classList.toggle('editing', isAdminMode); const btn = document.getElementById('quickEditBtn'); 
