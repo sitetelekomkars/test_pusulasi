@@ -509,7 +509,7 @@
         
         function sendUpdate(o, c, v, t='card') { if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } }); fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "updateContent", title: o, column: c, value: v, type: t, originalText: o, username: currentUser, token: getToken() }) }).then(r => r.json()).then(data => { if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); setTimeout(loadContentData, 1600); } else { Swal.fire('Hata', 'Kaydedilemedi: ' + (data.message || 'Bilinmeyen Hata'), 'error'); } }).catch(err => Swal.fire('Hata', 'Sunucu hatası.', 'error')); }
         
-        // --- CRUD FONKSİYONLARI (Eski koddan geri getirildi/tamamlandı) ---
+        // --- CRUD FONKSİYONLARI ---
         async function addNewCardPopup() {
              const catSelectHTML = getCategorySelectHtml('Bilgi', 'swal-new-cat');
              const { value: formValues } = await Swal.fire({
@@ -539,15 +539,15 @@
                              <div style="position:relative;"><i class="fas fa-code" style="position:absolute; left:10px; top:10px; color:#aaa;"></i><input id="swal-new-code" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Kod"></div>
                              <div style="position:relative;"><i class="fas fa-link" style="position:absolute; left:10px; top:10px; color:#aaa;"></i><input id="swal-new-link" class="swal2-input" style="margin:0; height:35px; font-size:0.85rem; padding-left:30px;" placeholder="Link"></div>
                          </div>
-                         <div id="sport-extra" style="display:none;">
-                             <input id="swal-sport-tip" class="swal2-input" placeholder="Kısa İpucu/Tip">
-                             <input id="swal-sport-detail" class="swal2-input" placeholder="Detaylı Açıklama (Alt Metin)">
-                             <input id="swal-sport-pron" class="swal2-input" placeholder="Okunuşu">
-                             <input id="swal-sport-icon" class="swal2-input" placeholder="FontAwesome İkon Sınıfı (e.g., fa-futbol)">
+                         <div id="sport-extra" style="display:none; padding:10px;">
+                             <label style="font-weight:bold;">Kısa Açıklama (Desc)</label><input id="swal-sport-tip" class="swal2-input" placeholder="Kısa İpucu/Tip">
+                             <label style="font-weight:bold;">Detaylı Metin (Detail)</label><input id="swal-sport-detail" class="swal2-input" placeholder="Detaylı Açıklama (Alt Metin)">
+                             <label style="font-weight:bold;">Okunuşu (Pronunciation)</label><input id="swal-sport-pron" class="swal2-input" placeholder="Okunuşu">
+                             <label style="font-weight:bold;">İkon Sınıfı (Icon)</label><input id="swal-sport-icon" class="swal2-input" placeholder="FontAwesome İkon Sınıfı (e.g., fa-futbol)">
                          </div>
-                         <div id="news-extra" style="display:none;">
-                             <select id="swal-news-type" class="swal2-input"><option value="info">Bilgi</option><option value="update">Değişiklik</option><option value="fix">Çözüldü</option></select>
-                             <select id="swal-news-status" class="swal2-input"><option value="Aktif">Aktif</option><option value="Pasif">Pasif (Gizle)</option></select>
+                         <div id="news-extra" style="display:none; padding:10px;">
+                            <label style="font-weight:bold;">Duyuru Tipi</label><select id="swal-news-type" class="swal2-input"><option value="info">Bilgi</option><option value="update">Değişiklik</option><option value="fix">Çözüldü</option></select>
+                            <label style="font-weight:bold;">Durum</label><select id="swal-news-status" class="swal2-input"><option value="Aktif">Aktif</option><option value="Pasif">Pasif (Gizle)</option></select>
                          </div>
                      </div>`,
                  width: '700px', showCancelButton: true, confirmButtonText: '<i class="fas fa-plus"></i> Ekle', cancelButtonText: 'İptal', focusConfirm: false,
@@ -566,23 +566,20 @@
                          catCont.style.display = 'none'; scriptCont.style.display = 'none'; extraCont.style.display = 'none'; 
                          sportExtra.style.display = 'none'; newsExtra.style.display = 'none';
                          cardPreview.style.borderLeft = "5px solid var(--info)"; 
+                         cardPreview.className = 'card Bilgi'; // Genel bir class'a dön
 
                          if (type === 'card') {
                              catCont.style.display = 'block'; scriptCont.style.display = 'block'; extraCont.style.display = 'grid';
                              cardPreview.className = 'card ' + document.getElementById('swal-new-cat').value;
-                             cardPreview.style.borderLeft = "5px solid var(--info)"; 
                          } else if (type === 'sales') {
-                            cardPreview.className = 'card Bilgi';
                             scriptCont.style.display = 'block'; 
                             document.getElementById('swal-new-script').placeholder = "Satış Metni...";
                             cardPreview.style.borderLeft = "5px solid var(--sales)";
                          } else if (type === 'sport') {
                              sportExtra.style.display = 'block';
-                             cardPreview.className = 'card Bilgi';
                              cardPreview.style.borderLeft = "5px solid var(--primary)";
                          } else if (type === 'news') {
                              newsExtra.style.display = 'block';
-                             cardPreview.className = 'card Bilgi';
                              cardPreview.style.borderLeft = "5px solid var(--secondary)";
                          }
                      };
@@ -677,7 +674,7 @@
                          <label style="font-weight:bold;">Detay (Alt Metin)</label>
                          <textarea id="swal-detail" class="swal2-textarea" style="margin-bottom:10px;">${s.detail || ''}</textarea>
                          <label style="font-weight:bold;">Okunuş</label>
-                         <input id="swal-pron" class="swal2-input" style="width:100%;" value="${s.pronunciation || ''}">
+                         <input id="swal-pron" class="swal2-input" style="width:100%; margin-bottom:10px;" value="${s.pronunciation || ''}">
                          <label style="font-weight:bold;">İkon Sınıfı</label>
                          <input id="swal-icon" class="swal2-input" style="width:100%;" value="${s.icon || ''}">
                      </div>`,
@@ -714,9 +711,10 @@
         async function editNews(index) {
              const i = newsData[index];
              let statusOptions = `<option value="Aktif" ${i.status !== 'Pasif' ? 'selected' : ''}>Aktif</option><option value="Pasif" ${i.status === 'Pasif' ? 'selected' : ''}>Pasif (Gizle)</option>`;
+             let typeOptions = `<option value="info" ${i.type === 'info' ? 'selected' : ''}>Bilgi</option><option value="update" ${i.type === 'update' ? 'selected' : ''}>Değişiklik</option><option value="fix" ${i.type === 'fix' ? 'selected' : ''}>Çözüldü</option>`;
              const { value: formValues } = await Swal.fire({
                  title: 'Duyuruyu Düzenle',
-                 html: `<div class="card" style="text-align:left; border-left: 5px solid var(--secondary); padding:15px; background:#fff8e1;"><label style="font-weight:bold;">Başlık</label><input id="swal-title" class="swal2-input" style="width:100%; margin-bottom:10px;" value="${i.title || ''}"><div style="display:flex; gap:10px; margin-bottom:10px;"><div style="flex:1;"><label style="font-weight:bold;">Tarih</label><input id="swal-date" class="swal2-input" style="width:100%;" value="${i.date || ''}"></div><div style="flex:1;"><label style="font-weight:bold;">Tür</label><input id="swal-type" class="swal2-input" style="width:100%;" value="${i.type || ''}"></div></div><label style="font-weight:bold;">Metin</label><textarea id="swal-desc" class="swal2-textarea" style="margin-bottom:10px;">${i.desc || ''}</textarea><label style="font-weight:bold;">Durum</label><select id="swal-status" class="swal2-input" style="width:100%;">${statusOptions}</select></div>`,
+                 html: `<div class="card" style="text-align:left; border-left: 5px solid var(--secondary); padding:15px; background:#fff8e1;"><label style="font-weight:bold;">Başlık</label><input id="swal-title" class="swal2-input" style="width:100%; margin-bottom:10px;" value="${i.title || ''}"><div style="display:flex; gap:10px; margin-bottom:10px;"><div style="flex:1;"><label style="font-weight:bold;">Tarih</label><input id="swal-date" class="swal2-input" style="width:100%;" value="${i.date || ''}"></div><div style="flex:1;"><label style="font-weight:bold;">Tür</label><select id="swal-type" class="swal2-input" style="width:100%;">${typeOptions}</select></div></div><label style="font-weight:bold;">Metin</label><textarea id="swal-desc" class="swal2-textarea" style="margin-bottom:10px;">${i.desc || ''}</textarea><label style="font-weight:bold;">Durum</label><select id="swal-status" class="swal2-input" style="width:100%;">${statusOptions}</select></div>`,
                  width: '600px', showCancelButton: true, confirmButtonText: 'Kaydet', 
                  preConfirm: () => [ document.getElementById('swal-title').value, document.getElementById('swal-date').value, document.getElementById('swal-desc').value, document.getElementById('swal-type').value, document.getElementById('swal-status').value ]
              });
@@ -844,7 +842,7 @@
                     criteriaList.forEach((c, i) => {
                         let el = document.getElementById(`score-${i}`); let val = parseInt(el.value) || 0;
                         let maxPoints = parseInt(c.points) || 0;
-                        if(val > maxPoints) { val = maxPoints; el.value = maxPoints; } if(val < 0) { val = 0; }
+                        if(val > maxPoints) { val = maxPoints; el.value = maxPoints; } if(val < 0) { val = 0; el.value = 0; }
                         total += val;
                     });
                     document.getElementById('total-eval-score').innerText = total;
