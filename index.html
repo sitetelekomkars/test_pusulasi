@@ -841,13 +841,24 @@
                             });
                             detailHtml += '</table>';
                         } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
+                        
+                        // CallDate'i formatlama (ISO'dan temiz formata çevirme)
+                        let displayCallDate = eval.callDate || 'N/A';
+                        if (typeof displayCallDate === 'string' && displayCallDate.includes('T')) {
+                            try {
+                                const dateObj = new Date(displayCallDate);
+                                displayCallDate = `${dateObj.getDate().toString().padStart(2, '0')}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj.getFullYear()}`;
+                            } catch (e) {
+                                // Hata durumunda ISO string'i göstermeye devam et
+                            }
+                        }
 
 
                         html += `<div class="evaluation-summary" id="eval-summary-${index}" style="border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <div style="flex-direction: column; align-items: flex-start; display: flex;">
                                     <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">📅 ${eval.date} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Loglama)</span></span>
-                                    <span style="font-size:0.9rem; color:#555; margin-top:5px;">Çağrı Tarihi: ${eval.callDate || 'N/A'}</span>
+                                    <span style="font-size:0.9rem; color:#555; margin-top:5px;">Çağrı Tarihi: ${displayCallDate}</span>
                                 </div>
                                 <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
                                 <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
@@ -916,6 +927,7 @@
             let isCriteriaBased = criteriaList.length > 0;
             
             // YENİ ALAN: Çağrı Tarihi
+            // Date input'un varsayılan değerini ISO formatında (yyyy-MM-dd) ayarlıyoruz
             const todayISO = new Date().toISOString().substring(0, 10);
             const callDateInput = `<label style="font-weight:bold; display:block;">Çağrı Tarihi:</label><input type="date" id="eval-calldate" class="swal2-input" style="height:35px; margin:5px 0 15px 0; width:100%;" value="${todayISO}">`;
 
@@ -966,11 +978,12 @@
                 didOpen: () => { if(isCriteriaBased) calcTotal(); },
                 preConfirm: () => {
                     const callId = document.getElementById('eval-callid').value; 
-                    const callDateRaw = document.getElementById('eval-calldate').value;
+                    const callDateRaw = document.getElementById('eval-calldate').value; // yyyy-MM-dd formatında gelir
                     const feedback = document.getElementById('eval-feedback').value;
                     
-                    // Tarih formatını dd.MM.yyyy'ye çevirelim
+                    // Tarih formatını dd.MM.yyyy'ye çevirelim (Apps Script'in karşılaştırması için)
                     const dateParts = callDateRaw.split('-');
+                    // yyyy-MM-dd -> dd.MM.yyyy
                     const formattedCallDate = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : callDateRaw;
 
                     if (isCriteriaBased) {
