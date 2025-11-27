@@ -88,7 +88,6 @@
         .modal-content { background: white; width: 90%; max-width: 800px; border-radius: 10px; padding: 30px; position: relative; max-height: 95vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #666; font-weight: bold; }
         .swal2-container { z-index: 10000 !important; }
-        /* ... (Diğer CSS stilleri aynı kalacak - kısaltma yapıldı) ... */
         .news-item { border-left: 4px solid var(--secondary); padding-left: 15px; margin-bottom: 20px; position: relative; padding-right: 30px; }
         .news-date { font-size: 0.85rem; color: #999; font-weight: bold; display: block; }
         .news-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); display: block; }
@@ -130,7 +129,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes intense-pulse { 0% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0.7); } 70% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(250, 187, 0, 0); } 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 187, 0, 0); } }
 
-        /* PENALTY GAME CSS (Keep existing) */
+        /* PENALTY GAME CSS */
         .penalty-stats { display: flex; justify-content: space-between; padding: 10px 20px; margin-bottom: 15px; background: #000; color: #fff; border-radius: 8px; border: 1px solid #333; font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; }
         .penalty-stats span { color: #fabb00; }
         .joker-btn { background: #8e24aa; color: white; border: 1px solid #6a1b9a; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2); flex-grow: 1; margin: 0 5px; }
@@ -334,17 +333,60 @@
                 <h3 style="color:white; margin-bottom:15px;">🏆 Liderlik Tablosu (Top 5)</h3>
                 <div id="leaderboard-loader" style="color:#aaa;">Veriler yükleniyor...</div>
                 <table id="leaderboard-table" style="width:100%; color:#eee; border-collapse:collapse; margin-bottom:30px; display:none;">
-                    <thead><tr style="border-bottom:1px solid #555; color:#fabb00;"><th style="padding:10px;">#</th><th style="padding:10px; text-align:left;">Temsilci</th><th style="padding:10px;">Maç</th><th style="padding:10px;">Ort. Puan</th></tr></thead>
+                    <thead>
+                        <tr style="border-bottom:1px solid #555; color:#fabb00;">
+                            <th style="padding:10px;">#</th>
+                            <th style="padding:10px; text-align:left;">Temsilci</th>
+                            <th style="padding:10px;">Maç</th>
+                            <th style="padding:10px;">Ort. Puan</th>
+                        </tr>
+                    </thead>
                     <tbody id="leaderboard-body"></tbody>
                 </table>
                 <button class="penalty-btn" style="width:200px; background:#2e7d32; color:white; border-color:#1b5e20;" onclick="startGameFromLobby()">MAÇA BAŞLA 🏃‍♂️⚽</button>
             </div>
             <div id="penalty-game-area" style="display:none;">
-                <div class="penalty-stats"><span>SKOR: <span id="p-score">0</span></span><span>KALAN ŞUT: <span id="p-balls">10</span></span></div>
-                <div class="penalty-field"><div class="stadium-stands"></div><div class="grass-stripes"></div><div class="goal-container"><div class="goal-net"></div><div class="goal-top-bar"></div><div class="goal-post-left"></div><div class="goal-post-right"></div><div id="keeper-wrap" class="keeper-wrapper"><div class="player-figure"><div class="head"></div><div class="torso"></div><div class="arms"><div class="arm left"><div class="gloves"></div></div><div class="arm right"><div class="gloves"></div></div></div><div class="shorts"></div><div class="legs"><div class="leg left"><div class="sock"></div><div class="shoe"></div></div><div class="leg right"><div class="sock"></div><div class="shoe"></div></div></div></div><div class="keeper-shadow"></div></div></div><div class="goal-message" id="goal-msg">GOL!</div><div class="penalty-area"></div><div class="penalty-spot-mark"></div><div id="ball-wrap" class="ball-wrapper"><div class="football"></div><div class="ball-shadow"></div></div><div id="shooter-wrap" class="shooter-wrapper"><div class="player-figure"><div class="head"></div><div class="torso"></div><div class="arms"><div class="arm left"></div><div class="arm right"></div></div><div class="shorts"></div><div class="legs"><div class="leg left"><div class="sock"></div><div class="shoe"></div></div><div class="leg right"><div class="sock"></div><div class="shoe"></div></div></div></div></div></div>
+                <div class="penalty-stats">
+                    <span>SKOR: <span id="p-score">0</span></span>
+                    <span>KALAN ŞUT: <span id="p-balls">10</span></span>
+                </div>
+                <div class="penalty-field">
+                    <div class="stadium-stands"></div>
+                    <div class="grass-stripes"></div>
+                    <div class="goal-container">
+                        <div class="goal-net"></div>
+                        <div class="goal-top-bar"></div>
+                        <div class="goal-post-left"></div>
+                        <div class="goal-post-right"></div>
+                        <div id="keeper-wrap" class="keeper-wrapper">
+                            <div class="player-figure">
+                                <div class="head"></div>
+                                <div class="torso"></div>
+                                <div class="arms"><div class="arm left"><div class="gloves"></div></div><div class="arm right"><div class="gloves"></div></div></div>
+                                <div class="shorts"></div>
+                                <div class="legs"><div class="leg left"><div class="sock"></div><div class="shoe"></div></div><div class="leg right"><div class="sock"></div><div class="shoe"></div></div></div>
+                            </div>
+                            <div class="keeper-shadow"></div>
+                        </div>
+                    </div>
+                    <div class="goal-message" id="goal-msg">GOL!</div>
+                    <div class="penalty-area"></div>
+                    <div class="penalty-spot-mark"></div>
+                    <div id="ball-wrap" class="ball-wrapper"><div class="football"></div><div class="ball-shadow"></div></div>
+                    <div id="shooter-wrap" class="shooter-wrapper">
+                        <div class="player-figure">
+                            <div class="head"></div><div class="torso"></div>
+                            <div class="arms"><div class="arm left"></div><div class="arm right"></div></div>
+                            <div class="shorts"></div>
+                            <div class="legs"><div class="leg left"><div class="sock"></div><div class="shoe"></div></div><div class="leg right"><div class="sock"></div><div class="shoe"></div></div></div>
+                        </div>
+                    </div>
+                </div>
                 <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; font-size:1.1rem; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">Soru yükleniyor...</div>
                 <div id="joker-container" style="display: flex; justify-content: space-around; margin: 15px 0;">
-                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri">📞 Telefon</button><button id="joker-half" class="joker-btn" onclick="useJoker('half')" title="Yarı Yarıya">✂️ 50:50</button><button id="joker-double" class="joker-btn" onclick="useJoker('double')" title="Çift Cevap">2️⃣ Çift Cevap</button>
+                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri (Umut/Doğuş/Deniz/Esra)">📞 Telefon</button>
+                    <button id="joker-half" class="joker-btn" onclick="useJoker('half')" title="Yarı Yarıya Joker">✂️ 50:50</button>
+                    <button id="joker-double" class="joker-btn" onclick="useJoker('double')" title="Çift Cevap Hakkı">2️⃣ Çift Cevap</button>
                 </div>
                 <div class="penalty-options" id="p-options"></div>
                 <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="showLobby()">LOBİYE DÖN 🏠</button>
@@ -437,26 +479,30 @@
         function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
         function toggleEditMode() { isAdminMode = !isAdminMode; document.body.classList.toggle('editing', isAdminMode); const btn = document.getElementById('quickEditBtn'); if(isAdminMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false }); } else { btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; } if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); else renderCards(activeCards.length > 0 ? activeCards : database); if(document.getElementById('guide-modal').style.display === 'flex') openGuide(); if(document.getElementById('sales-modal').style.display === 'flex') openSales(); if(document.getElementById('news-modal').style.display === 'flex') openNews(); }
         
-        // --- ADMIN / CRUD --- (Önceki kodların aynısı - kısaltıldı)
         function sendUpdate(o, c, v, t='card') { if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } }); fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "updateContent", title: o, column: c, value: v, type: t, originalText: o, username: currentUser, token: getToken() }) }).then(r => r.json()).then(data => { if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); } else { Swal.fire('Hata', 'Kaydedilemedi.', 'error'); } }); }
         async function addNewCardPopup() { const { value: f } = await Swal.fire({ title: 'Ekle', html: `<input id="swal-new-title" class="swal2-input" placeholder="Başlık"><textarea id="swal-new-text" class="swal2-textarea" placeholder="İçerik"></textarea>`, showCancelButton: true }); if (f) { /* Basit ekleme mantığı */ } }
         async function editContent(index) { /* Mevcut edit fonksiyonunuz buraya */ }
+        
+        // --- EKSİK OLAN FONKSİYONLAR GERİ GELDİ ---
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        let tickerIndex = 0;
+        function startTicker() { const t = document.getElementById('ticker-content'); const activeNews = newsData.filter(i => i.status !== 'Pasif'); if(activeNews.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = activeNews[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % activeNews.length; } showNext(); setInterval(showNext, 5000); }
+        function openNews() { document.getElementById('news-modal').style.display = 'flex'; const c = document.getElementById('news-container'); c.innerHTML = ''; newsData.forEach((i, index) => { let cl = i.type === 'fix' ? 'tag-fix' : (i.type === 'update' ? 'tag-update' : 'tag-info'); let tx = i.type === 'fix' ? 'Çözüldü' : (i.type === 'update' ? 'Değişiklik' : 'Bilgi'); let passiveStyle = i.status === 'Pasif' ? 'opacity:0.5; background:#eee;' : ''; c.innerHTML += `<div class="news-item" style="${passiveStyle}"><span class="news-date">${i.date}</span><span class="news-title">${i.title}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span></div>`; }); }
+        function openGuide() { document.getElementById('guide-modal').style.display = 'flex'; const grid = document.getElementById('guide-grid'); grid.innerHTML = ''; sportsData.forEach((s, index) => { let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : ''; grid.innerHTML += `<div class="guide-item" onclick="showSportDetail(${index})"><i class="fas ${s.icon} guide-icon"></i><span class="guide-title">${s.title}</span>${pronHtml}<div class="guide-desc">${s.desc}</div><div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div></div>`; }); }
+        function showSportDetail(index) { const sport = sportsData[index]; const detailText = sport.detail ? sport.detail.replace(/\n/g,'<br>') : "Detay yok."; Swal.fire({ title: `<i class="fas ${sport.icon}"></i> ${sport.title}`, html: `<div style="text-align:left;">${detailText}</div>`, width: '600px' }); }
+        function openSales() { document.getElementById('sales-modal').style.display = 'flex'; const c = document.getElementById('sales-grid'); c.innerHTML = ''; salesScripts.forEach((s, index) => { c.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')"><div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}"></i></div><div class="sales-text">${(s.text || '').replace(/\n/g,'<br>')}</div></div>`; }); }
+        function toggleSales(index) { const item = document.getElementById(`sales-${index}`); item.classList.toggle('active'); }
         
         // --- KALİTE FONKSİYONLARI (GELİŞMİŞ) ---
         function openQualityArea() {
             document.getElementById('quality-modal').style.display = 'flex';
             document.getElementById('admin-quality-controls').style.display = isAdminMode ? 'block' : 'none';
             if (isAdminMode) {
-                // Admin ise listeyi çek ve selectbox'ı doldur
                 fetchUserListForAdmin().then(users => {
                     const selectEl = document.getElementById('agent-select-admin');
-                    // Gruplu gösterim (Option içinde grup adı)
                     selectEl.innerHTML = users.map(u => `<option value="${u.name}" data-group="${u.group}">${u.name} (${u.group})</option>`).join('');
-                    
-                    // Kendini seçmesin, listedeki ilk kişiyi seçsin
                     if(users.length > 0) selectEl.value = users[0].name;
-                    fetchEvaluationsForAgent(); // İlk seçili kişi için getir
+                    fetchEvaluationsForAgent(); 
                 });
             } else {
                 fetchEvaluationsForAgent(currentUser);
@@ -467,12 +513,8 @@
             const listEl = document.getElementById('evaluations-list');
             const loader = document.getElementById('quality-loader');
             listEl.innerHTML = ''; loader.style.display = 'block';
-            
-            // Eğer parametre gelmediyse (admin seçiminden geldiyse) selectbox'tan al
             let targetAgent = forcedName;
-            if (!targetAgent && isAdminMode) {
-                targetAgent = document.getElementById('agent-select-admin').value;
-            }
+            if (!targetAgent && isAdminMode) { targetAgent = document.getElementById('agent-select-admin').value; }
 
             fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "fetchEvaluations", targetAgent: targetAgent, username: currentUser, token: getToken() }) })
             .then(response => response.json())
@@ -483,31 +525,20 @@
                     let html = '';
                     data.evaluations.forEach(eval => {
                         const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
-                        // Detayları (JSON) parse etmeye çalışalım, düz metinse direkt gösterelim
                         let detailHtml = '';
                         try {
                             const detailObj = JSON.parse(eval.details);
-                            // Telesatış detaylarını tablo yap
                             detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse;">';
                             detailObj.forEach(item => {
                                 let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
                                 detailHtml += `<tr style="background:${rowColor}; border-bottom:1px solid #eee;"><td style="padding:4px;">${item.q}</td><td style="padding:4px; font-weight:bold; text-align:right;">${item.score}/${item.max}</td></tr>`;
                             });
                             detailHtml += '</table>';
-                        } catch (e) {
-                            detailHtml = `<p style="white-space:pre-wrap; margin:0;">${eval.details}</p>`;
-                        }
+                        } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0;">${eval.details}</p>`; }
 
                         html += `<div style="border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:bold; color:var(--primary);">📅 ${eval.date}</span>
-                                <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span>
-                                <span style="font-weight:bold; font-size:1.2rem; color:${scoreColor};">PUAN: ${eval.score}</span>
-                            </div>
-                            <p style="margin:5px 0; font-style:italic; color:#555; font-size:0.85rem;">Koç: ${eval.evaluator}</p>
-                            <hr style="border:none; border-top:1px dashed #eee;">
-                            <h4 style="color:var(--accent); margin-top:5px; font-size:0.9rem;">Detaylar:</h4>${detailHtml}
-                            <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4><p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p></div>`;
+                            <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:bold; color:var(--primary);">📅 ${eval.date}</span><span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span><span style="font-weight:bold; font-size:1.2rem; color:${scoreColor};">PUAN: ${eval.score}</span></div>
+                            <p style="margin:5px 0; font-style:italic; color:#555; font-size:0.85rem;">Koç: ${eval.evaluator}</p><hr style="border:none; border-top:1px dashed #eee;"><h4 style="color:var(--accent); margin-top:5px; font-size:0.9rem;">Detaylar:</h4>${detailHtml}<h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4><p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p></div>`;
                     });
                     listEl.innerHTML = html;
                 } else { listEl.innerHTML = `<p style="color:red;">Hata: ${data.message}</p>`; }
@@ -517,29 +548,15 @@
         function fetchUserListForAdmin() {
             return new Promise((resolve) => {
                 fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getUserList", username: currentUser, token: getToken() }) })
-                .then(response => response.json()).then(data => { 
-                    if (data.result === "success") { adminUserList = data.users; resolve(data.users); } 
-                    else resolve([]); 
-                }).catch(err => resolve([]));
+                .then(response => response.json()).then(data => { if (data.result === "success") { adminUserList = data.users; resolve(data.users); } else resolve([]); }).catch(err => resolve([]));
             });
         }
 
         // --- DINAMIK KRİTER ÇEKME VE FORM OLUŞTURMA ---
-        
-        // Kriterleri sunucudan çeken fonksiyon
         function fetchCriteria(groupName) {
             return new Promise((resolve) => {
-                fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-                    body: JSON.stringify({ action: "getCriteria", group: groupName, username: currentUser, token: getToken() }) 
-                })
-                .then(response => response.json())
-                .then(data => { 
-                    if (data.result === "success") resolve(data.criteria || []); 
-                    else resolve([]); 
-                })
-                .catch(err => { console.error(err); resolve([]); });
+                fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getCriteria", group: groupName, username: currentUser, token: getToken() }) })
+                .then(response => response.json()).then(data => { if (data.result === "success") resolve(data.criteria || []); else resolve([]); }).catch(err => { console.error(err); resolve([]); });
             });
         }
 
@@ -549,85 +566,44 @@
             const selectedOption = selectEl.options[selectEl.selectedIndex];
             const agentGroup = selectedOption.getAttribute('data-group') || 'Genel';
 
-            // Yükleniyor göster
             Swal.fire({ title: 'Form Hazırlanıyor...', didOpen: () => Swal.showLoading() });
-
-            // Sunucudan o gruba ait kriterleri çek
             let criteriaList = [];
-            // "Telesatış" veya "Chat" ise veritabanına sor
-            if(agentGroup === 'Telesatış' || agentGroup === 'Chat') {
-                criteriaList = await fetchCriteria(agentGroup);
-            }
-
-            Swal.close(); // Yükleniyor'u kapat
+            if(agentGroup === 'Telesatış' || agentGroup === 'Chat') { criteriaList = await fetchCriteria(agentGroup); }
+            Swal.close();
 
             let formHtml = '';
-            
-            // Eğer veritabanından kriter geldiyse dinamik form oluştur
             if (criteriaList.length > 0) {
                 formHtml = `<div style="text-align:left; max-height:400px; overflow-y:auto; border:1px solid #eee; padding:10px; margin-bottom:10px;">
-                    <label style="font-weight:bold;">Call ID:</label>
-                    <input id="eval-callid" class="swal2-input" style="height:35px; margin:5px 0 15px 0;" placeholder="Call ID">
-                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-                    <tr style="background:#f0f2f5; font-weight:bold;"><td>Kriter</td><td style="width:50px;">Max</td><td style="width:70px;">Puan</td></tr>`;
-                
+                    <label style="font-weight:bold;">Call ID:</label><input id="eval-callid" class="swal2-input" style="height:35px; margin:5px 0 15px 0;" placeholder="Call ID">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;"><tr style="background:#f0f2f5; font-weight:bold;"><td>Kriter</td><td style="width:50px;">Max</td><td style="width:70px;">Puan</td></tr>`;
                 criteriaList.forEach((c, i) => {
-                    formHtml += `<tr>
-                        <td style="padding:8px; border-bottom:1px solid #eee;">${i+1}. ${c.text}</td>
-                        <td style="text-align:center; color:#999;">${c.points}</td>
-                        <td><input type="number" id="score-${i}" class="swal2-input eval-score-input" style="width:60px; height:30px; margin:0;" min="0" max="${c.points}" value="${c.points}" onchange="calcTotal()"></td>
-                    </tr>`;
+                    formHtml += `<tr><td style="padding:8px; border-bottom:1px solid #eee;">${i+1}. ${c.text}</td><td style="text-align:center; color:#999;">${c.points}</td><td><input type="number" id="score-${i}" class="swal2-input eval-score-input" style="width:60px; height:30px; margin:0;" min="0" max="${c.points}" value="${c.points}" onchange="calcTotal()"></td></tr>`;
                 });
-                formHtml += `</table></div>
-                <div style="text-align:right; font-weight:bold; font-size:1.2rem; margin-bottom:10px; color:var(--primary);">TOPLAM: <span id="total-eval-score">100</span></div>
-                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
+                formHtml += `</table></div><div style="text-align:right; font-weight:bold; font-size:1.2rem; margin-bottom:10px; color:var(--primary);">TOPLAM: <span id="total-eval-score">100</span></div><textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
                 
-                // Hesaplama fonksiyonunu güncelle
                 window.calcTotal = function() {
                     let total = 0;
                     criteriaList.forEach((c, i) => {
-                        let el = document.getElementById(`score-${i}`);
-                        let val = parseInt(el.value) || 0;
-                        if(val > c.points) { val = c.points; el.value = c.points; }
-                        if(val < 0) { val = 0; }
+                        let el = document.getElementById(`score-${i}`); let val = parseInt(el.value) || 0;
+                        if(val > c.points) { val = c.points; el.value = c.points; } if(val < 0) { val = 0; }
                         total += val;
                     });
                     document.getElementById('total-eval-score').innerText = total;
                 };
-
             } else {
-                // Kriter bulunamazsa veya Genel grup ise standart manuel giriş
-                formHtml = `
-                <p style="color:#e65100; font-size:0.9rem;">(Bu grup için ayarlı kriter bulunamadı, manuel giriş yapınız)</p>
-                <label>Call ID:</label><input id="eval-callid" class="swal2-input">
-                <label>Puan:</label><input id="eval-manual-score" type="number" class="swal2-input" value="100">
-                <textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar"></textarea>
-                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
+                formHtml = `<p style="color:#e65100; font-size:0.9rem;">(Bu grup için ayarlı kriter bulunamadı, manuel giriş yapınız)</p><label>Call ID:</label><input id="eval-callid" class="swal2-input"><label>Puan:</label><input id="eval-manual-score" type="number" class="swal2-input" value="100"><textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar"></textarea><textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
             }
 
             const { value: formValues } = await Swal.fire({
-                title: `${agentName} (${agentGroup})`,
-                html: formHtml,
-                width: '800px',
-                showCancelButton: true,
-                confirmButtonText: 'Kaydet',
-                focusConfirm: false,
+                title: `${agentName} (${agentGroup})`, html: formHtml, width: '800px', showCancelButton: true, confirmButtonText: 'Kaydet', focusConfirm: false,
                 preConfirm: () => {
-                    const callId = document.getElementById('eval-callid').value;
-                    const feedback = document.getElementById('eval-feedback').value;
-                    
+                    const callId = document.getElementById('eval-callid').value; const feedback = document.getElementById('eval-feedback').value;
                     if (criteriaList.length > 0) {
-                        let total = 0;
-                        let detailsArr = [];
-                        criteriaList.forEach((c, i) => {
-                            let val = parseInt(document.getElementById(`score-${i}`).value) || 0;
-                            total += val;
-                            detailsArr.push({ q: c.text, max: c.points, score: val });
-                        });
+                        let total = 0; let detailsArr = [];
+                        criteriaList.forEach((c, i) => { let val = parseInt(document.getElementById(`score-${i}`).value) || 0; total += val; detailsArr.push({ q: c.text, max: c.points, score: val }); });
                         return { agentName, agentGroup, callId, score: total, details: JSON.stringify(detailsArr), feedback };
                     } else {
-                        const score = document.getElementById('eval-manual-score').value;
-                        const details = document.getElementById('eval-details').value;
+                        const score = document.getElementById('eval-manual-score').value; const details = document.getElementById('eval-details').value;
                         return { agentName, agentGroup, callId, score: parseInt(score), details: details, feedback };
                     }
                 }
@@ -635,10 +611,7 @@
 
             if (formValues) {
                 Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
-                fetch(SCRIPT_URL, { 
-                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                    body: JSON.stringify({ action: "logEvaluation", username: currentUser, token: getToken(), ...formValues }) 
-                })
+                fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "logEvaluation", username: currentUser, token: getToken(), ...formValues }) })
                 .then(r => r.json()).then(d => {
                     if (d.result === "success") { Swal.fire('Başarılı!', 'Kaydedildi.', 'success'); fetchEvaluationsForAgent(agentName); } 
                     else { Swal.fire('Hata', d.message, 'error'); }
@@ -646,101 +619,19 @@
             }
         }
 
-        // --- PENALTI, WIZARD VS. (AYNI KALDI) ---
+        // --- PENALTI, WIZARD VS. ---
         let pScore=0, pBalls=10, pCurrentQ=null;
-        function updateJokerButtons() {
-            document.getElementById('joker-call').disabled = jokers.call === 0; document.getElementById('joker-half').disabled = jokers.half === 0;
-            document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1;
-            if (firstAnswerIndex !== -1) { document.getElementById('joker-call').disabled = true; document.getElementById('joker-half').disabled = true; document.getElementById('joker-double').disabled = true; }
-        }
-        function useJoker(type) {
-            if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return;
-            jokers[type] = 0; updateJokerButtons();
-            const currentQ = pCurrentQ, correctAns = currentQ.a, btns = document.querySelectorAll('.penalty-btn');
-            if (type === 'call') {
-                const experts = ["Umut Bey", "Doğuş Bey", "Deniz Bey", "Esra Hanım"];
-                const expert = experts[Math.floor(Math.random() * experts.length)];
-                let guess = correctAns;
-                if (Math.random() > 0.8 && currentQ.opts.length > 1) { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns); guess = incorrectOpts[0]; }
-                Swal.fire({ icon: 'info', title: '📞 Telefon Jokeri', html: `${expert}: "Bence cevap **${String.fromCharCode(65 + guess)}**."` });
-            } else if (type === 'half') {
-                let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns).sort(() => Math.random() - 0.5).slice(0, 2);
-                incorrectOpts.forEach(idx => { btns[idx].disabled = true; btns[idx].style.textDecoration = 'line-through'; btns[idx].style.opacity = '0.4'; });
-            } else if (type === 'double') { doubleChanceUsed = true; Swal.fire({ icon: 'warning', title: '2️⃣ Çift Cevap', text: 'İki kez cevaplayabilirsin.', timer: 2000, showConfirmButton: false }); }
-        }
+        function updateJokerButtons() { document.getElementById('joker-call').disabled = jokers.call === 0; document.getElementById('joker-half').disabled = jokers.half === 0; document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1; if (firstAnswerIndex !== -1) { document.getElementById('joker-call').disabled = true; document.getElementById('joker-half').disabled = true; document.getElementById('joker-double').disabled = true; } }
+        function useJoker(type) { if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return; jokers[type] = 0; updateJokerButtons(); const currentQ = pCurrentQ, correctAns = currentQ.a, btns = document.querySelectorAll('.penalty-btn'); if (type === 'call') { const experts = ["Umut Bey", "Doğuş Bey", "Deniz Bey", "Esra Hanım"]; const expert = experts[Math.floor(Math.random() * experts.length)]; let guess = correctAns; if (Math.random() > 0.8 && currentQ.opts.length > 1) { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns); guess = incorrectOpts[0]; } Swal.fire({ icon: 'info', title: '📞 Telefon Jokeri', html: `${expert}: "Bence cevap **${String.fromCharCode(65 + guess)}**."` }); } else if (type === 'half') { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns).sort(() => Math.random() - 0.5).slice(0, 2); incorrectOpts.forEach(idx => { btns[idx].disabled = true; btns[idx].style.textDecoration = 'line-through'; btns[idx].style.opacity = '0.4'; }); } else if (type === 'double') { doubleChanceUsed = true; Swal.fire({ icon: 'warning', title: '2️⃣ Çift Cevap', text: 'İki kez cevaplayabilirsin.', timer: 2000, showConfirmButton: false }); } }
         function openPenaltyGame() { document.getElementById('penalty-modal').style.display = 'flex'; showLobby(); }
         function showLobby() { document.getElementById('penalty-lobby').style.display = 'flex'; document.getElementById('penalty-game-area').style.display = 'none'; fetchLeaderboard(); }
         function startGameFromLobby() { document.getElementById('penalty-lobby').style.display = 'none'; document.getElementById('penalty-game-area').style.display = 'block'; startPenaltySession(); }
-        function fetchLeaderboard() {
-            const tbody = document.getElementById('leaderboard-body'), loader = document.getElementById('leaderboard-loader'), table = document.getElementById('leaderboard-table');
-            tbody.innerHTML = ''; loader.style.display = 'block'; table.style.display = 'none';
-            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getLeaderboard" }) })
-            .then(response => response.json()).then(data => {
-                loader.style.display = 'none';
-                if (data.result === "success") {
-                    table.style.display = 'table';
-                    let html = '';
-                    data.leaderboard.forEach((u, i) => {
-                        let medal = i===0 ? '🥇' : (i===1 ? '🥈' : (i===2 ? '🥉' : `<span class="rank-badge">${i+1}</span>`));
-                        let bgStyle = (u.username === currentUser) ? 'background:rgba(250, 187, 0, 0.1);' : '';
-                        html += `<tr style="${bgStyle}"><td>${medal}</td><td style="text-align:left;">${u.username}</td><td>${u.games}</td><td>${u.average}</td></tr>`;
-                    });
-                    tbody.innerHTML = html || '<tr><td colspan="4">Veri yok.</td></tr>';
-                } else { loader.innerText = "Yüklenemedi."; loader.style.display = 'block'; }
-            }).catch(err => { loader.innerText = "Hata."; });
-        }
-        function startPenaltySession() {
-            pScore = 0; pBalls = 10; jokers = { call: 1, half: 1, double: 1 }; doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons();
-            document.getElementById('p-score').innerText = pScore; document.getElementById('p-balls').innerText = pBalls; document.getElementById('p-restart-btn').style.display = 'none'; document.getElementById('p-options').style.display = 'grid';
-            resetField(); loadPenaltyQuestion();
-        }
-        function loadPenaltyQuestion() {
-            if (pBalls <= 0) { finishPenaltyGame(); return; }
-            if (quizQuestions.length === 0) { Swal.fire('Hata', 'Soru yok!', 'warning'); return; }
-            pCurrentQ = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-            document.getElementById('p-question-text').innerText = pCurrentQ.q;
-            doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons();
-            let html = '';
-            pCurrentQ.opts.forEach((opt, index) => { html += `<button class="penalty-btn" onclick="shootBall(${index})">${String.fromCharCode(65 + index)}: ${opt}</button>`; });
-            document.getElementById('p-options').innerHTML = html;
-        }
-        function shootBall(idx) {
-            const btns = document.querySelectorAll('.penalty-btn'), isCorrect = (idx === pCurrentQ.a);
-            if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) { firstAnswerIndex = idx; btns[idx].classList.add('wrong-first-try'); btns[idx].disabled = true; Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'İlk Hata! 1 hakkın daha var.', showConfirmButton: false, timer: 1500 }); updateJokerButtons(); return; }
-            btns.forEach(b => b.disabled = true);
-            const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg');
-            const shotDir = Math.floor(Math.random() * 4);
-            shooterWrap.classList.add('shooter-run');
-            setTimeout(() => {
-                if(isCorrect) { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right'); else keeperWrap.classList.add('keeper-dive-left'); } 
-                else { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left'); else keeperWrap.classList.add('keeper-dive-right'); }
-                if (isCorrect) {
-                    if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top'); else if(shotDir === 1) ballWrap.classList.add('ball-shoot-right-top'); else if(shotDir === 2) ballWrap.classList.add('ball-shoot-left-low'); else ballWrap.classList.add('ball-shoot-right-low');
-                    setTimeout(() => { goalMsg.innerText = "GOL!!!"; goalMsg.style.color = "#fabb00"; goalMsg.classList.add('show'); pScore++; document.getElementById('p-score').innerText = pScore; }, 500);
-                } else {
-                    if(Math.random() > 0.5) {
-                        ballWrap.style.bottom = "160px"; ballWrap.style.left = (shotDir === 0 || shotDir === 2) ? "40%" : "60%"; ballWrap.style.transform = "scale(0.6)";
-                        setTimeout(() => { goalMsg.innerText = "KURTARDI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500);
-                    } else {
-                        ballWrap.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right');
-                        setTimeout(() => { goalMsg.innerText = "DIŞARI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500);
-                    }
-                }
-            }, 300);
-            pBalls--; document.getElementById('p-balls').innerText = pBalls;
-            setTimeout(() => { resetField(); loadPenaltyQuestion(); }, 2500);
-        }
-        function resetField() {
-            const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg');
-            ballWrap.className = 'ball-wrapper'; ballWrap.style = ""; keeperWrap.className = 'keeper-wrapper'; shooterWrap.className = 'shooter-wrapper'; goalMsg.classList.remove('show');
-            document.querySelectorAll('.penalty-btn').forEach(b => { b.classList.remove('wrong-first-try'); b.style = ''; b.style.background = '#fabb00'; b.style.color = '#0e1b42'; b.style.borderColor = '#f0b500'; b.disabled = false; });
-        }
-        function finishPenaltyGame() {
-            document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>Skor: ${pScore}/10`;
-            document.getElementById('p-options').style.display = 'none'; document.getElementById('p-restart-btn').style.display = 'block';
-            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: pScore * 10, total: 100 }) });
-        }
-
+        function fetchLeaderboard() { const tbody = document.getElementById('leaderboard-body'), loader = document.getElementById('leaderboard-loader'), table = document.getElementById('leaderboard-table'); tbody.innerHTML = ''; loader.style.display = 'block'; table.style.display = 'none'; fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getLeaderboard" }) }).then(response => response.json()).then(data => { loader.style.display = 'none'; if (data.result === "success") { table.style.display = 'table'; let html = ''; data.leaderboard.forEach((u, i) => { let medal = i===0 ? '🥇' : (i===1 ? '🥈' : (i===2 ? '🥉' : `<span class="rank-badge">${i+1}</span>`)); let bgStyle = (u.username === currentUser) ? 'background:rgba(250, 187, 0, 0.1);' : ''; html += `<tr style="${bgStyle}"><td>${medal}</td><td style="text-align:left;">${u.username}</td><td>${u.games}</td><td>${u.average}</td></tr>`; }); tbody.innerHTML = html || '<tr><td colspan="4">Veri yok.</td></tr>'; } else { loader.innerText = "Yüklenemedi."; loader.style.display = 'block'; } }).catch(err => { loader.innerText = "Hata."; }); }
+        function startPenaltySession() { pScore = 0; pBalls = 10; jokers = { call: 1, half: 1, double: 1 }; doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons(); document.getElementById('p-score').innerText = pScore; document.getElementById('p-balls').innerText = pBalls; document.getElementById('p-restart-btn').style.display = 'none'; document.getElementById('p-options').style.display = 'grid'; resetField(); loadPenaltyQuestion(); }
+        function loadPenaltyQuestion() { if (pBalls <= 0) { finishPenaltyGame(); return; } if (quizQuestions.length === 0) { Swal.fire('Hata', 'Soru yok!', 'warning'); return; } pCurrentQ = quizQuestions[Math.floor(Math.random() * quizQuestions.length)]; document.getElementById('p-question-text').innerText = pCurrentQ.q; doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons(); let html = ''; pCurrentQ.opts.forEach((opt, index) => { html += `<button class="penalty-btn" onclick="shootBall(${index})">${String.fromCharCode(65 + index)}: ${opt}</button>`; }); document.getElementById('p-options').innerHTML = html; }
+        function shootBall(idx) { const btns = document.querySelectorAll('.penalty-btn'), isCorrect = (idx === pCurrentQ.a); if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) { firstAnswerIndex = idx; btns[idx].classList.add('wrong-first-try'); btns[idx].disabled = true; Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'İlk Hata! 1 hakkın daha var.', showConfirmButton: false, timer: 1500 }); updateJokerButtons(); return; } btns.forEach(b => b.disabled = true); const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg'); const shotDir = Math.floor(Math.random() * 4); shooterWrap.classList.add('shooter-run'); setTimeout(() => { if(isCorrect) { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right'); else keeperWrap.classList.add('keeper-dive-left'); } else { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left'); else keeperWrap.classList.add('keeper-dive-right'); } if (isCorrect) { if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top'); else if(shotDir === 1) ballWrap.classList.add('ball-shoot-right-top'); else if(shotDir === 2) ballWrap.classList.add('ball-shoot-left-low'); else ballWrap.classList.add('ball-shoot-right-low'); setTimeout(() => { goalMsg.innerText = "GOL!!!"; goalMsg.style.color = "#fabb00"; goalMsg.classList.add('show'); pScore++; document.getElementById('p-score').innerText = pScore; }, 500); } else { if(Math.random() > 0.5) { ballWrap.style.bottom = "160px"; ballWrap.style.left = (shotDir === 0 || shotDir === 2) ? "40%" : "60%"; ballWrap.style.transform = "scale(0.6)"; setTimeout(() => { goalMsg.innerText = "KURTARDI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500); } else { ballWrap.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right'); setTimeout(() => { goalMsg.innerText = "DIŞARI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500); } } }, 300); pBalls--; document.getElementById('p-balls').innerText = pBalls; setTimeout(() => { resetField(); loadPenaltyQuestion(); }, 2500); }
+        function resetField() { const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg'); ballWrap.className = 'ball-wrapper'; ballWrap.style = ""; keeperWrap.className = 'keeper-wrapper'; shooterWrap.className = 'shooter-wrapper'; goalMsg.classList.remove('show'); document.querySelectorAll('.penalty-btn').forEach(b => { b.classList.remove('wrong-first-try'); b.style = ''; b.style.background = '#fabb00'; b.style.color = '#0e1b42'; b.style.borderColor = '#f0b500'; b.disabled = false; }); }
+        function finishPenaltyGame() { document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>Skor: ${pScore}/10`; document.getElementById('p-options').style.display = 'none'; document.getElementById('p-restart-btn').style.display = 'block'; fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: pScore * 10, total: 100 }) }); }
         const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
         function openWizard(){ document.getElementById('wizard-modal').style.display='flex'; renderStep('start'); }
         function renderStep(k){ const s=wizardSteps[k]; const b=document.getElementById('wizard-body'); let h=`<h2>${s.title||''}</h2>`; if(s.result){ let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️'); let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow'); h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`; }else{ h+=`<p>${s.text}</p><div class="wizard-options">`; s.options.forEach(o=>{ h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`; }); h+=`</div>`; if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`; } b.innerHTML=h; }
