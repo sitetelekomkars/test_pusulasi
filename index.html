@@ -395,99 +395,6 @@
     background: #fff;
 }
 .note-input:focus { border-color: var(--secondary); outline: none; }
-        /* --- YENİ KALİTE KONTROL ve GÖSTERGE STİLLERİ --- */
-
-/* Yönetici Aksiyon Çubuğu (Yeni Değerlendirme Ekle butonu ve Temsilci Seçimi) */
-#admin-quality-controls { 
-    background: #e1f5fe; /* Hafif Açık Mavi Arka Plan */
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border: 1px solid #b3e5fc;
-    box-shadow: 0 4px 8px rgba(0, 2, 80, 0.1);
-}
-.quality-controls-top { 
-    gap: 20px;
-    justify-content: space-between;
-}
-#agent-select-admin { 
-    border: 2px solid var(--primary); 
-    border-radius: 6px; 
-    padding: 8px 10px;
-    font-size: 1rem; 
-    font-weight: 600;
-    background-color: white;
-}
-
-/* Performans Kartı (Filtreler) */
-.quality-filter-group { 
-    background: linear-gradient(90deg, #f0f4ff 0%, #fff 100%); 
-    border: 1px solid #d0d8f0; 
-    border-radius: 10px; 
-    padding: 15px; 
-    margin-bottom: 20px; /* Listeden ayırmak için boşluk */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.metric-box {
-    text-align: center;
-    padding: 0 15px;
-    border-right: 1px solid #e0e0e0;
-}
-.metric-box:last-child { border-right: none; }
-.metric-value { 
-    font-size: 1.5rem; 
-    font-weight: 800; 
-    color: var(--primary); 
-    margin-top: 5px;
-}
-.metric-label { 
-    font-size: 0.8rem; 
-    color: #666; 
-    font-weight: 600;
-}
-.average-color-green { color: var(--success); }
-.average-color-yellow { color: var(--warning); }
-.average-color-red { color: var(--accent); }
-
-/* Değerlendirme Listesi Kartları */
-.evaluation-summary {
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-}
-.summary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.summary-score {
-    font-size: 1.8rem; /* Daha büyük puan */
-    font-weight: 900;
-    min-width: 60px;
-    text-align: center;
-}
-
-/* Detay Tablosu Vurguları */
-.evaluation-details-content table td {
-    padding: 8px 10px;
-}
-.score-break-row {
-    background-color: #ffebee !important; /* Puan kırılan satır için soft kırmızı */
-    border-left: 3px solid var(--accent);
-}
-.copy-call-id-btn {
-    background: #f0f0f0;
-    border: none;
-    color: var(--primary);
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-left: 10px;
-    transition: 0.2s;
-}
-.copy-call-id-btn:hover { background: #d0d0d0; }
-
 
     </style>
 </head>
@@ -1133,7 +1040,114 @@
             }
         }
 
-        
+        // fetchEvaluationsForAgent fonksiyonunu güncelleyin (ROBUST YÜKLEME VE SIFIR VERİ KONTROLÜ)
+        async function fetchEvaluationsForAgent(forcedName) {
+            const listEl = document.getElementById('evaluations-list');
+            const loader = document.getElementById('quality-loader');
+            listEl.innerHTML = ''; 
+            loader.style.display = 'block';
+
+            let targetAgent = forcedName || currentUser;
+            
+            // Admin modunda, temsilci seçim kutusundaki değeri kullan
+            if (isAdminMode) {
+                const selectEl = document.getElementById('agent-select-admin');
+                targetAgent = selectEl.value; // Seçili temsilciyi her zaman oku
+            }
+            
+            if (!targetAgent) {
+                loader.innerHTML = '<span style="color:red;">Lütfen listeden bir temsilci seçimi yapın.</span>';
+                return;
+            }
+
+            const selectedMonth = document.getElementById('month-select-filter').value;
+
+            try {
+                // Not: İlk çalıştırmada tüm veriyi çeker ve allEvaluationsData'ya kaydeder
+                const response = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify({ action: "fetchEvaluations", targetAgent: targetAgent, username: currentUser, token: getToken() }) 
+                });
+                
+                const data = await response.json();
+
+                loader.style.display = 'none'; // Yükleyiciyi kapat!
+                
+                if (data.result === "success") {
+                    allEvaluationsData = data.evaluations;
+
+                    // 1. Ay bazlı filtreleme
+                    let filteredEvals = allEvaluationsData.filter(eval => {
+                        const evalDate = eval.date.substring(3);
+                        return evalDate === selectedMonth;
+                    });
+                    
+                    // 2. Metrik Hesaplama (Sıfır kayıt varsa 0 olarak hesaplanır)
+                    const monthlyTotal = filteredEvals.reduce((sum, eval) => sum + (parseFloat(eval.score) || 0), 0);
+                    const monthlyCount = filteredEvals.length;
+                    const monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
+
+                    // 3. Metrikleri Güncelle
+                    document.getElementById('eval-count-span').innerText = `Dinleme Adeti: ${monthlyCount}`;
+                    document.getElementById('monthly-avg-span').innerText = `Ortalama: ${monthlyAvg}%`;
+
+                    // 4. Liste Gösterimi
+                    if (filteredEvals.length === 0) { 
+                        listEl.innerHTML = `<p style="text-align:center; color:#666;">Seçilen **${selectedMonth}** dönemi için değerlendirme bulunamadı.</p>`;
+                        return; 
+                    }
+                    
+                    // Veri varsa listeyi render etme
+                    let html = '';
+                    // En yeni en üste
+                    filteredEvals.reverse().forEach((eval, index) => { 
+                        const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
+                         let detailHtml = '';
+                         try {
+                             const detailObj = JSON.parse(eval.details);
+                             detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">';
+                             detailObj.forEach(item => {
+                                 let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
+                                 let noteDisplay = item.note ? `<br><em style="color: #d32f2f; font-size:0.8rem;">(Kırılım Nedeni: ${item.note})</em>` : '';
+                                 
+                                 detailHtml += `<tr style="background:${rowColor}; border-bottom:1px solid #eee;">
+                                     <td style="padding:8px;">${item.q}${noteDisplay}</td>
+                                     <td style="padding:8px; font-weight:bold; text-align:right;">${item.score}/${item.max}</td>
+                                 </tr>`;
+                             });
+                             detailHtml += '</table>';
+                         } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
+
+
+                         html += `<div class="evaluation-summary" id="eval-summary-${index}" style="border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
+                             <div style="display:flex; justify-content:space-between; align-items:center;">
+                                 <div style="flex-direction: column; align-items: flex-start; display: flex;">
+                                     <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">📅 ${eval.date} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Loglama)</span></span>
+                                     <span style="font-size:0.9rem; color:#555; margin-top:5px;">Çağrı Tarihi: ${eval.callDate || 'N/A'}</span>
+                                 </div>
+                                 <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
+                                 <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
+                                 <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
+                             </div>
+                             <div class="evaluation-details-content" id="eval-details-${index}" style="max-height:0; overflow:hidden; transition:max-height 0.4s ease-in-out; margin-top:0;">
+                                 <hr style="border:none; border-top:1px dashed #eee; margin:10px 0;"><h4 style="color:var(--accent); font-size:0.9rem;">Detaylar:</h4>${detailHtml}
+                                 <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
+                                 <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
+                             </div>
+                         </div>`;
+                    });
+                    listEl.innerHTML = html;
+                    
+                } else { 
+                    listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; 
+                }
+
+            } catch(err) {
+                loader.style.display = 'none';
+                listEl.innerHTML = `<p style="color:red; text-align:center;">Bağlantı hatası veya sunucuya ulaşılamadı.</p>`;
+            }
+        }
 
         // --- DİĞER STANDART JS FONKSİYONLARI ---
         
@@ -1151,151 +1165,21 @@
             });
         }
         
-        
-// fetchEvaluationsForAgent fonksiyonunu güncelleyin (ROBUST YÜKLEME VE SIFIR VERİ KONTROLÜ)
-async function fetchEvaluationsForAgent(forcedName) {
-    const listEl = document.getElementById('evaluations-list');
-    const loader = document.getElementById('quality-loader');
-    listEl.innerHTML = ''; 
-    loader.style.display = 'block';
+        function toggleEvaluationDetail(index) {
+            const detailEl = document.getElementById(`eval-details-${index}`);
+            const iconEl = document.getElementById(`eval-icon-${index}`);
+            const isVisible = detailEl.style.maxHeight !== '0px' && detailEl.style.maxHeight !== '';
 
-    let targetAgent = forcedName || currentUser;
-    
-    // Admin modunda, temsilci seçim kutusundaki değeri kullan
-    if (isAdminMode) {
-        const selectEl = document.getElementById('agent-select-admin');
-        targetAgent = selectEl.value; // Seçili temsilciyi her zaman oku
-    }
-    
-    if (!targetAgent) {
-        loader.innerHTML = '<span style="color:red;">Lütfen listeden bir temsilci seçimi yapın.</span>';
-        return;
-    }
-function toggleEvaluationDetail(index) {
-    const detailEl = document.getElementById(`eval-details-${index}`);
-    const iconEl = document.getElementById(`eval-icon-${index}`);
-    const summaryEl = document.getElementById(`eval-summary-${index}`);
-    const isVisible = detailEl.style.maxHeight !== '0px' && detailEl.style.maxHeight !== '';
-
-    if (isVisible) {
-        detailEl.style.maxHeight = '0px';
-        iconEl.style.transform = 'rotate(0deg)';
-        summaryEl.style.background = '#fff';
-    } else {
-        // ScrollHeight hesaplamasıyla içeriğin yüksekliğini doğru yakala
-        detailEl.style.maxHeight = detailEl.scrollHeight + 150 + 'px'; 
-        iconEl.style.transform = 'rotate(180deg)';
-        summaryEl.style.background = '#f9f9f9';
-    }
-}
-
-    const selectedMonth = document.getElementById('month-select-fi11111lter').value;
-    const monthName = document.getElementById('month-select-filter').options[document.getElementById('month-select-filter').selectedIndex].text;
-
-
-    try {
-        const response = await fetch(SCRIPT_URL, { 
-            method: 'POST', 
-            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-            body: JSON.stringify({ action: "fetchEvaluations", targetAgent: targetAgent, username: currentUser, token: getToken() }) 
-        });
-        
-        const data = await response.json();
-
-        loader.style.display = 'none'; 
-        
-        if (data.result === "success") {
-            allEvaluationsData = data.evaluations;
-
-            let filteredEvals = allEvaluationsData.filter(eval => {
-                const evalDate = eval.date.substring(3);
-                return evalDate === selectedMonth;
-            });
-            
-            const monthlyTotal = filteredEvals.reduce((sum, eval) => sum + (parseFloat(eval.score) || 0), 0);
-            const monthlyCount = filteredEvals.length;
-            const monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
-            const avgColorClass = monthlyAvg >= 90 ? 'average-color-green' : (monthlyAvg >= 70 ? 'average-color-yellow' : 'average-color-red');
-
-
-            // 3. Metrikleri Güncelle (Yeni Gösterim)
-            const metricHtml = `
-                <div class="metric-box">
-                    <i class="fas fa-calendar-alt" style="color:var(--primary);"></i>
-                    <div class="metric-label">Dönem</div>
-                    <div class="metric-value" style="font-size:1.1rem; color:var(--info);">${monthName}</div>
-                </div>
-                <div class="metric-box">
-                    <i class="fas fa-chart-line" style="color:var(--primary);"></i>
-                    <div class="metric-label">Dinleme Adeti</div>
-                    <div class="metric-value">${monthlyCount}</div>
-                </div>
-                <div class="metric-box" style="border-right: none;">
-                    <i class="fas fa-bullseye" style="color:${avgColorClass};"></i>
-                    <div class="metric-label">Ortalama Puan</div>
-                    <div class="metric-value ${avgColorClass}">${monthlyAvg}%</div>
-                </div>
-            `;
-            document.querySelector('.quality-filter-group').innerHTML = metricHtml;
-            
-
-            // 4. Liste Gösterimi
-            if (filteredEvals.length === 0) { 
-                listEl.innerHTML = `<p style="text-align:center; color:#666; padding:30px;"><i class="fas fa-sad-tear fa-2x" style="color:#ccc; margin-bottom:10px;"></i><br>Seçilen **${monthName}** dönemi için değerlendirme bulunamadı.</p>`;
-                return; 
+            if (isVisible) {
+                detailEl.style.maxHeight = '0px';
+                detailEl.style.marginTop = '0';
+                iconEl.style.transform = 'rotate(0deg)';
+            } else {
+                detailEl.style.maxHeight = detailEl.scrollHeight + 100 + 'px'; 
+                detailEl.style.marginTop = '10px';
+                iconEl.style.transform = 'rotate(180deg)';
             }
-            
-            let html = '';
-            filteredEvals.reverse().forEach((eval, index) => { 
-                const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
-                const callIdHtml = eval.callId ? `Call ID: ${eval.callId} <button class="copy-call-id-btn" onclick="event.stopPropagation(); copyText('${escapeForJsString(eval.callId)}')"><i class="fas fa-copy"></i></button>` : 'Call ID: -';
-                
-                let detailHtml = '';
-                try {
-                    const detailObj = JSON.parse(eval.details);
-                    detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">';
-                    detailObj.forEach(item => {
-                        let rowClass = item.score < item.max ? 'score-break-row' : '';
-                        let noteDisplay = item.note ? `<br><em style="color: #c62828; font-size:0.8rem;">(Kırılım Nedeni: ${item.note})</em>` : '';
-                        
-                        detailHtml += `<tr class="${rowClass}" style="border-bottom:1px solid #eee;">
-                            <td style="padding:8px; border-left:none !important;">${item.q}${noteDisplay}</td>
-                            <td style="padding:8px; font-weight:bold; text-align:right; min-width: 50px;">${item.score}/${item.max}</td>
-                        </tr>`;
-                    });
-                    detailHtml += '</table>';
-                } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
-
-
-                html += `<div class="evaluation-summary" id="eval-summary-${index}" style="border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
-                    <div class="summary-header">
-                        <div style="flex-direction: column; align-items: flex-start; display: flex;">
-                            <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;"><i class="fas fa-calendar-check"></i> ${eval.callDate || 'N/A'}</span>
-                            <span style="font-size:0.8rem; color:#999; margin-top:3px;">Değerlendirme Tarihi: ${eval.date}</span>
-                        </div>
-                        <span class="summary-score" style="color:${scoreColor};">${eval.score}</span>
-                        <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
-                    </div>
-                    <div style="font-size:0.9rem; color:#555; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">${callIdHtml}</div>
-                    
-                    <div class="evaluation-details-content" id="eval-details-${index}">
-                        <h4 style="color:var(--accent); font-size:0.9rem; margin-top:10px;">Kriter Detayları:</h4>${detailHtml}
-                        <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
-                        <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
-                    </div>
-                </div>`;
-            });
-            listEl.innerHTML = html;
-            
-        } else { 
-            listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; 
         }
-
-    } catch(err) {
-        loader.style.display = 'none';
-        listEl.innerHTML = `<p style="color:red; text-align:center;">Bağlantı hatası veya sunucuya ulaşılamadı. ${err}</p>`;
-    }
-}
 
 
         // Diğer modal fonksiyonları (logEvaluationPopup, openWizard, openPenaltyGame, vb.) buraya dahil edilmiştir.
@@ -1509,4 +1393,3 @@ function toggleEvaluationDetail(index) {
     </script>
 </body>
 </html>
-
