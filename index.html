@@ -393,22 +393,6 @@
         let currentCategory = 'all';
         let adminUserList = []; // Admin için tüm kullanıcılar {name, group}
 
-        // --- TELESATIŞ DEĞERLENDİRME KRİTERLERİ (SABİT) ---
-        const TELESALES_CRITERIA = [
-            { id: 'q1', text: "Temsilci, kendini ve S Sport Plus'ı doğru telaffuz ile tanıttı mı?", points: 5 },
-            { id: 'q2', text: "Temsilci, enerjik ses tonu ile giriş yaptı mı?", points: 5 },
-            { id: 'q3', text: "TV Manager analizi ve vurgusu yapıldı mı?", points: 10 },
-            { id: 'q4', text: "S Sport Plus içerikleri ve özellikleri vurgulandı mı?", points: 15 },
-            { id: 'q5', text: "Fiyat teklifi; içerik ve fayda anlatımı sonrasında mı yapıldı?", points: 10 },
-            { id: 'q6', text: "Kullanıcı soruları etkin dinlendi ve doğru yanıtlandı mı?", points: 10 },
-            { id: 'q7', text: "Doğru kampanya teklifi sunuldu mu?", points: 5 },
-            { id: 'q8', text: "Kampanya avantajı ve indirim oranı vurgulandı mı?", points: 10 },
-            { id: 'q9', text: "Red edilen teklif sonrası 2. bir teklif sunuldu mu?", points: 10 },
-            { id: 'q10', text: "Kullanıcıyla birlikte işlem yapılması (Guided) teklif edildi mi?", points: 5 },
-            { id: 'q11', text: "Negatif kelimelerden (zam, iptal vb.) kaçınıldı mı?", points: 5 },
-            { id: 'q12', text: "Red nedeni soruldu ve ikna çabası gösterildi mi?", points: 10 }
-        ];
-
         function getToken() { return localStorage.getItem("sSportToken"); }
         function getFavs() { return JSON.parse(localStorage.getItem('sSportFavs') || '[]'); }
         function toggleFavorite(title) { event.stopPropagation(); let favs = getFavs(); if (favs.includes(title)) { favs = favs.filter(t => t !== title); } else { favs.push(title); } localStorage.setItem('sSportFavs', JSON.stringify(favs)); if (currentCategory === 'fav') { filterCategory(document.querySelector('.btn-fav'), 'fav'); } else { renderCards(activeCards); } }
@@ -540,56 +524,89 @@
             });
         }
 
-        // --- YENİ DİNAMİK DEĞERLENDİRME FORMU ---
+        // --- DINAMIK KRİTER ÇEKME VE FORM OLUŞTURMA ---
+        
+        // Kriterleri sunucudan çeken fonksiyon
+        function fetchCriteria(groupName) {
+            return new Promise((resolve) => {
+                fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify({ action: "getCriteria", group: groupName, username: currentUser, token: getToken() }) 
+                })
+                .then(response => response.json())
+                .then(data => { 
+                    if (data.result === "success") resolve(data.criteria || []); 
+                    else resolve([]); 
+                })
+                .catch(err => { console.error(err); resolve([]); });
+            });
+        }
+
         async function logEvaluationPopup() {
             const selectEl = document.getElementById('agent-select-admin');
             const agentName = selectEl.value;
-            // Seçili option'dan grubu al
             const selectedOption = selectEl.options[selectEl.selectedIndex];
             const agentGroup = selectedOption.getAttribute('data-group') || 'Genel';
 
-            // Eğer Telesatış ise özel form, değilse basit form
+            // Yükleniyor göster
+            Swal.fire({ title: 'Form Hazırlanıyor...', didOpen: () => Swal.showLoading() });
+
+            // Sunucudan o gruba ait kriterleri çek
+            let criteriaList = [];
+            // "Telesatış" veya "Chat" ise veritabanına sor
+            if(agentGroup === 'Telesatış' || agentGroup === 'Chat') {
+                criteriaList = await fetchCriteria(agentGroup);
+            }
+
+            Swal.close(); // Yükleniyor'u kapat
+
             let formHtml = '';
-            if (agentGroup === 'Telesatış') {
+            
+            // Eğer veritabanından kriter geldiyse dinamik form oluştur
+            if (criteriaList.length > 0) {
                 formHtml = `<div style="text-align:left; max-height:400px; overflow-y:auto; border:1px solid #eee; padding:10px; margin-bottom:10px;">
-                    <label style="font-weight:bold;">Call ID (Görüşme No):</label>
-                    <input id="eval-callid" class="swal2-input" style="height:35px; margin:5px 0 15px 0;" placeholder="Call ID giriniz">
+                    <label style="font-weight:bold;">Call ID:</label>
+                    <input id="eval-callid" class="swal2-input" style="height:35px; margin:5px 0 15px 0;" placeholder="Call ID">
                     <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-                    <tr style="background:#f0f2f5; font-weight:bold;"><td>Kriter</td><td style="width:60px;">Max</td><td style="width:70px;">Puan</td></tr>`;
+                    <tr style="background:#f0f2f5; font-weight:bold;"><td>Kriter</td><td style="width:50px;">Max</td><td style="width:70px;">Puan</td></tr>`;
                 
-                TELESALES_CRITERIA.forEach((c, i) => {
+                criteriaList.forEach((c, i) => {
                     formHtml += `<tr>
                         <td style="padding:8px; border-bottom:1px solid #eee;">${i+1}. ${c.text}</td>
                         <td style="text-align:center; color:#999;">${c.points}</td>
-                        <td><input type="number" id="score-${c.id}" class="swal2-input eval-score-input" style="width:60px; height:30px; margin:0;" min="0" max="${c.points}" value="${c.points}" onchange="calcTotal()"></td>
+                        <td><input type="number" id="score-${i}" class="swal2-input eval-score-input" style="width:60px; height:30px; margin:0;" min="0" max="${c.points}" value="${c.points}" onchange="calcTotal()"></td>
                     </tr>`;
                 });
                 formHtml += `</table></div>
-                <div style="text-align:right; font-weight:bold; font-size:1.2rem; margin-bottom:10px; color:var(--primary);">TOPLAM SKOR: <span id="total-eval-score">100</span></div>
-                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Genel Geri Bildirim ve Koçluk Notu"></textarea>`;
+                <div style="text-align:right; font-weight:bold; font-size:1.2rem; margin-bottom:10px; color:var(--primary);">TOPLAM: <span id="total-eval-score">100</span></div>
+                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
+                
+                // Hesaplama fonksiyonunu güncelle
+                window.calcTotal = function() {
+                    let total = 0;
+                    criteriaList.forEach((c, i) => {
+                        let el = document.getElementById(`score-${i}`);
+                        let val = parseInt(el.value) || 0;
+                        if(val > c.points) { val = c.points; el.value = c.points; }
+                        if(val < 0) { val = 0; }
+                        total += val;
+                    });
+                    document.getElementById('total-eval-score').innerText = total;
+                };
+
             } else {
-                // CHAT veya Diğerleri için basit form
+                // Kriter bulunamazsa veya Genel grup ise standart manuel giriş
                 formHtml = `
-                <label>Call ID:</label><input id="eval-callid" class="swal2-input" placeholder="Call ID">
-                <label>Puan (0-100):</label><input id="eval-manual-score" type="number" class="swal2-input" value="100">
-                <textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar..."></textarea>
-                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim..."></textarea>`;
+                <p style="color:#e65100; font-size:0.9rem;">(Bu grup için ayarlı kriter bulunamadı, manuel giriş yapınız)</p>
+                <label>Call ID:</label><input id="eval-callid" class="swal2-input">
+                <label>Puan:</label><input id="eval-manual-score" type="number" class="swal2-input" value="100">
+                <textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar"></textarea>
+                <textarea id="eval-feedback" class="swal2-textarea" placeholder="Geri Bildirim"></textarea>`;
             }
 
-            // Fonksiyon global erişilebilir olsun diye window'a atıyoruz
-            window.calcTotal = function() {
-                let total = 0;
-                TELESALES_CRITERIA.forEach(c => {
-                    let val = parseInt(document.getElementById(`score-${c.id}`).value) || 0;
-                    if(val > c.points) { val = c.points; document.getElementById(`score-${c.id}`).value = c.points; } // Max kontrolü
-                    if(val < 0) { val = 0; }
-                    total += val;
-                });
-                document.getElementById('total-eval-score').innerText = total;
-            };
-
             const { value: formValues } = await Swal.fire({
-                title: `${agentName} (${agentGroup}) Değerlendirme`,
+                title: `${agentName} (${agentGroup})`,
                 html: formHtml,
                 width: '800px',
                 showCancelButton: true,
@@ -599,11 +616,11 @@
                     const callId = document.getElementById('eval-callid').value;
                     const feedback = document.getElementById('eval-feedback').value;
                     
-                    if (agentGroup === 'Telesatış') {
+                    if (criteriaList.length > 0) {
                         let total = 0;
                         let detailsArr = [];
-                        TELESALES_CRITERIA.forEach(c => {
-                            let val = parseInt(document.getElementById(`score-${c.id}`).value) || 0;
+                        criteriaList.forEach((c, i) => {
+                            let val = parseInt(document.getElementById(`score-${i}`).value) || 0;
                             total += val;
                             detailsArr.push({ q: c.text, max: c.points, score: val });
                         });
@@ -619,26 +636,114 @@
             if (formValues) {
                 Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } });
                 fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                    body: JSON.stringify({ 
-                        action: "logEvaluation", 
-                        username: currentUser, 
-                        token: getToken(), 
-                        ...formValues 
-                    }) 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                    body: JSON.stringify({ action: "logEvaluation", username: currentUser, token: getToken(), ...formValues }) 
                 })
-                .then(response => response.json()).then(data => {
-                    if (data.result === "success") { 
-                        Swal.fire('Başarılı!', 'Değerlendirme kaydedildi.', 'success'); 
-                        fetchEvaluationsForAgent(agentName); 
-                    } else { Swal.fire('Hata', data.message || 'Hata.', 'error'); }
+                .then(r => r.json()).then(d => {
+                    if (d.result === "success") { Swal.fire('Başarılı!', 'Kaydedildi.', 'success'); fetchEvaluationsForAgent(agentName); } 
+                    else { Swal.fire('Hata', d.message, 'error'); }
                 });
             }
         }
 
         // --- PENALTI, WIZARD VS. (AYNI KALDI) ---
-        // (Bu kısımlar zaten yukarıda var, tekrara gerek yok, kodun bütünlüğü korundu)
+        let pScore=0, pBalls=10, pCurrentQ=null;
+        function updateJokerButtons() {
+            document.getElementById('joker-call').disabled = jokers.call === 0; document.getElementById('joker-half').disabled = jokers.half === 0;
+            document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1;
+            if (firstAnswerIndex !== -1) { document.getElementById('joker-call').disabled = true; document.getElementById('joker-half').disabled = true; document.getElementById('joker-double').disabled = true; }
+        }
+        function useJoker(type) {
+            if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return;
+            jokers[type] = 0; updateJokerButtons();
+            const currentQ = pCurrentQ, correctAns = currentQ.a, btns = document.querySelectorAll('.penalty-btn');
+            if (type === 'call') {
+                const experts = ["Umut Bey", "Doğuş Bey", "Deniz Bey", "Esra Hanım"];
+                const expert = experts[Math.floor(Math.random() * experts.length)];
+                let guess = correctAns;
+                if (Math.random() > 0.8 && currentQ.opts.length > 1) { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns); guess = incorrectOpts[0]; }
+                Swal.fire({ icon: 'info', title: '📞 Telefon Jokeri', html: `${expert}: "Bence cevap **${String.fromCharCode(65 + guess)}**."` });
+            } else if (type === 'half') {
+                let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns).sort(() => Math.random() - 0.5).slice(0, 2);
+                incorrectOpts.forEach(idx => { btns[idx].disabled = true; btns[idx].style.textDecoration = 'line-through'; btns[idx].style.opacity = '0.4'; });
+            } else if (type === 'double') { doubleChanceUsed = true; Swal.fire({ icon: 'warning', title: '2️⃣ Çift Cevap', text: 'İki kez cevaplayabilirsin.', timer: 2000, showConfirmButton: false }); }
+        }
+        function openPenaltyGame() { document.getElementById('penalty-modal').style.display = 'flex'; showLobby(); }
+        function showLobby() { document.getElementById('penalty-lobby').style.display = 'flex'; document.getElementById('penalty-game-area').style.display = 'none'; fetchLeaderboard(); }
+        function startGameFromLobby() { document.getElementById('penalty-lobby').style.display = 'none'; document.getElementById('penalty-game-area').style.display = 'block'; startPenaltySession(); }
+        function fetchLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body'), loader = document.getElementById('leaderboard-loader'), table = document.getElementById('leaderboard-table');
+            tbody.innerHTML = ''; loader.style.display = 'block'; table.style.display = 'none';
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getLeaderboard" }) })
+            .then(response => response.json()).then(data => {
+                loader.style.display = 'none';
+                if (data.result === "success") {
+                    table.style.display = 'table';
+                    let html = '';
+                    data.leaderboard.forEach((u, i) => {
+                        let medal = i===0 ? '🥇' : (i===1 ? '🥈' : (i===2 ? '🥉' : `<span class="rank-badge">${i+1}</span>`));
+                        let bgStyle = (u.username === currentUser) ? 'background:rgba(250, 187, 0, 0.1);' : '';
+                        html += `<tr style="${bgStyle}"><td>${medal}</td><td style="text-align:left;">${u.username}</td><td>${u.games}</td><td>${u.average}</td></tr>`;
+                    });
+                    tbody.innerHTML = html || '<tr><td colspan="4">Veri yok.</td></tr>';
+                } else { loader.innerText = "Yüklenemedi."; loader.style.display = 'block'; }
+            }).catch(err => { loader.innerText = "Hata."; });
+        }
+        function startPenaltySession() {
+            pScore = 0; pBalls = 10; jokers = { call: 1, half: 1, double: 1 }; doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons();
+            document.getElementById('p-score').innerText = pScore; document.getElementById('p-balls').innerText = pBalls; document.getElementById('p-restart-btn').style.display = 'none'; document.getElementById('p-options').style.display = 'grid';
+            resetField(); loadPenaltyQuestion();
+        }
+        function loadPenaltyQuestion() {
+            if (pBalls <= 0) { finishPenaltyGame(); return; }
+            if (quizQuestions.length === 0) { Swal.fire('Hata', 'Soru yok!', 'warning'); return; }
+            pCurrentQ = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            document.getElementById('p-question-text').innerText = pCurrentQ.q;
+            doubleChanceUsed = false; firstAnswerIndex = -1; updateJokerButtons();
+            let html = '';
+            pCurrentQ.opts.forEach((opt, index) => { html += `<button class="penalty-btn" onclick="shootBall(${index})">${String.fromCharCode(65 + index)}: ${opt}</button>`; });
+            document.getElementById('p-options').innerHTML = html;
+        }
+        function shootBall(idx) {
+            const btns = document.querySelectorAll('.penalty-btn'), isCorrect = (idx === pCurrentQ.a);
+            if (!isCorrect && doubleChanceUsed && firstAnswerIndex === -1) { firstAnswerIndex = idx; btns[idx].classList.add('wrong-first-try'); btns[idx].disabled = true; Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'İlk Hata! 1 hakkın daha var.', showConfirmButton: false, timer: 1500 }); updateJokerButtons(); return; }
+            btns.forEach(b => b.disabled = true);
+            const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg');
+            const shotDir = Math.floor(Math.random() * 4);
+            shooterWrap.classList.add('shooter-run');
+            setTimeout(() => {
+                if(isCorrect) { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-right'); else keeperWrap.classList.add('keeper-dive-left'); } 
+                else { if(shotDir === 0 || shotDir === 2) keeperWrap.classList.add('keeper-dive-left'); else keeperWrap.classList.add('keeper-dive-right'); }
+                if (isCorrect) {
+                    if(shotDir === 0) ballWrap.classList.add('ball-shoot-left-top'); else if(shotDir === 1) ballWrap.classList.add('ball-shoot-right-top'); else if(shotDir === 2) ballWrap.classList.add('ball-shoot-left-low'); else ballWrap.classList.add('ball-shoot-right-low');
+                    setTimeout(() => { goalMsg.innerText = "GOL!!!"; goalMsg.style.color = "#fabb00"; goalMsg.classList.add('show'); pScore++; document.getElementById('p-score').innerText = pScore; }, 500);
+                } else {
+                    if(Math.random() > 0.5) {
+                        ballWrap.style.bottom = "160px"; ballWrap.style.left = (shotDir === 0 || shotDir === 2) ? "40%" : "60%"; ballWrap.style.transform = "scale(0.6)";
+                        setTimeout(() => { goalMsg.innerText = "KURTARDI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500);
+                    } else {
+                        ballWrap.classList.add(Math.random() > 0.5 ? 'ball-miss-left' : 'ball-miss-right');
+                        setTimeout(() => { goalMsg.innerText = "DIŞARI!"; goalMsg.style.color = "#ef5350"; goalMsg.classList.add('show'); Swal.fire({ icon: 'error', title: 'Kaçırdın!', text: `Cevap: ${pCurrentQ.opts[pCurrentQ.a]}`, timer: 2000, showConfirmButton: false }); }, 500);
+                    }
+                }
+            }, 300);
+            pBalls--; document.getElementById('p-balls').innerText = pBalls;
+            setTimeout(() => { resetField(); loadPenaltyQuestion(); }, 2500);
+        }
+        function resetField() {
+            const ballWrap = document.getElementById('ball-wrap'), keeperWrap = document.getElementById('keeper-wrap'), shooterWrap = document.getElementById('shooter-wrap'), goalMsg = document.getElementById('goal-msg');
+            ballWrap.className = 'ball-wrapper'; ballWrap.style = ""; keeperWrap.className = 'keeper-wrapper'; shooterWrap.className = 'shooter-wrapper'; goalMsg.classList.remove('show');
+            document.querySelectorAll('.penalty-btn').forEach(b => { b.classList.remove('wrong-first-try'); b.style = ''; b.style.background = '#fabb00'; b.style.color = '#0e1b42'; b.style.borderColor = '#f0b500'; b.disabled = false; });
+        }
+        function finishPenaltyGame() {
+            document.getElementById('p-question-text').innerHTML = `<span style="font-size:1.5rem; color:#fabb00;">MAÇ BİTTİ!</span><br>Skor: ${pScore}/10`;
+            document.getElementById('p-options').style.display = 'none'; document.getElementById('p-restart-btn').style.display = 'block';
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "logQuiz", username: currentUser, token: getToken(), score: pScore * 10, total: 100 }) });
+        }
+
+        const wizardSteps={ start:{title:"İade Talebi Analizi",text:"Lütfen müşterinin durumunu seçiniz:",options:[ {text:"İçerik İzlemiş / Kullanım Var",next:"izleme_var"}, {text:"Aylık Paket (İzleme YOK)",next:"aylik_izleme_yok"}, {text:"Yıllık Paket (İzleme YOK)",next:"yillik_izleme_yok"}, {text:"Mükerrer (Çift) Çekim",next:"mukerrer"}, {text:"Aynı Gün Yanlışlıkla Yıllık Alım",next:"ayni_gun_yillik"}, {text:"Apple / Google Store İptali",next:"store_iptal"}, {text:"Winback Paket Geçiş İadesi",next:"winback_iade"} ]}, izleme_var:{result:"red",title:"❌ İADE REDDEDİLİR",text:"İçerik izlenmişse (genel arıza hariç) iade yapılmaz.",script:"Hizmetimizden aktif olarak faydalandığınız için iade prosedürlerimiz gereği talebinize olumlu yanıt veremiyoruz."}, aylik_izleme_yok:{title:"Aylık Paket - İzleme Yok",text:"THH tehdidi var mı?",options:[{text:"Evet/Israrcı",next:"aylik_teklif"},{text:"Hayır",next:"izleme_var"}]}, aylik_teklif:{title:"İndirim Teklifi",text:"Önce 6AY50 ile indirim teklif et.",options:[{text:"İndirimi Kabul Etti",next:"indirim_kabul"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_izleme_yok:{title:"Yıllık Paket",text:"Paket kampanyalı mıydı?",options:[{text:"Hayır (Standart)",next:"yillik_standart"},{text:"Evet (Kampanyalı)",next:"yillik_kampanyali"}]}, yillik_standart:{title:"Standart Yıllık",text:"Sırasıyla: 1. YILLIKLOCA İndirimi, 2. Aylığa Geçiş öner.",options:[{text:"Teklifi Kabul Etti",next:"islem_tamam"},{text:"Hepsini Reddetti (Tam İade)",next:"tam_iade"}]}, yillik_kampanyali:{title:"Kampanyalı Yıllık",text:"Sadece Aylığa Geçiş önerilebilir.",options:[{text:"Aylığa Geçişi Kabul Etti",next:"ayliga_gecis"},{text:"Reddetti (Tam İade)",next:"tam_iade"}]}, mukerrer:{title:"Mükerrer Çekim",text:"15 gün içinde ve Aynı Cihaz/IP mi?",options:[{text:"Evet",next:"mukerrer_iade"},{text:"Hayır",next:"izleme_var"}]}, ayni_gun_yillik:{title:"Aynı Gün Yıllık",text:"24 saat içinde mi?",options:[{text:"Evet",next:"bir_defaya_mahsus"},{text:"Hayır",next:"izleme_var"}]}, store_iptal:{result:"red",title:"❌ BİZ İPTAL EDEMEYİZ",text:"Apple/Google alımları telefondan yapılmalı."}, winback_iade:{result:"yellow",title:"⚠️ SADECE 2. PAKET İADE",text:"Sadece son alınan indirimli paket iade edilebilir."}, indirim_kabul:{result:"green",title:"✅ İNDİRİM TANIMLA",text:"139.5 TL iade yapıldı."}, tam_iade:{result:"green",title:"✅ TAM İADE YAP",text:"Teklifler reddedildi, iade sağla."}, mukerrer_iade:{result:"green",title:"✅ MÜKERRER İADE",text:"Fazla paketi iade et."}, ayliga_gecis:{result:"green",title:"✅ AYLIK GEÇİŞ",text:"Yıllık iptal, aylık tanımla, farkı iade et."}, bir_defaya_mahsus:{result:"green",title:"✅ TEK SEFERLİK İADE",text:"Yıllık iade, aylık devam."}, islem_tamam:{result:"green",title:"✅ İŞLEM TAMAM",text:"Teklif kabul edildi."} };
+        function openWizard(){ document.getElementById('wizard-modal').style.display='flex'; renderStep('start'); }
+        function renderStep(k){ const s=wizardSteps[k]; const b=document.getElementById('wizard-body'); let h=`<h2>${s.title||''}</h2>`; if(s.result){ let i=s.result==='red'?'🛑':(s.result==='green'?'✅':'⚠️'); let c=s.result==='red'?'res-red':(s.result==='green'?'res-green':'res-yellow'); h+=`<div class="result-box ${c}"><div style="font-size:3rem;margin-bottom:10px;">${i}</div><h3>${s.title}</h3><p>${s.text}</p>${s.script?`<div class="script-box">${s.script}</div>`:''}</div><button class="restart-btn" onclick="renderStep('start')"><i class="fas fa-redo"></i> Başa Dön</button>`; }else{ h+=`<p>${s.text}</p><div class="wizard-options">`; s.options.forEach(o=>{ h+=`<button class="option-btn" onclick="renderStep('${o.next}')"><i class="fas fa-chevron-right"></i> ${o.text}</button>`; }); h+=`</div>`; if(k!=='start')h+=`<button class="restart-btn" onclick="renderStep('start')" style="background:#eee;color:#333;margin-top:15px;">Geri Dön</button>`; } b.innerHTML=h; }
     </script>
 </body>
 </html>
