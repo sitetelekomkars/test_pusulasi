@@ -15,8 +15,8 @@ const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
 // --- GLOBAL DEĞİŞKENLER ---
 let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [];
 let currentUser = "";
-let isAdminMode = false;     // YETKİ
-let isEditingActive = false; // GÖRÜNÜM (toggleEditMode tarafından yönetilir)
+let isAdminMode = false;      // YETKİ
+let isEditingActive = false;  // GÖRÜNÜM
 let sessionTimeout;
 let activeCards = []; 
 let currentCategory = 'all';
@@ -29,7 +29,9 @@ const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Te
 // === YARDIMCI VE HESAPLAMA FONKSİYONLARI (GLOBAL) ===
 // =======================================================
 
-// --- PUAN HESAPLAMA MOTORU ---
+// --- PUAN HESAPLAMA MOTORU (DÜZELTİLDİ) ---
+// Bu fonksiyonlar artık global, hem kayıt hem düzenleme ekranında çalışır.
+
 window.updateRowScore = function(index, max) {
     const slider = document.getElementById(`slider-${index}`);
     const badge = document.getElementById(`badge-${index}`);
@@ -137,18 +139,16 @@ function checkAdmin(role) {
     
     isAdminMode = (role === "admin"); 
     isEditingActive = false;
-    document.body.classList.remove('editing'); 
+    document.body.classList.remove('editing');
     
     if(isAdminMode) { 
-        if (editBtn) {
-            editBtn.style.display = "flex"; 
-            editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
-            editBtn.classList.remove('active');
-        }
-        if (addBtn) addBtn.style.display = "flex"; 
+        editBtn.style.display = "flex"; 
+        addBtn.style.display = "flex"; 
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
+        editBtn.classList.remove('active');
     } else { 
-        if (editBtn) editBtn.style.display = "none"; 
-        if (addBtn) addBtn.style.display = "none"; 
+        editBtn.style.display = "none"; 
+        addBtn.style.display = "none"; 
     } 
 }
 
@@ -185,10 +185,6 @@ async function changePasswordPopup(isMandatory = false) {
     } else if (isMandatory) { changePasswordPopup(true); } 
 }
 
-// =======================================================
-// === GÜVENLİ VERİ YÜKLEME FONKSİYONU ===
-// =======================================================
-
 function loadContentData() { 
     document.getElementById('loading').style.display = 'block'; 
     fetch(SCRIPT_URL, {
@@ -210,11 +206,11 @@ function loadContentData() {
                 script: i.Script, 
                 code: i.Code, 
                 link: i.Link, 
-                date: formatDateToDDMMYYYY(i.Date) 
+                date: formatDateToDDMMYYYY(i.Date)
             }));
             
             const fetchedNews = rawData.filter(i => i.Type === 'news').map(i => ({ 
-                date: formatDateToDDMMYYYY(i.Date), 
+                date: formatDateToDDMMYYYY(i.Date),
                 title: i.Title, 
                 desc: i.Text, 
                 type: i.Category, 
@@ -225,14 +221,12 @@ function loadContentData() {
             const fetchedSales = rawData.filter(i => i.Type === 'sales').map(i => ({ title: i.Title, text: i.Text }));
             const fetchedQuiz = rawData.filter(i => i.Type === 'quiz').map(i => ({ q: i.Text, opts: i.QuizOptions ? i.QuizOptions.split(',') : [], a: parseInt(i.QuizAnswer) }));
 
-            // Global değişkenlere atama
             database = fetchedCards;
             newsData = fetchedNews;
             sportsData = fetchedSports;
             salesScripts = fetchedSales;
             quizQuestions = fetchedQuiz;
             
-            // Kartları render et
             if(currentCategory === 'fav') { 
                 filterCategory(document.querySelector('.btn-fav'), 'fav'); 
             } else { 
@@ -251,7 +245,6 @@ function loadContentData() {
     }); 
 }
 
-// --- İÇERİK RENDER VE FİLTRELEME ---
 function renderCards(data) { 
     activeCards = data; 
     const container = document.getElementById('cardGrid'); 
@@ -268,7 +261,6 @@ function renderCards(data) {
         const favClass = isFavorite ? 'fas fa-star active' : 'far fa-star'; 
         const newBadge = isNew(item.date) ? '<span class="new-badge">YENİ</span>' : ''; 
         
-        // ADMIN KONTROLÜ: Sadece admin ve düzenleme açıksa HTML'e eklenir.
         const editIconHtml = (isAdminMode && isEditingActive) 
             ? `<i class="fas fa-pencil-alt edit-icon" onclick="editContent(${index})"></i>` 
             : ''; 
@@ -289,6 +281,7 @@ function renderCards(data) {
         container.innerHTML += html; 
     }); 
 }
+
 function highlightText(htmlContent) { if (!htmlContent) return ""; const searchTerm = document.getElementById('searchInput').value.trim(); if (!searchTerm) return htmlContent; const regex = new RegExp(`(${searchTerm})(?![^<]*>|[^<>]*<\/)`, "gi"); return htmlContent.replace(regex, '<span class="highlight">$1</span>'); }
 function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div style="text-align:left; font-size:1rem; line-height:1.6;">${text.replace(/\\n/g,'<br>')}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
 function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); let filtered = database; if (currentCategory === 'fav') { filtered = filtered.filter(i => isFav(i.title)); } else if (currentCategory !== 'all') { filtered = filtered.filter(i => i.category === currentCategory); } if (search) { filtered = filtered.filter(i => (i.title && i.title.toLowerCase().includes(search)) || (i.text && i.text.toLowerCase().includes(search)) ); } renderCards(filtered); }
@@ -296,23 +289,20 @@ function filterCategory(btn, cat) { currentCategory = cat; document.querySelecto
 function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
 
 function toggleEditMode() { 
-    const editBtn = document.getElementById('quickEditBtn');
-    
     if (!isAdminMode) return; 
-
-    isEditingActive = !isEditingActive; // isEditingActive durumunu değiştir
-    document.body.classList.toggle('editing', isEditingActive); // CSS sınıfını güncelle
-
-    if (isEditingActive) {
-        editBtn.classList.add('active');
-        editBtn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat';
-        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false });
-    } else {
-        editBtn.classList.remove('active');
-        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
-        Swal.fire({ icon: 'error', title: 'Düzenleme Modu KAPALI', timer: 1000, showConfirmButton: false });
+    isEditingActive = !isEditingActive; 
+    document.body.classList.toggle('editing', isEditingActive); 
+    
+    const btn = document.getElementById('quickEditBtn'); 
+    if(isEditingActive) { 
+        btn.classList.add('active'); 
+        btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; 
+        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false }); 
+    } else { 
+        btn.classList.remove('active'); 
+        btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; 
     } 
-
+    
     if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); 
     else renderCards(activeCards.length > 0 ? activeCards : database); 
     
@@ -413,7 +403,7 @@ async function addNewCardPopup() {
                 link: type === 'card' ? document.getElementById('swal-new-link').value : '',
                 tip: type === 'sport' ? document.getElementById('swal-sport-tip').value : '',
                 detail: type === 'sport' ? document.getElementById('swal-sport-detail').value : '',
-                pronunciation: type === 'sport' ? document.getElementById('swal-sport-pronunciation').value : '',
+                pronunciation: type === 'sport' ? document.getElementById('swal-sport-pron').value : '',
                 icon: type === 'sport' ? document.getElementById('swal-sport-icon').value : '',
                 date: dateStr 
             }
@@ -422,7 +412,7 @@ async function addNewCardPopup() {
     if (formValues) {
         if(!formValues.title) { Swal.fire('Hata', 'Başlık zorunlu!', 'error'); return; }
         Swal.fire({ title: 'Ekleniyor...', didOpen: () => { Swal.showLoading() } });
-        fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "addCard", username: currentUser, token: getToken(), ...formValues }) })
+        fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "addCard", username: currentUser, token: getToken(), ...formValues }) })
         .then(response => response.json()).then(data => {
             if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', text: 'İçerik eklendi.', timer: 2000, showConfirmButton: false}); setTimeout(loadContentData, 3500); } 
             else { Swal.fire('Hata', data.message || 'Eklenemedi.', 'error'); }
@@ -503,7 +493,6 @@ async function editSport(title) {
     }
 }
 
-// DÜZELTİLMİŞ: editSales, index yerine title alıyor.
 async function editSales(title) {
     event.stopPropagation(); 
     const s = salesScripts.find(item => item.title === title);
@@ -543,24 +532,9 @@ async function editNews(index) {
 }
 
 // --- MODAL VE GÖRÜNTÜLEME FONKSİYONLARI ---
-function closeModal(id) { 
-    document.getElementById(id).style.display = 'none'; 
-    
-    // EK GÜVENLİK KATMANI: Modallar kapandığında düzenleme modunu sıfırla (Adminlerde).
-    if (id === 'quality-modal' || id === 'wizard-modal' || id === 'penalty-modal') { 
-        const editBtn = document.getElementById('quickEditBtn');
-        document.body.classList.remove('editing');
-        isEditingActive = false; // JS durumunu da sıfırla
-        
-        // Edit butonunun durumunu güncelle
-        if (editBtn && isAdminMode) {
-            editBtn.classList.remove('active');
-            editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
-        }
-    }
-}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 let tickerIndex = 0;
-function startTicker() { const t = document.getElementById('ticker-content'); const activeNews = newsData.filter(i => i.status !== 'Pasif'); if(activeNews.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = activeNews[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % activeNews.length; } showNext(); setInterval(showNext, 5000); }
+function startTicker() { const t = document.getElementById('ticker-content'); const activeNews = newsData.filter(i => i.status !== 'Pasif'); if(activeNews.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = activeNews[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % activeNews.length; } showNext(); setInterval(showNext, 60000); }
 function openNews() { 
     document.getElementById('news-modal').style.display = 'flex'; 
     const c = document.getElementById('news-container'); 
@@ -571,8 +545,9 @@ function openNews() {
         let passiveStyle = i.status === 'Pasif' ? 'opacity:0.5; background:#eee;' : ''; 
         let passiveBadge = i.status === 'Pasif' ? '<span class="news-tag" style="background:#555; color:white;">PASİF</span>' : ''; 
         
-        // Edit butonu sadece admin ve düzenleme açıksa HTML'e eklenir
-        let editBtn = (isAdminMode && isEditingActive) ? `<i class="fas fa-pencil-alt edit-icon" style="top:0; right:0; font-size:0.9rem; padding:4px;" onclick="event.stopPropagation(); editNews(${index})"></i>` : ''; 
+        let editBtn = (isAdminMode && isEditingActive) 
+            ? `<i class="fas fa-pencil-alt edit-icon" style="top:0; right:0; font-size:0.9rem; padding:4px;" onclick="event.stopPropagation(); editNews(${index})"></i>` 
+            : ''; 
         
         c.innerHTML += `<div class="news-item" style="${passiveStyle}">${editBtn}<span class="news-date">${i.date}</span><span class="news-title">${i.title} ${passiveBadge}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span></div>`; 
     }); 
@@ -584,10 +559,10 @@ function openGuide() {
     sportsData.forEach((s, index) => { 
         let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : ''; 
         
-        // Edit butonu sadece admin ve düzenleme açıksa HTML'e eklenir
-        let editBtn = (isAdminMode && isEditingActive) ? `<i class="fas fa-pencil-alt edit-icon" style="top:5px; right:5px; z-index:50;" onclick="event.stopPropagation(); editSport('${escapeForJsString(s.title)}')"></i>` : ''; 
+        let editBtn = (isAdminMode && isEditingActive) 
+            ? `<i class="fas fa-pencil-alt edit-icon" style="top:5px; right:5px; z-index:50;" onclick="event.stopPropagation(); editSport('${escapeForJsString(s.title)}')"></i>` 
+            : ''; 
         
-        // showSportDetail, index'i kullanmaya devam edebilir
         grid.innerHTML += `<div class="guide-item" onclick="showSportDetail(${index})">${editBtn}<i class="fas ${s.icon} guide-icon"></i><span class="guide-title">${s.title}</span>${pronHtml}<div class="guide-desc">${s.desc}</div><div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div><div style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için tıkla)</div></div>`; 
     }); 
 }
@@ -597,74 +572,65 @@ function openSales() {
     const c = document.getElementById('sales-grid'); 
     c.innerHTML = ''; 
     salesScripts.forEach((s, index) => { 
-        // Edit butonu sadece admin ve düzenleme açıksa HTML'e eklenir
-        let editBtn = (isAdminMode && isEditingActive) ? `<i class="fas fa-pencil-alt edit-icon" style="top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales('${escapeForJsString(s.title)}')"></i>` : ''; 
+        let editBtn = (isAdminMode && isEditingActive) 
+            ? `<i class="fas fa-pencil-alt edit-icon" style="top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales('${escapeForJsString(s.title)}')"></i>` 
+            : ''; 
         
         c.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">${editBtn}<div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div><div class="sales-text">${(s.text || '').replace(/\n/g,'<br>')}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text || '')}')"><i class="fas fa-copy"></i> Kopyala</button></div></div></div>`; 
     }); 
 }
 function toggleSales(index) { const item = document.getElementById(`sales-${index}`); const icon = document.getElementById(`icon-${index}`); item.classList.toggle('active'); if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } }
 
-// --- KALİTE FONKSİYONLARI (GELİŞMİŞ) ---
+// --- KALİTE FONKSİYONLARI ---
 
-/** Ay filtresi için seçenekleri hazırlar */
 function populateMonthFilter() {
     const selectEl = document.getElementById('month-select-filter');
     selectEl.innerHTML = '';
-    
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-
-    // Geçen 6 ay ve şimdiki ay için seçenekleri oluştur
     for (let i = 0; i < 6; i++) {
-        let month = (currentMonth - i + 12) % 12; // 0-11
+        let month = (currentMonth - i + 12) % 12; 
         let year = currentYear;
-        if (currentMonth - i < 0) {
-            year = currentYear - 1;
-        }
-        const monthStr = (month + 1).toString().padStart(2, '0'); // MM formatı
+        if (currentMonth - i < 0) { year = currentYear - 1; }
+        const monthStr = (month + 1).toString().padStart(2, '0'); 
         const yearStr = year.toString();
         const value = `${monthStr}.${yearStr}`;
         const text = `${MONTH_NAMES[month]} ${yearStr}`;
-
         const option = document.createElement('option');
         option.value = value;
         option.textContent = text;
-        
-        if (i === 0) {
-            option.selected = true; // Varsayılan olarak şimdiki ayı seç
-        }
+        if (i === 0) { option.selected = true; }
         selectEl.appendChild(option);
     }
 }
 
-// openQualityArea fonksiyonunu güncelleyin
 function openQualityArea() {
     document.getElementById('quality-modal').style.display = 'flex';
-    
-    // ADMIN KONTROLÜ: Admin olmayanlar Yeni Değerlendirme Ekle butonunu görmez.
     document.getElementById('admin-quality-controls').style.display = isAdminMode ? 'block' : 'none';
-    
-    populateMonthFilter(); // Ay filtreleme seçeneklerini doldur
-    
-    // Metrikleri sıfırla
+    populateMonthFilter();
     document.getElementById('eval-count-span').innerText = `Dinleme Adeti: -`;
     document.getElementById('monthly-avg-span').innerText = `Ortalama: -`;
-
+    const monthSelect = document.getElementById('month-select-filter');
+    const newMonthSelect = monthSelect.cloneNode(true);
+    monthSelect.parentNode.replaceChild(newMonthSelect, monthSelect);
+    newMonthSelect.addEventListener('change', function() {
+        const target = isAdminMode ? document.getElementById('agent-select-admin').value : currentUser;
+        fetchEvaluationsForAgent(target);
+    });
     if (isAdminMode) {
         fetchUserListForAdmin().then(users => {
             const selectEl = document.getElementById('agent-select-admin');
             selectEl.innerHTML = users.map(u => `<option value="${u.name}" data-group="${u.group}">${u.name} (${u.group})</option>`).join('');
             if(users.length > 0) selectEl.value = users[0].name;
-            fetchEvaluationsForAgent(); 
+            selectEl.onchange = function() { fetchEvaluationsForAgent(this.value); };
+            fetchEvaluationsForAgent(selectEl.value); 
         });
     } else {
-        fetchEvaluationsForAgent(currentUser); // User sadece kendi çağrılarını görür
+        fetchEvaluationsForAgent(currentUser);
     }
 }
 
-// fetchEvaluationsForAgent fonksiyonunu güncelleyin (ROBUST YÜKLEME VE SIFIR VERİ KONTROLÜ)
 async function fetchEvaluationsForAgent(forcedName) {
     const listEl = document.getElementById('evaluations-list');
     const loader = document.getElementById('quality-loader');
@@ -672,118 +638,45 @@ async function fetchEvaluationsForAgent(forcedName) {
     loader.style.display = 'block';
 
     let targetAgent = forcedName || currentUser;
-    
-    // Admin modunda, temsilci seçim kutusundaki değeri kullan
     if (isAdminMode) {
         const selectEl = document.getElementById('agent-select-admin');
-        targetAgent = selectEl.value; // Seçili temsilciyi her zaman oku
+        targetAgent = forcedName || selectEl.value; 
     }
-    
     if (!targetAgent) {
         loader.innerHTML = '<span style="color:red;">Lütfen listeden bir temsilci seçimi yapın.</span>';
         return;
     }
 
     const selectedMonth = document.getElementById('month-select-filter').value;
-
     try {
-        // Not: İlk çalıştırmada tüm veriyi çeker ve allEvaluationsData'ya kaydeder
         const response = await fetch(SCRIPT_URL, { 
             method: 'POST', 
             headers: { "Content-Type": "text/plain;charset=utf-8" }, 
             body: JSON.stringify({ action: "fetchEvaluations", targetAgent: targetAgent, username: currentUser, token: getToken() }) 
         });
-        
         const data = await response.json();
-
-        loader.style.display = 'none'; // Yükleyiciyi kapat!
-        
+        loader.style.display = 'none'; 
         if (data.result === "success") {
             allEvaluationsData = data.evaluations;
-
-            // 1. Ay bazlı filtreleme
+            
+            // Filtreleme
             let filteredEvals = allEvaluationsData.filter(eval => {
                 const evalDate = eval.date.substring(3);
                 return evalDate === selectedMonth;
             });
-            
-            // 2. Metrik Hesaplama (Sıfır kayıt varsa 0 olarak hesaplanır)
+
+            // İstatistikler
             const monthlyTotal = filteredEvals.reduce((sum, eval) => sum + (parseFloat(eval.score) || 0), 0);
             const monthlyCount = filteredEvals.length;
             const monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
 
-            // 3. Metrikleri Güncelle
             document.getElementById('eval-count-span').innerText = `Dinleme Adeti: ${monthlyCount}`;
             document.getElementById('monthly-avg-span').innerText = `Ortalama: ${monthlyAvg}%`;
 
-            // 4. Liste Gösterimi
             if (filteredEvals.length === 0) { 
                 listEl.innerHTML = `<p style="text-align:center; color:#666;">Seçilen **${selectedMonth}** dönemi için değerlendirme bulunamadı.</p>`;
                 return; 
             }
-            
-            // Veri varsa listeyi render etme
-            let html = '';
-            // En yeni en üste
-            filteredEvals.reverse().forEach((eval, index) => { 
-                const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
-                
-                // KRİTİK: Çağrı Tarihi ve Loglama Tarihini formatla
-                const displayCallDate = formatDateToDDMMYYYY(eval.callDate);
-                const displayLogDate = eval.date || 'N/A'; // Loglama tarihi (A Sütunu) zaten formatlı geliyor.
-                
-                let detailHtml = '';
-                try {
-                    const detailObj = JSON.parse(eval.details);
-                    detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">';
-                    detailObj.forEach(item => {
-                        let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
-                        let noteDisplay = item.note ? `<br><em style="color: #d32f2f; font-size:0.8rem;">(Kırılım Nedeni: ${item.note})</em>` : '';
-                        
-                        detailHtml += `<tr style="background:${rowColor}; border-bottom:1px solid #eee;">
-                            <td style="padding:8px;">${item.q}${noteDisplay}</td>
-                            <td style="padding:8px; font-weight:bold; text-align:right;">${item.score}/${item.max}</td>
-                        </tr>`;
-                    });
-                    detailHtml += '</table>';
-                } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
-
-
-                // DÜZENLEME BUTONU: Sadece admin modunda
-                let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${eval.callId}')" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
-                
-                html += `<div class="evaluation-summary" id="eval-summary-${index}" style="position:relative; border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
-                    ${editBtn}
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="flex-direction: column; align-items: flex-start; display: flex;">
-                            
-                                                        <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">
-                                📞 ${displayCallDate} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Çağrı Tarihi)</span>
-                            </span>
-                            
-                                                        <span style="font-size:0.9rem; color:#555; margin-top:5px;">Değerlendirme Tarihi: ${displayLogDate}</span>
-                        </div>
-                        <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
-                        <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
-                        <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
-                    </div>
-                    <div class="evaluation-details-content" id="eval-details-${index}" style="max-height:0; overflow:hidden; transition:max-height 0.4s ease-in-out; margin-top:0;">
-                        <hr style="border:none; border-top:1px dashed #eee; margin:10px 0;"><h4 style="color:var(--accent); font-size:0.9rem;">Detaylar:</h4>${detailHtml}
-                        <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
-                        <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
-                    </div>
-                </div>`;
-            });
-            listEl.innerHTML = html;
-        } else { 
-            listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; 
-        }
-
-    } catch(err) {
-        loader.style.display = 'none';
-        listEl.innerHTML = `<p style="color:red; text-align:center;">Bağlantı hatası veya sunucuya ulaşılamadı.</p>`;
-    }
-}
             
             let html = '';
             // Listeyi ters çevirip ekrana basıyoruz
