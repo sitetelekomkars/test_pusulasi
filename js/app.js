@@ -679,41 +679,45 @@ async function fetchEvaluationsForAgent(forcedName) {
             }
             
             let html = '';
-          
-filteredEvals.reverse().forEach((eval, index) => { 
-    const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
-    // ... (try/catch bloğu)
+            // Listeyi ters çevirip ekrana basıyoruz
+            filteredEvals.reverse().forEach((eval, index) => { 
+                const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
+                 let detailHtml = '';
+                 try {
+                     const detailObj = JSON.parse(eval.details);
+                     detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">';
+                     detailObj.forEach(item => {
+                         let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
+                         let noteDisplay = item.note ? `<br><em style="color: #d32f2f; font-size:0.8rem;">(Kırılım Nedeni: ${item.note})</em>` : '';
+                         detailHtml += `<tr style="background:${rowColor}; border-bottom:1px solid #eee;">
+                             <td style="padding:8px;">${item.q}${noteDisplay}</td>
+                             <td style="padding:8px; font-weight:bold; text-align:right;">${item.score}/${item.max}</td>
+                         </tr>`;
+                     });
+                     detailHtml += '</table>';
+                 } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
 
-    // YENİ DÜZENLEME BAŞLANGICI
-    
-    // 1. Orijinal Çağrı Tarihini daha okunaklı formatta alalım
-    const formattedCallDate = formatDateToDDMMYYYY(eval.callDate); 
+                 // --- DÜZELTİLEN SATIR BURASI ---
+                 // Index yerine eval.callId gönderiyoruz. Call ID benzersiz olduğu için karışmaz.
+                 let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${eval.callId}')" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
 
-    // 2. Loglama Tarihini (mevcut eval.date) etiket olarak aşağıya taşıyalım
-
-    html += `<div class="evaluation-summary" id="eval-summary-${index}" style="border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="flex-direction: column; align-items: flex-start; display: flex;">
-                
-                <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">
-                    📅 ${formattedCallDate} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Çağrı Tarihi)</span>
-                </span>
-                
-                <span style="font-size:0.9rem; color:#555; margin-top:5px;">Loglama Tarihi: ${eval.date || 'N/A'}</span>
-                
-            </div>
-            <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
-            <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
-            <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
-        </div>
-        
-        <div class="evaluation-details-content" id="eval-details-${index}" style="max-height:0; overflow:hidden; transition:max-height 0.4s ease-in-out; margin-top:0;">
-             <hr style="border:none; border-top:1px dashed #eee; margin:10px 0;"><h4 style="color:var(--accent); font-size:0.9rem;">Detaylar:</h4>${detailHtml}
-             <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
-             <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
-        </div>
-    </div>`;
- 
+                 html += `<div class="evaluation-summary" id="eval-summary-${index}" style="position:relative; border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
+                     ${editBtn}
+                     <div style="display:flex; justify-content:space-between; align-items:center;">
+                         <div style="flex-direction: column; align-items: flex-start; display: flex;">
+                             <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">📅 ${eval.date} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Loglama)</span></span>
+                             <span style="font-size:0.9rem; color:#555; margin-top:5px;">Çağrı Tarihi: ${eval.callDate || 'N/A'}</span>
+                         </div>
+                         <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
+                         <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
+                         <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
+                     </div>
+                     <div class="evaluation-details-content" id="eval-details-${index}" style="max-height:0; overflow:hidden; transition:max-height 0.4s ease-in-out; margin-top:0;">
+                         <hr style="border:none; border-top:1px dashed #eee; margin:10px 0;"><h4 style="color:var(--accent); font-size:0.9rem;">Detaylar:</h4>${detailHtml}
+                         <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
+                         <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
+                     </div>
+                 </div>`;
             });
             listEl.innerHTML = html;
         } else { listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; }
