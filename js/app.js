@@ -658,10 +658,14 @@ async function fetchEvaluationsForAgent(forcedName) {
         loader.style.display = 'none'; 
         if (data.result === "success") {
             allEvaluationsData = data.evaluations;
+            
+            // Filtreleme
             let filteredEvals = allEvaluationsData.filter(eval => {
                 const evalDate = eval.date.substring(3);
                 return evalDate === selectedMonth;
             });
+
+            // İstatistikler
             const monthlyTotal = filteredEvals.reduce((sum, eval) => sum + (parseFloat(eval.score) || 0), 0);
             const monthlyCount = filteredEvals.length;
             const monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
@@ -675,6 +679,7 @@ async function fetchEvaluationsForAgent(forcedName) {
             }
             
             let html = '';
+            // Listeyi ters çevirip ekrana basıyoruz
             filteredEvals.reverse().forEach((eval, index) => { 
                 const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
                  let detailHtml = '';
@@ -692,7 +697,9 @@ async function fetchEvaluationsForAgent(forcedName) {
                      detailHtml += '</table>';
                  } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
 
-                 let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation(${index})" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
+                 // --- DÜZELTİLEN SATIR BURASI ---
+                 // Index yerine eval.callId gönderiyoruz. Call ID benzersiz olduğu için karışmaz.
+                 let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${eval.callId}')" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
 
                  html += `<div class="evaluation-summary" id="eval-summary-${index}" style="position:relative; border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
                      ${editBtn}
@@ -890,18 +897,29 @@ async function logEvaluationPopup() {
 }
 
 // --- DÜZENLEME FONKSİYONU ---
-async function editEvaluation(index) {
-    const evalData = allEvaluationsData[index];
-    if (!evalData) return;
+// --- DÜZENLEME FONKSİYONU (CALL ID İLE ARAMA) ---
+async function editEvaluation(targetCallId) {
+    // Listeden ID'ye göre doğru kaydı bul (Index'e güvenmiyoruz artık)
+    const evalData = allEvaluationsData.find(item => item.callId == targetCallId);
+    
+    if (!evalData) {
+        Swal.fire('Hata', 'Kayıt verisi bulunamadı.', 'error');
+        return;
+    }
 
     const agentName = evalData.agent || evalData.agentName; 
     
     // Admin panelindeki seçimi güncelle
     const selectEl = document.getElementById('agent-select-admin');
-    const selectedOption = Array.from(selectEl.options).find(opt => opt.value === agentName);
-    const agentGroup = selectedOption ? selectedOption.getAttribute('data-group') : 'Genel';
+    if (selectEl) {
+        const selectedOption = Array.from(selectEl.options).find(opt => opt.value === agentName);
+        if (selectedOption) selectEl.value = agentName;
+    }
+    
+    const currentOption = selectEl ? selectEl.options[selectEl.selectedIndex] : null;
+    const agentGroup = currentOption ? currentOption.getAttribute('data-group') : (evalData.group || 'Genel');
 
-    Swal.fire({ title: 'Düzenleme Modu Hazırlanıyor...', didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'Kayıtlar İnceleniyor...', didOpen: () => Swal.showLoading() });
 
     let criteriaList = [];
     if(agentGroup === 'Telesatış' || agentGroup === 'Chat') { 
@@ -910,6 +928,7 @@ async function editEvaluation(index) {
     Swal.close();
 
     const isCriteriaBased = criteriaList.length > 0;
+    
     let oldDetails = [];
     try { oldDetails = JSON.parse(evalData.details); } catch(e) { oldDetails = []; }
 
@@ -922,13 +941,13 @@ async function editEvaluation(index) {
                 <div style="font-size:0.8rem; opacity:0.7;">(İtiraz / Düzeltme)</div>
             </div>
             <div class="score-circle-outer" id="score-ring">
-                <div class="score-circle-inner" id="live-score">${evalData.score}</div>
+                <div class="score-circle-inner" id="live-score">0</div>
             </div>
         </div>
 
         <div class="eval-header-card">
             <div>
-                <label style="font-size:0.8rem; font-weight:bold; color:#555;">Call ID (Değiştirilemez)</label>
+                <label style="font-size:0.8rem; font-weight:bold; color:#555;">Call ID</label>
                 <input id="eval-callid" class="swal2-input" style="height:35px; margin:0; width:100%; font-size:0.9rem; background:#eee;" value="${evalData.callId}" readonly>
             </div>
             <div>
@@ -942,11 +961,6 @@ async function editEvaluation(index) {
         contentHtml += `<div class="criteria-container">`;
         criteriaList.forEach((c, i) => {
             let pts = parseInt(c.points) || 0;
-            
-            let oldItem = oldDetails.find(d => d.q === c.text) || { score: pts, note: '' };
-            let currentVal = oldItem.score;
-            let currentNote = oldItem.note || '';
-
             contentHtml += `
             <div class="criteria-row" id="row-${i}">
                 <div class="criteria-header">
@@ -954,10 +968,10 @@ async function editEvaluation(index) {
                     <span style="font-size:0.8rem; color:#999;">Max: ${pts}</span>
                 </div>
                 <div class="criteria-controls">
-                    <input type="range" class="custom-range slider-input" id="slider-${i}" min="0" max="${pts}" value="${currentVal}" data-index="${i}" oninput="updateRowScore(${i}, ${pts})">
-                    <span class="score-badge" id="badge-${i}">${currentVal}</span>
+                    <input type="range" class="custom-range slider-input" id="slider-${i}" min="0" max="${pts}" data-index="${i}" oninput="updateRowScore(${i}, ${pts})">
+                    <span class="score-badge" id="badge-${i}">0</span>
                 </div>
-                <input type="text" id="note-${i}" class="note-input" placeholder="Kırılım nedeni..." value="${currentNote}" style="display:${currentVal < pts ? 'block' : 'none'};">
+                <input type="text" id="note-${i}" class="note-input" placeholder="Kırılım nedeni..." style="display:none;">
             </div>`;
         });
         contentHtml += `</div>`;
@@ -967,14 +981,14 @@ async function editEvaluation(index) {
             <label style="font-weight:bold;">Manuel Puan</label><br>
             <input id="eval-manual-score" type="number" class="swal2-input" value="${evalData.score}" min="0" max="100" style="width:100px; text-align:center; font-size:1.5rem; font-weight:bold;">
         </div>
-        <textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar...">${typeof evalData.details === 'string' ? evalData.details : ''}</textarea>
+        <textarea id="eval-details" class="swal2-textarea" placeholder="Detaylar..."></textarea>
         `;
     }
 
     contentHtml += `
         <div>
             <label style="font-size:0.85rem; font-weight:bold; color:#333;">Revize Geri Bildirim</label>
-            <textarea id="eval-feedback" class="swal2-textarea" style="margin-top:5px; height:80px;">${evalData.feedback || ''}</textarea>
+            <textarea id="eval-feedback" class="swal2-textarea" style="margin-top:5px; height:80px;"></textarea>
         </div>
     </div>`;
 
@@ -986,14 +1000,44 @@ async function editEvaluation(index) {
         cancelButtonText: 'İptal',
         focusConfirm: false,
         didOpen: () => {
+            document.getElementById('eval-feedback').value = evalData.feedback || '';
+            
+            if(!isCriteriaBased) {
+                const detEl = document.getElementById('eval-details');
+                if(detEl) detEl.value = (typeof evalData.details === 'string' ? evalData.details : '');
+            }
+
             if(isCriteriaBased) {
-                // DOM yüklendikten sonra renkleri ve hesaplamayı tetikle
-                window.recalcTotalScore();
-                // Her satırın rengini manuel tetikle
                 criteriaList.forEach((c, i) => {
                     let pts = parseInt(c.points);
-                    window.updateRowScore(i, pts); 
+                    
+                    let oldItem = oldDetails.find(d => d.q === c.text);
+                    
+                    if (!oldItem && oldDetails[i]) {
+                        oldItem = oldDetails[i];
+                    }
+
+                    if (!oldItem) {
+                        oldItem = { score: pts, note: '' };
+                    }
+
+                    let currentVal = parseInt(oldItem.score);
+                    let currentNote = oldItem.note || '';
+
+                    const slider = document.getElementById(`slider-${i}`);
+                    const noteInp = document.getElementById(`note-${i}`);
+                    
+                    if(slider) {
+                        slider.value = currentVal;
+                        window.updateRowScore(i, pts);
+                    }
+                    if(noteInp) {
+                        noteInp.value = currentNote;
+                        if(currentVal < pts) noteInp.style.display = 'block';
+                    }
                 });
+                
+                window.recalcTotalScore();
             }
         },
         preConfirm: () => {
@@ -1031,7 +1075,6 @@ async function editEvaluation(index) {
         }).catch(err => { Swal.fire('Hata', 'Sunucu hatası.', 'error'); });
     }
 }
-
 let pScore=0, pBalls=10, pCurrentQ=null;
 function updateJokerButtons() { document.getElementById('joker-call').disabled = jokers.call === 0; document.getElementById('joker-half').disabled = jokers.half === 0; document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1; if (firstAnswerIndex !== -1) { document.getElementById('joker-call').disabled = true; document.getElementById('joker-half').disabled = true; document.getElementById('joker-double').disabled = true; } }
 function useJoker(type) { if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return; jokers[type] = 0; updateJokerButtons(); const currentQ = pCurrentQ, correctAns = currentQ.a, btns = document.querySelectorAll('.penalty-btn'); if (type === 'call') { const experts = ["Umut Bey", "Doğuş Bey", "Deniz Bey", "Esra Hanım"]; const expert = experts[Math.floor(Math.random() * experts.length)]; let guess = correctAns; if (Math.random() > 0.8 && currentQ.opts.length > 1) { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns); guess = incorrectOpts[Math.floor(Math.random() * incorrectOpts.length)] || correctAns; } Swal.fire({ icon: 'info', title: '📞 Telefon Jokeri', html: `${expert} soruyu cevaplıyor...<br><br>"Benim tahminim kesinlikle **${String.fromCharCode(65 + guess)}** şıkkı. Bundan ${Math.random() < 0.8 ? "çok eminim" : "emin değilim"}."`, confirmButtonText: 'Kapat' }); } else if (type === 'half') { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns).sort(() => Math.random() - 0.5).slice(0, 2); incorrectOpts.forEach(idx => { btns[idx].disabled = true; btns[idx].style.textDecoration = 'line-through'; btns[idx].style.opacity = '0.4'; }); Swal.fire({ icon: 'success', title: '✂️ Yarı Yarıya Kullanıldı', text: 'İki yanlış şık elendi!', toast: true, position: 'top', showConfirmButton: false, timer: 1500 }); } else if (type === 'double') { doubleChanceUsed = true; Swal.fire({ icon: 'warning', title: '2️⃣ Çift Cevap', text: 'Bu soruda bir kez yanlış cevap verme hakkınız var. İlk cevabınız yanlışsa, ikinci kez deneyebilirsiniz.', toast: true, position: 'top', showConfirmButton: false, timer: 2500 }); } }
