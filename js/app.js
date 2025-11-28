@@ -7,8 +7,6 @@ const BAKIM_MODU = false;
 // Apps Script URL'si, tüm veri alışverişi bu güvenli URL üzerinden yapılır.
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbocJrJPU7_u0lvlnBQ8CrQYHCfy22G6UU8jRo5s6Yrl4rpTQ_a7oB5Ttf_NkGsUOiQg/exec"; 
 
-// ESKİ DATA_SHEET_URL GÜVENLİK NEDENİYLE KALDIRILMIŞTIR
-
 let jokers = { call: 1, half: 1, double: 1 };
 let doubleChanceUsed = false;
 let firstAnswerIndex = -1;
@@ -79,7 +77,32 @@ function checkSession() {
 
 function enterBas(e) { if (e.key === "Enter") girisYap(); }
 function girisYap() { const uName = document.getElementById("usernameInput").value.trim(); const uPass = document.getElementById("passInput").value.trim(); const loadingMsg = document.getElementById("loading-msg"); const errorMsg = document.getElementById("error-msg"); if(!uName || !uPass) { errorMsg.innerText = "Lütfen bilgileri giriniz."; errorMsg.style.display = "block"; return; } loadingMsg.style.display = "block"; loadingMsg.innerText = "Doğrulanıyor..."; errorMsg.style.display = "none"; document.querySelector('.login-btn').disabled = true; const hashedPass = CryptoJS.SHA256(uPass).toString(); fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "login", username: uName, password: hashedPass }) }).then(response => response.json()).then(data => { loadingMsg.style.display = "none"; document.querySelector('.login-btn').disabled = false; if (data.result === "success") { currentUser = data.username; localStorage.setItem("sSportUser", currentUser); localStorage.setItem("sSportToken", data.token); localStorage.setItem("sSportRole", data.role); if (data.forceChange === true) { Swal.fire({ icon: 'warning', title: '⚠️ Güvenlik Uyarısı', text: 'İlk girişiniz. Lütfen şifrenizi değiştirin.', allowOutsideClick: false, allowEscapeKey: false, confirmButtonText: 'Şifremi Değiştir' }).then(() => { changePasswordPopup(true); }); } else { document.getElementById("login-screen").style.display = "none"; document.getElementById("user-display").innerText = currentUser; checkAdmin(data.role); startSessionTimer(); if (BAKIM_MODU) document.getElementById("maintenance-screen").style.display = "flex"; else { document.getElementById("main-app").style.display = "block"; loadContentData(); } } } else { errorMsg.innerText = data.message || "Hatalı giriş!"; errorMsg.style.display = "block"; } }).catch(error => { console.error("Login Error:", error); loadingMsg.style.display = "none"; document.querySelector('.login-btn').disabled = false; errorMsg.innerText = "Sunucu hatası! Lütfen sayfayı yenileyin."; errorMsg.style.display = "block"; }); }
-function checkAdmin(role) { const editBtn = document.getElementById('quickEditBtn'); const addBtn = document.getElementById('addCardBtn'); isAdminMode = (role === "admin"); if(role === "admin") { editBtn.style.display = "flex"; addBtn.style.display = "flex"; } else { editBtn.style.display = "none"; addBtn.style.display = "none"; } }
+
+// KRİTİK DÜZELTME: Admin girişi yapıldığında düzenleme modunun varsayılan olarak kapalı kalmasını sağlar.
+function checkAdmin(role) { 
+    const editBtn = document.getElementById('quickEditBtn'); 
+    const addBtn = document.getElementById('addCardBtn'); 
+    isAdminMode = (role === "admin"); 
+
+    // Her durumda editing sınıfını ve edit butonunun aktif görünümünü sıfırla
+    // Bu, önceki oturumdan kalan 'editing' sınıfını temizler ve varsayılan KAPALI durumu sağlar.
+    document.body.classList.remove('editing'); 
+    
+    if (editBtn) {
+        editBtn.classList.remove('active');
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; // Buton metnini "Aç" olarak ayarla
+    }
+
+    // Rol bazlı buton görünürlüğü
+    if(role === "admin") { 
+        if (editBtn) editBtn.style.display = "flex"; 
+        if (addBtn) addBtn.style.display = "flex"; 
+    } else { 
+        if (editBtn) editBtn.style.display = "none"; 
+        if (addBtn) addBtn.style.display = "none"; 
+    } 
+}
+
 function logout() { currentUser = ""; isAdminMode = false; document.body.classList.remove('editing'); localStorage.removeItem("sSportUser"); localStorage.removeItem("sSportToken"); localStorage.removeItem("sSportRole"); if (sessionTimeout) clearTimeout(sessionTimeout); document.getElementById("main-app").style.display = "none"; document.getElementById("login-screen").style.display = "flex"; document.getElementById("passInput").value = ""; document.getElementById("usernameInput").value = ""; document.getElementById("error-msg").style.display = "none"; }
 function startSessionTimer() { if (sessionTimeout) clearTimeout(sessionTimeout); sessionTimeout = setTimeout(() => { Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); }); }, 3600000); }
 function openUserMenu() { let options = { title: `Merhaba, ${currentUser}`, showCancelButton: true, showDenyButton: true, confirmButtonText: '🔑 Şifre Değiştir', denyButtonText: '🚪 Çıkış Yap', cancelButtonText: 'İptal' }; Swal.fire(options).then((result) => { if (result.isConfirmed) changePasswordPopup(); else if (result.isDenied) logout(); }); }
@@ -203,7 +226,7 @@ function renderCards(data) {
         const favClass = isFavorite ? 'fas fa-star active' : 'far fa-star'; 
         const newBadge = isNew(item.date) ? '<span class="new-badge">YENİ</span>' : ''; 
         
-        // 🚩 CRITICAL FIX: Sadece isAdminMode (Admin Modu AÇIK) ise edit ikonunu göster
+        // ADMIN KONTROLÜ: Sadece isAdminMode true ise edit ikonunu oluştur (Görünürlüğü CSS'e bırakılır).
         const editIconHtml = isAdminMode 
             ? `<i class="fas fa-pencil-alt edit-icon" onclick="editContent(${index})"></i>` 
             : ''; // Admin değilse boş dize gönder
@@ -229,7 +252,33 @@ function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div sty
 function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); let filtered = database; if (currentCategory === 'fav') { filtered = filtered.filter(i => isFav(i.title)); } else if (currentCategory !== 'all') { filtered = filtered.filter(i => i.category === currentCategory); } if (search) { filtered = filtered.filter(i => (i.title && i.title.toLowerCase().includes(search)) || (i.text && i.text.toLowerCase().includes(search)) ); } renderCards(filtered); }
 function filterCategory(btn, cat) { currentCategory = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterContent(); }
 function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
-function toggleEditMode() { isAdminMode = !isAdminMode; document.body.classList.toggle('editing', isAdminMode); const btn = document.getElementById('quickEditBtn'); if(isAdminMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false }); } else { btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; } if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); else renderCards(activeCards.length > 0 ? activeCards : database); if(document.getElementById('guide-modal').style.display === 'flex') openGuide(); if(document.getElementById('sales-modal').style.display === 'flex') openSales(); if(document.getElementById('news-modal').style.display === 'flex') openNews(); }
+
+function toggleEditMode() { 
+    const editBtn = document.getElementById('quickEditBtn');
+    
+    if (!isAdminMode) return; 
+
+    const isCurrentlyEditing = document.body.classList.contains('editing');
+
+    if (isCurrentlyEditing) {
+        document.body.classList.remove('editing'); 
+        editBtn.classList.remove('active');
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
+        Swal.fire({ icon: 'error', title: 'Düzenleme Modu KAPALI', timer: 1000, showConfirmButton: false });
+    } else {
+        document.body.classList.add('editing'); 
+        editBtn.classList.add('active');
+        editBtn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; 
+        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false });
+    } 
+
+    if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); 
+    else renderCards(activeCards.length > 0 ? activeCards : database); 
+    
+    if(document.getElementById('guide-modal').style.display === 'flex') openGuide(); 
+    if(document.getElementById('sales-modal').style.display === 'flex') openSales(); 
+    if(document.getElementById('news-modal').style.display === 'flex') openNews(); 
+}
 
 function sendUpdate(o, c, v, t='card') { if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } }); fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "updateContent", title: o, column: c, value: v, type: t, originalText: o, username: currentUser, token: getToken() }) }).then(r => r.json()).then(data => { if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); setTimeout(loadContentData, 1600); } else { Swal.fire('Hata', 'Kaydedilemedi: ' + (data.message || 'Bilinmeyen Hata'), 'error'); } }).catch(err => Swal.fire('Hata', 'Sunucu hatası.', 'error')); }
 
@@ -454,7 +503,20 @@ async function editNews(index) {
 }
 
 // --- MODAL VE GÖRÜNTÜLEME FONKSİYONLARI ---
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function closeModal(id) { 
+    document.getElementById(id).style.display = 'none'; 
+    
+    // EK GÜVENLİK KATMANI: Kalite modası kapandığında, düzenleme modunu kesinlikle sıfırla (Adminlerde).
+    if (id === 'quality-modal') {
+        const editBtn = document.getElementById('quickEditBtn');
+        document.body.classList.remove('editing');
+        // Edit butonunun durumunu güncelle
+        if (editBtn && isAdminMode) {
+            editBtn.classList.remove('active');
+            editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
+        }
+    }
+}
 let tickerIndex = 0;
 function startTicker() { const t = document.getElementById('ticker-content'); const activeNews = newsData.filter(i => i.status !== 'Pasif'); if(activeNews.length === 0) { t.innerHTML = "Güncel duyuru yok."; return; } function showNext() { const i = activeNews[tickerIndex]; t.style.animation = 'none'; t.offsetHeight; t.style.animation = 'slideIn 0.5s ease-out'; t.innerHTML = `<strong>${i.date}:</strong> ${i.title} - ${i.desc}`; tickerIndex = (tickerIndex + 1) % activeNews.length; } showNext(); setInterval(showNext, 5000); }
 function openNews() { 
@@ -538,6 +600,8 @@ function populateMonthFilter() {
 // openQualityArea fonksiyonunu güncelleyin
 function openQualityArea() {
     document.getElementById('quality-modal').style.display = 'flex';
+    
+    // ADMIN KONTROLÜ: Admin olmayanlar Yeni Değerlendirme Ekle butonunu görmez.
     document.getElementById('admin-quality-controls').style.display = isAdminMode ? 'block' : 'none';
     
     populateMonthFilter(); // Ay filtreleme seçeneklerini doldur
@@ -554,7 +618,7 @@ function openQualityArea() {
             fetchEvaluationsForAgent(); 
         });
     } else {
-        fetchEvaluationsForAgent(currentUser);
+        fetchEvaluationsForAgent(currentUser); // User sadece kendi çağrılarını görür
     }
 }
 
@@ -889,7 +953,6 @@ async function logEvaluationPopup() {
         }).catch(err => { Swal.fire('Hata', 'Sunucu hatası.', 'error'); });
     }
 }
-
 let pScore=0, pBalls=10, pCurrentQ=null;
 function updateJokerButtons() { document.getElementById('joker-call').disabled = jokers.call === 0; document.getElementById('joker-half').disabled = jokers.half === 0; document.getElementById('joker-double').disabled = jokers.double === 0 || firstAnswerIndex !== -1; if (firstAnswerIndex !== -1) { document.getElementById('joker-call').disabled = true; document.getElementById('joker-half').disabled = true; document.getElementById('joker-double').disabled = true; } }
 function useJoker(type) { if (jokers[type] === 0 || (firstAnswerIndex !== -1 && type !== 'double')) return; jokers[type] = 0; updateJokerButtons(); const currentQ = pCurrentQ, correctAns = currentQ.a, btns = document.querySelectorAll('.penalty-btn'); if (type === 'call') { const experts = ["Umut Bey", "Doğuş Bey", "Deniz Bey", "Esra Hanım"]; const expert = experts[Math.floor(Math.random() * experts.length)]; let guess = correctAns; if (Math.random() > 0.8 && currentQ.opts.length > 1) { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns); guess = incorrectOpts[Math.floor(Math.random() * incorrectOpts.length)] || correctAns; } Swal.fire({ icon: 'info', title: '📞 Telefon Jokeri', html: `${expert} soruyu cevaplıyor...<br><br>"Benim tahminim kesinlikle **${String.fromCharCode(65 + guess)}** şıkkı. Bundan ${Math.random() < 0.8 ? "çok eminim" : "emin değilim"}."`, confirmButtonText: 'Kapat' }); } else if (type === 'half') { let incorrectOpts = currentQ.opts.map((_, i) => i).filter(i => i !== correctAns).sort(() => Math.random() - 0.5).slice(0, 2); incorrectOpts.forEach(idx => { btns[idx].disabled = true; btns[idx].style.textDecoration = 'line-through'; btns[idx].style.opacity = '0.4'; }); Swal.fire({ icon: 'success', title: '✂️ Yarı Yarıya Kullanıldı', text: 'İki yanlış şık elendi!', toast: true, position: 'top', showConfirmButton: false, timer: 1500 }); } else if (type === 'double') { doubleChanceUsed = true; Swal.fire({ icon: 'warning', title: '2️⃣ Çift Cevap', text: 'Bu soruda bir kez yanlış cevap verme hakkınız var. İlk cevabınız yanlışsa, ikinci kez deneyebilirsiniz.', toast: true, position: 'top', showConfirmButton: false, timer: 2500 }); } }
