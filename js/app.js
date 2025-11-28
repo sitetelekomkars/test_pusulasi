@@ -14,7 +14,8 @@ let doubleChanceUsed = false;
 let firstAnswerIndex = -1;
 const VALID_CATEGORIES = ['Teknik', 'İkna', 'Kampanya', 'Bilgi'];
 let database = [], newsData = [], sportsData = [], salesScripts = [], quizQuestions = [];
-let currentUser = "", isAdminMode = false, sessionTimeout;
+// ↓ KRİTİK DEĞİŞKEN TANIMLAMA: Yetki (isAdminMode) ve Mod (isEditing) ayrıldı.
+let currentUser = "", isAdminMode = false, isEditing = false, sessionTimeout; 
 let activeCards = []; 
 let currentCategory = 'all';
 let adminUserList = []; 
@@ -55,8 +56,38 @@ function checkSession() {
 
 function enterBas(e) { if (e.key === "Enter") girisYap(); }
 function girisYap() { const uName = document.getElementById("usernameInput").value.trim(); const uPass = document.getElementById("passInput").value.trim(); const loadingMsg = document.getElementById("loading-msg"); const errorMsg = document.getElementById("error-msg"); if(!uName || !uPass) { errorMsg.innerText = "Lütfen bilgileri giriniz."; errorMsg.style.display = "block"; return; } loadingMsg.style.display = "block"; loadingMsg.innerText = "Doğrulanıyor..."; errorMsg.style.display = "none"; document.querySelector('.login-btn').disabled = true; const hashedPass = CryptoJS.SHA256(uPass).toString(); fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "login", username: uName, password: hashedPass }) }).then(response => response.json()).then(data => { loadingMsg.style.display = "none"; document.querySelector('.login-btn').disabled = false; if (data.result === "success") { currentUser = data.username; localStorage.setItem("sSportUser", currentUser); localStorage.setItem("sSportToken", data.token); localStorage.setItem("sSportRole", data.role); if (data.forceChange === true) { Swal.fire({ icon: 'warning', title: '⚠️ Güvenlik Uyarısı', text: 'İlk girişiniz. Lütfen şifrenizi değiştirin.', allowOutsideClick: false, allowEscapeKey: false, confirmButtonText: 'Şifremi Değiştir' }).then(() => { changePasswordPopup(true); }); } else { document.getElementById("login-screen").style.display = "none"; document.getElementById("user-display").innerText = currentUser; checkAdmin(data.role); startSessionTimer(); if (BAKIM_MODU) document.getElementById("maintenance-screen").style.display = "flex"; else { document.getElementById("main-app").style.display = "block"; loadContentData(); } } } else { errorMsg.innerText = data.message || "Hatalı giriş!"; errorMsg.style.display = "block"; } }).catch(error => { console.error("Login Error:", error); loadingMsg.style.display = "none"; document.querySelector('.login-btn').disabled = false; errorMsg.innerText = "Sunucu hatası! Lütfen sayfayı yenileyin."; errorMsg.style.display = "block"; }); }
-function checkAdmin(role) { const editBtn = document.getElementById('quickEditBtn'); const addBtn = document.getElementById('addCardBtn'); isAdminMode = (role === "admin"); if(role === "admin") { editBtn.style.display = "flex"; addBtn.style.display = "flex"; } else { editBtn.style.display = "none"; addBtn.style.display = "none"; } }
-function logout() { currentUser = ""; isAdminMode = false; document.body.classList.remove('editing'); localStorage.removeItem("sSportUser"); localStorage.removeItem("sSportToken"); localStorage.removeItem("sSportRole"); if (sessionTimeout) clearTimeout(sessionTimeout); document.getElementById("main-app").style.display = "none"; document.getElementById("login-screen").style.display = "flex"; document.getElementById("passInput").value = ""; document.getElementById("usernameInput").value = ""; document.getElementById("error-msg").style.display = "none"; }
+
+// ↓ GÜNCELLENDİ: Sadece yetkiyi ayarlar, edit modunu değil.
+function checkAdmin(role) { 
+    const editBtn = document.getElementById('quickEditBtn'); 
+    const addBtn = document.getElementById('addCardBtn'); 
+    isAdminMode = (role === "admin"); // Yalnızca yetkiyi ayarla
+    
+    // Temel Admin Butonları (İçerik Ekle / Düzenlemeyi Aç) Her Zaman Gözüksün
+    if(isAdminMode) { 
+        editBtn.style.display = "flex"; 
+        addBtn.style.display = "flex"; 
+    } else { 
+        editBtn.style.display = "none"; 
+        addBtn.style.display = "none"; 
+    } 
+}
+
+function logout() { 
+    currentUser = ""; 
+    isAdminMode = false; 
+    isEditing = false; // Modu da sıfırla
+    document.body.classList.remove('editing'); 
+    localStorage.removeItem("sSportUser"); 
+    localStorage.removeItem("sSportToken"); 
+    localStorage.removeItem("sSportRole"); 
+    if (sessionTimeout) clearTimeout(sessionTimeout); 
+    document.getElementById("main-app").style.display = "none"; 
+    document.getElementById("login-screen").style.display = "flex"; 
+    document.getElementById("passInput").value = ""; 
+    document.getElementById("usernameInput").value = ""; 
+    document.getElementById("error-msg").style.display = "none"; 
+}
 function startSessionTimer() { if (sessionTimeout) clearTimeout(sessionTimeout); sessionTimeout = setTimeout(() => { Swal.fire({ icon: 'warning', title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış yapıldı.', confirmButtonText: 'Tamam' }).then(() => { logout(); }); }, 3600000); }
 function openUserMenu() { let options = { title: `Merhaba, ${currentUser}`, showCancelButton: true, showDenyButton: true, confirmButtonText: '🔑 Şifre Değiştir', denyButtonText: '🚪 Çıkış Yap', cancelButtonText: 'İptal' }; Swal.fire(options).then((result) => { if (result.isConfirmed) changePasswordPopup(); else if (result.isDenied) logout(); }); }
 
@@ -145,7 +176,7 @@ function loadContentData() { 
     }); 
 }
 // =======================================================
-// === DİĞER FONKSİYONLAR (DEĞİŞTİRİLMEDİ) ===
+// === DİĞER FONKSİYONLAR ===
 // =======================================================
 function renderCards(data) { 
     activeCards = data; 
@@ -163,10 +194,10 @@ function renderCards(data) { 
         const favClass = isFavorite ? 'fas fa-star active' : 'far fa-star'; 
         const newBadge = isNew(item.date) ? '<span class="new-badge">YENİ</span>' : ''; 
         
-        // 🚩 CRITICAL FIX: Sadece isAdminMode (Admin Modu AÇIK) ise edit ikonunu göster
-        const editIconHtml = isAdminMode 
+        // 🚩 KRİTİK DÜZELTME: Edit ikonu sadece isEditing (Mod Açık) ise gösterilir.
+        const editIconHtml = isEditing 
             ? `<i class="fas fa-pencil-alt edit-icon" onclick="editContent(${index})"></i>` 
-            : ''; // Admin değilse boş dize gönder
+            : ''; // Edit modu kapalıysa veya admin değilse boş dize gönder
         
         let rawText = item.text || ""; 
         let formattedText = rawText.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<b>$1</b>'); 
@@ -189,7 +220,34 @@ function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div sty
 function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); let filtered = database; if (currentCategory === 'fav') { filtered = filtered.filter(i => isFav(i.title)); } else if (currentCategory !== 'all') { filtered = filtered.filter(i => i.category === currentCategory); } if (search) { filtered = filtered.filter(i => (i.title && i.title.toLowerCase().includes(search)) || (i.text && i.text.toLowerCase().includes(search)) ); } renderCards(filtered); }
 function filterCategory(btn, cat) { currentCategory = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterContent(); }
 function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
-function toggleEditMode() { isAdminMode = !isAdminMode; document.body.classList.toggle('editing', isAdminMode); const btn = document.getElementById('quickEditBtn'); if(isAdminMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false }); } else { btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; } if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); else renderCards(activeCards.length > 0 ? activeCards : database); if(document.getElementById('guide-modal').style.display === 'flex') openGuide(); if(document.getElementById('sales-modal').style.display === 'flex') openSales(); if(document.getElementById('news-modal').style.display === 'flex') openNews(); }
+
+// ↓ GÜNCELLENDİ: Sadece isEditing modunu açıp kapatır. isAdminMode'u değiştirmez.
+function toggleEditMode() { 
+    // Sadece admin yetkisi olanlar modu açıp kapatabilir
+    if (!isAdminMode) return; 
+
+    isEditing = !isEditing; // Modu değiştirir
+    document.body.classList.toggle('editing', isEditing); 
+    const btn = document.getElementById('quickEditBtn'); 
+    
+    if(isEditing) { 
+        btn.classList.add('active'); 
+        btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; 
+        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kartlar, duyurular ve rehber içeriklerinde düzenleme butonları aktif edildi.', timer: 1500, showConfirmButton: false }); 
+    } else { 
+        btn.classList.remove('active'); 
+        btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; 
+    } 
+    
+    // Kartları ve modalları yeniden render ederek edit butonlarını günceller
+    if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); 
+    else renderCards(activeCards.length > 0 ? activeCards : database); 
+    
+    // Açık olan modalları güncelle
+    if(document.getElementById('guide-modal').style.display === 'flex') openGuide(); 
+    if(document.getElementById('sales-modal').style.display === 'flex') openSales(); 
+    if(document.getElementById('news-modal').style.display === 'flex') openNews();
+}
 
 function sendUpdate(o, c, v, t='card') { if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } }); fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "updateContent", title: o, column: c, value: v, type: t, originalText: o, username: currentUser, token: getToken() }) }).then(r => r.json()).then(data => { if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); setTimeout(loadContentData, 1600); } else { Swal.fire('Hata', 'Kaydedilemedi: ' + (data.message || 'Bilinmeyen Hata'), 'error'); } }).catch(err => Swal.fire('Hata', 'Sunucu hatası.', 'error')); }
 
@@ -427,8 +485,8 @@ function openNews() { 
         let passiveStyle = i.status === 'Pasif' ? 'opacity:0.5; background:#eee;' : ''; 
         let passiveBadge = i.status === 'Pasif' ? '<span class="news-tag" style="background:#555; color:white;">PASİF</span>' : ''; 
         
-        // DÜZELTİLMİŞ: Inline stil kaldırıldı. CSS sadece body.editing varsa gösterecek.
-        let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="top:0; right:0; font-size:0.9rem; padding:4px;" onclick="event.stopPropagation(); editNews(${index})"></i>` : ''; 
+        // 🚩 DÜZELTİLDİ: Edit butonu sadece isEditing (Mod Açık) ise gözükür
+        let editBtn = isEditing ? `<i class="fas fa-pencil-alt edit-icon" style="top:0; right:0; font-size:0.9rem; padding:4px;" onclick="event.stopPropagation(); editNews(${index})"></i>` : ''; 
         
         c.innerHTML += `<div class="news-item" style="${passiveStyle}">${editBtn}<span class="news-date">${i.date}</span><span class="news-title">${i.title} ${passiveBadge}</span><div class="news-desc">${i.desc}</div><span class="news-tag ${cl}">${tx}</span></div>`; 
     }); 
@@ -440,8 +498,8 @@ function openGuide() { 
     sportsData.forEach((s, index) => { 
         let pronHtml = s.pronunciation ? `<div class="pronunciation-badge">🗣️ ${s.pronunciation}</div>` : ''; 
         
-        // DÜZELTİLMİŞ: Tıklama olayına title (benzersiz key) geçirildi.
-        let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="top:5px; right:5px; z-index:50;" onclick="event.stopPropagation(); editSport('${escapeForJsString(s.title)}')"></i>` : ''; 
+        // 🚩 DÜZELTİLDİ: Edit butonu sadece isEditing (Mod Açık) ise gözükür
+        let editBtn = isEditing ? `<i class="fas fa-pencil-alt edit-icon" style="top:5px; right:5px; z-index:50;" onclick="event.stopPropagation(); editSport('${escapeForJsString(s.title)}')"></i>` : ''; 
         
         // showSportDetail, index'i kullanmaya devam edebilir
         grid.innerHTML += `<div class="guide-item" onclick="showSportDetail(${index})">${editBtn}<i class="fas ${s.icon} guide-icon"></i><span class="guide-title">${s.title}</span>${pronHtml}<div class="guide-desc">${s.desc}</div><div class="guide-tip"><i class="fas fa-lightbulb"></i> ${s.tip}</div><div style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için tıkla)</div></div>`; 
@@ -453,8 +511,8 @@ function openSales() { 
     const c = document.getElementById('sales-grid'); 
     c.innerHTML = ''; 
     salesScripts.forEach((s, index) => { 
-        // DÜZELTİLMİŞ: Tıklama olayına title (benzersiz key) geçirildi.
-        let editBtn = isAdminMode ? `<i class="fas fa-pencil-alt edit-icon" style="top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales('${escapeForJsString(s.title)}')"></i>` : ''; 
+        // 🚩 DÜZELTİLDİ: Edit butonu sadece isEditing (Mod Açık) ise gözükür
+        let editBtn = isEditing ? `<i class="fas fa-pencil-alt edit-icon" style="top:10px; right:40px; z-index:50;" onclick="event.stopPropagation(); editSales('${escapeForJsString(s.title)}')"></i>` : ''; 
         
         c.innerHTML += `<div class="sales-item" id="sales-${index}" onclick="toggleSales('${index}')">${editBtn}<div class="sales-header"><span class="sales-title">${s.title}</span><i class="fas fa-chevron-down" id="icon-${index}" style="color:#10b981;"></i></div><div class="sales-text">${(s.text || '').replace(/\n/g,'<br>')}<div style="text-align:right; margin-top:15px;"><button class="btn btn-copy" onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text || '')}')"><i class="fas fa-copy"></i> Kopyala</button></div></div></div>`; 
     }); 
