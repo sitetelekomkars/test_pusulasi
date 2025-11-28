@@ -647,6 +647,67 @@ function populateMonthFilter() {
 }
 
 function openQualityArea() {
+    function openQualityArea() {
+    // Modalı aç
+    document.getElementById('quality-modal').style.display = 'flex';
+
+    // Adminse buton görünsün, değilse gizlensin
+    document.getElementById('admin-quality-controls').style.display =
+        isAdminMode ? 'block' : 'none';
+
+    // Ay filtrelerini doldur
+    populateMonthFilter();
+
+    // İstatistik alanlarını sıfırla
+    document.getElementById('eval-count-span').innerText = `Dinleme Adeti: -`;
+    document.getElementById('monthly-avg-span').innerText = `Ortalama: -`;
+
+    // Ay seçici event'ini yenile
+    const monthSelect = document.getElementById('month-select-filter');
+    const newMonthSelect = monthSelect.cloneNode(true);
+    monthSelect.parentNode.replaceChild(newMonthSelect, monthSelect);
+
+    newMonthSelect.addEventListener('change', function () {
+        const target = isAdminMode
+            ? document.getElementById('agent-select-admin').value
+            : currentUser;
+        fetchEvaluationsForAgent(target);
+    });
+
+    // --- EXPORT BUTONUNU JS'TEN BAĞLA ---
+    const exportBtn = document.getElementById('btn-export-quality');
+    if (exportBtn && !exportBtn.dataset.bound) {
+        exportBtn.addEventListener('click', exportQualityReport);
+        exportBtn.dataset.bound = 'true'; // Bir daha bağlanmasın diye
+    }
+    // -------------------------------------
+
+    // Admin ise temsilci listesini yükle
+    if (isAdminMode) {
+        fetchUserListForAdmin().then((users) => {
+            const selectEl = document.getElementById('agent-select-admin');
+            selectEl.innerHTML = users
+                .map(
+                    (u) => `<option value="${u.name}" data-group="${u.group}">
+                                ${u.name} (${u.group})
+                            </option>`
+                )
+                .join('');
+
+            if (users.length > 0) selectEl.value = users[0].name;
+
+            selectEl.onchange = function () {
+                fetchEvaluationsForAgent(this.value);
+            };
+
+            fetchEvaluationsForAgent(selectEl.value);
+        });
+    } else {
+        // Temsilci ise kendi kayıtları
+        fetchEvaluationsForAgent(currentUser);
+    }
+}
+
     document.getElementById('quality-modal').style.display = 'flex';
     document.getElementById('admin-quality-controls').style.display = isAdminMode ? 'block' : 'none';
     populateMonthFilter();
