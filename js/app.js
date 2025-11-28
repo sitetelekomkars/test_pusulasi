@@ -370,60 +370,179 @@ function openQualityArea() {
 }
 
 async function fetchEvaluationsForAgent(forcedName) {
-    const listEl = document.getElementById('evaluations-list');
-    const loader = document.getElementById('quality-loader');
-    listEl.innerHTML = ''; loader.style.display = 'block';
-    
-    let targetAgent = forcedName || (isAdminMode ? document.getElementById('agent-select-admin').value : currentUser);
-    const selectedMonth = document.getElementById('month-select-filter').value;
+    const listEl =
+document.getElementById('evaluations-list');
+    const loader =
+document.getElementById('quality-loader');
+    listEl.innerHTML =
+''; 
+    loader.style.display = 'block';
 
-    const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "fetchEvaluations", targetAgent: targetAgent, username: currentUser, token: getToken() }) });
-    const data = await response.json();
-    loader.style.display = 'none';
+    let targetAgent =
+forcedName || currentUser;
+    if (isAdminMode) {
+        const selectEl
+= document.getElementById('agent-select-admin');
+        targetAgent =
+forcedName || selectEl.value; 
+    }
+    if (!targetAgent)
+{
+        loader.innerHTML = '<span style="color:red;">Lütfen
+listeden bir temsilci seçimi yapın.</span>';
+        return;
+    }
 
-    if (data.result === "success") {
-        allEvaluationsData = data.evaluations;
-        const filtered = allEvaluationsData.filter(e => e.date.includes(selectedMonth));
-        
-        // İstatistikler
-        const total = filtered.reduce((sum, e) => sum + (parseFloat(e.score)||0), 0);
-        const avg = filtered.length > 0 ? Math.round(total / filtered.length) : 0;
-        document.getElementById('eval-count-span').innerText = `Adet: ${filtered.length}`;
-        document.getElementById('monthly-avg-span').innerText = `Ort: ${avg}%`;
-
-        if(filtered.length === 0) { listEl.innerHTML = '<div style="text-align:center;">Kayıt yok.</div>'; return; }
-
-        filtered.reverse().forEach((eval, index) => {
-            const color = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
-            let detailHtml = '';
-            try { JSON.parse(eval.details).forEach(d => { detailHtml += `<div>${d.q}: <b>${d.score}/${d.max}</b> ${d.note?`(${d.note})`:''}</div>`; }); } catch(e){ detailHtml=eval.details; }
-            
-            // TARİH FORMATLAMA (DÜZELTİLDİ)
-            // Gelen "2025-11-26T..." verisini "26.11.2025" formatına çeviriyoruz.
-            let displayCallDate = formatDateToDDMMYYYY(eval.callDate);
-            
-            // DÜZENLEME BUTONU (CALL ID İLE)
-            let editBtn = isAdminMode ? `<div style="position:absolute; right:10px; top:10px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${eval.callId}')"><i class="fas fa-edit fa-lg"></i> <i class="fas fa-chevron-down"></i></div>` : '';
-            
-            // --- GÖRSEL YAPI DÜZELTİLDİ (ESKİ HALİNE GETİRİLDİ) ---
-            listEl.innerHTML += `<div class="evaluation-summary" style="position:relative; border-left:5px solid ${color}; padding:15px; margin-bottom:10px; background:#fff; border:1px solid #ddd; border-radius:5px;" onclick="toggleEvaluationDetail(${index})">
-                ${editBtn}
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; padding-right: 40px;">
-                    <div style="display:flex; flex-direction:column;">
-                        <span style="font-weight:bold; font-size:1.1rem; color:#333;">
-                            <i class="far fa-calendar-alt"></i> ${displayCallDate}
-                        </span>
-                        <span style="font-size:0.8rem; color:#666; margin-top:2px;">(Çağrı Tarihi)</span>
-                        <span style="font-size:0.75rem; color:#999; margin-top:2px;">Log: ${eval.date} - Call ID: ${eval.callId}</span>
-                    </div>
-                    <div style="font-weight:bold; color:${color}; font-size:1.5rem; text-align:right;">PUAN: ${eval.score}</div>
-                </div>
-                <div id="eval-details-${index}" style="display:none; margin-top:10px; border-top:1px dashed #ccc; padding-top:5px;">${detailHtml}<br><b>Yorum:</b> ${eval.feedback}</div>
-            </div>`;
+    const
+selectedMonth = document.getElementById('month-select-filter').value;
+    try {
+        const response
+= await fetch(SCRIPT_URL, { 
+            method:
+'POST', 
+            headers: {
+"Content-Type": "text/plain;charset=utf-8" }, 
+            body:
+JSON.stringify({ action: "fetchEvaluations", targetAgent:
+targetAgent, username: currentUser, token: getToken() }) 
         });
+        const data =
+await response.json();
+        loader.style.display = 'none'; 
+        if
+(data.result === "success") {
+            allEvaluationsData = data.evaluations;
+
+            //
+Filtreleme
+            let
+filteredEvals = allEvaluationsData.filter(eval => {
+                const
+evalDate = eval.date.substring(3);
+                return
+evalDate === selectedMonth;
+            });
+
+            //
+İstatistikler
+            const
+monthlyTotal = filteredEvals.reduce((sum, eval) => sum +
+(parseFloat(eval.score) || 0), 0);
+            const
+monthlyCount = filteredEvals.length;
+            const
+monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
+
+            document.getElementById('eval-count-span').innerText = `Dinleme Adeti:
+${monthlyCount}`;
+            document.getElementById('monthly-avg-span').innerText = `Ortalama:
+${monthlyAvg}%`;
+
+            if
+(filteredEvals.length === 0) { 
+                listEl.innerHTML = `<p style="text-align:center;
+color:#666;">Seçilen **${selectedMonth}** dönemi için değerlendirme
+bulunamadı.</p>`;
+                return; 
+            }
+
+            let html =
+'';
+            // Listeyi
+ters çevirip ekrana basıyoruz
+            filteredEvals.reverse().forEach((eval, index) => { 
+                const
+scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02'
+: '#d32f2f');
+                 let
+detailHtml = '';
+                 try {
+                    const detailObj = JSON.parse(eval.details);
+                    detailHtml = '<table style="width:100%; font-size:0.85rem;
+border-collapse:collapse; margin-top:10px;">';
+                    detailObj.forEach(item => {
+                        let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
+                        let noteDisplay = item.note ? `<br><em style="color:
+#d32f2f; font-size:0.8rem;">(Kırılım Nedeni: ${item.note})</em>`
+: '';
+                        detailHtml += `<tr style="background:${rowColor};
+border-bottom:1px solid #eee;">
+                            <td
+style="padding:8px;">${item.q}${noteDisplay}</td>
+                            <td style="padding:8px; font-weight:bold;
+text-align:right;">${item.score}/${item.max}</td>
+                        </tr>`;
+                    });
+                    detailHtml += '</table>';
+                 }
+                 catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0;
+font-size:0.9rem;">${eval.details}</p>`; }
+
+                // Index yerine eval.callId gönderiyoruz. Call ID benzersiz olduğu için karışmaz.
+                let editBtn = isAdminMode ? `<div style="position:absolute; top:10px;
+right:40px; cursor:pointer; color:#1976d2;"
+onclick="event.stopPropagation(); editEvaluation('${eval.callId}')"
+title="Değerlendirmeyi Düzenle"><i class="fas fa-edit
+fa-lg"></i></div>` : '';
+
+                // --- DEĞİŞTİRİLEN HTML PARÇASI ---
+                html += `<div class="evaluation-summary"
+id="eval-summary-${index}" style="position:relative; border:1px
+solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px;
+border-radius:6px; background:#fff; cursor:pointer;"
+onclick="toggleEvaluationDetail(${index})">
+                    ${editBtn}
+                    <div style="display:flex; justify-content:space-between;
+align-items:center;">
+                        <div style="flex-direction: column; align-items: flex-start;
+display: flex;">
+                            
+                            <span style="font-weight:bold; color:var(--primary);
+font-size:1.1rem;">
+                                📅 ${eval.callDate || 'N/A'} <span
+                                style="font-size:0.8rem; font-weight:normal;
+color:#666;">(Çağrı Tarihi)</span>
+                            </span>
+                            
+                            <span style="font-size:0.9rem; color:#555;
+margin-top:5px;">
+                                Log: ${eval.date}
+                            </span>
+                        </div>
+                        <span style="font-size:0.9rem; color:#666;">Call ID:
+${eval.callId || '-'}</span> 
+                        <span style="font-weight:bold; font-size:1.4rem;
+color:${scoreColor};">PUAN: ${eval.score}</span>
+                        <i class="fas fa-chevron-down"
+id="eval-icon-${index}" style="color:var(--primary);
+transition:transform 0.3s;"></i>
+                    </div>
+                    <div class="evaluation-details-content"
+id="eval-details-${index}" style="max-height:0; overflow:hidden;
+transition:max-height 0.4s ease-in-out; margin-top:0;">
+                        <hr style="border:none; border-top:1px dashed #eee; margin:10px
+0;"><h4 style="color:var(--accent);
+font-size:0.9rem;">Detaylar:</h4>${detailHtml}
+                        <h4 style="color:var(--primary); font-size:0.9rem;
+margin-top:10px;">Geri Bildirim:</h4>
+                        <p style="white-space:pre-wrap; margin:0;
+font-size:0.9rem;">${eval.feedback}</p>
+                    </div>
+                </div>`;
+            });
+            // --- BİTİŞ ---
+            listEl.innerHTML = html;
+        } else {
+            listEl.innerHTML = `<p style="color:red;
+text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen
+Hata'}</p>`; }
+    } catch(err) {
+        loader.style.display = 'none';
+        listEl.innerHTML = `<p style="color:red;
+text-align:center;">Bağlantı hatası veya sunucuya
+ulaşılamadı.</p>`;
     }
 }
-
 // --- DÜZENLEME FONKSİYONU (CALL ID İLE & YEDEK MANTIKLI) ---
 async function editEvaluation(targetCallId) {
     const evalData = allEvaluationsData.find(i => i.callId == targetCallId);
