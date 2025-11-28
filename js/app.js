@@ -253,25 +253,29 @@ function filterContent() { const search = document.getElementById('searchInput')
 function filterCategory(btn, cat) { currentCategory = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterContent(); }
 function copyText(t) { navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() => Swal.fire({icon:'success', title:'Kopyalandı', toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); }
 
+// js/app.js
 function toggleEditMode() { 
     const editBtn = document.getElementById('quickEditBtn');
     
+    // GEREKSİZ: Admin değilse burayı çalıştırmayız, zaten buton gözükmüyor.
     if (!isAdminMode) return; 
 
-    const isCurrentlyEditing = document.body.classList.contains('editing');
+    // KRİTİK ONARIM: Sadece body sınıfını tersine çevir.
+    const isCurrentlyEditing = document.body.classList.toggle('editing'); 
 
     if (isCurrentlyEditing) {
-        document.body.classList.remove('editing'); 
+        // Mod AÇIK hale geldi
+        editBtn.classList.add('active');
+        editBtn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat';
+        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false });
+    } else {
+        // Mod KAPALI hale geldi
         editBtn.classList.remove('active');
         editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
         Swal.fire({ icon: 'error', title: 'Düzenleme Modu KAPALI', timer: 1000, showConfirmButton: false });
-    } else {
-        document.body.classList.add('editing'); 
-        editBtn.classList.add('active');
-        editBtn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; 
-        Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false });
     } 
 
+    // Kartları ve diğer modülleri yeniden render et
     if (currentCategory === 'fav') filterCategory(document.querySelector('.btn-fav'), 'fav'); 
     else renderCards(activeCards.length > 0 ? activeCards : database); 
     
@@ -279,7 +283,6 @@ function toggleEditMode() {
     if(document.getElementById('sales-modal').style.display === 'flex') openSales(); 
     if(document.getElementById('news-modal').style.display === 'flex') openNews(); 
 }
-
 function sendUpdate(o, c, v, t='card') { if (!Swal.isVisible()) Swal.fire({ title: 'Kaydediliyor...', didOpen: () => { Swal.showLoading() } }); fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "updateContent", title: o, column: c, value: v, type: t, originalText: o, username: currentUser, token: getToken() }) }).then(r => r.json()).then(data => { if (data.result === "success") { Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); setTimeout(loadContentData, 1600); } else { Swal.fire('Hata', 'Kaydedilemedi: ' + (data.message || 'Bilinmeyen Hata'), 'error'); } }).catch(err => Swal.fire('Hata', 'Sunucu hatası.', 'error')); }
 
 // --- CRUD FONKSİYONLARI ---
