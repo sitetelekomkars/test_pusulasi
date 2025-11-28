@@ -205,6 +205,15 @@
                     <button class="add-btn" style="background:var(--accent); border-color:var(--accent);" onclick="logEvaluationPopup()">
                         <i class="fas fa-plus"></i> Yeni Değerlendirme Ekle
                     </button>
+
+                    <!-- KALİTE EXCEL EXPORT BUTONU (YENİ) -->
+<button id="btn-export-quality" class="btn" style="background:#2e7d32;color:#fff;display:flex;align-items:center;gap:6px;">
+  <i class="fa fa-file-excel-o"></i>
+  Kalite Excel Raporu
+</button>
+
+
+                    
                     <div style="font-weight:bold; display:flex; align-items:center; gap: 5px;">
                         <label>Temsilci:</label>
                         <select id="agent-select-admin" class="swal2-input" onchange="fetchEvaluationsForAgent()" style="width: 200px;"></select>
@@ -239,6 +248,7 @@
     
 </body>
 </html>
+
 
 
 
