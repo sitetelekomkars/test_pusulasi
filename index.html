@@ -1,41 +1,18 @@
-// js/app.js dosyanızın en üstü:
-
-const BAKIM_MODU = false; 
-// 🚨 Kendi Apps Script URL'niz (SCRIPT_URL) buraya gelecek!
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbocJrJPU7_u0lvlnBQ8CrQYHCfy22G6UU8jRo5s6Yrl4rpTQ_a7oB5Ttf_NkGsUOiQg/exec"; 
-// 🚨 ESKİ DATA_SHEET_URL BURADAN KALDIRILMALIDIR!
-
-let jokers = { call: 1, half: 1, double: 1 };
-// ... Diğer değişken tanımlamaları ...
-// ... loadContentData fonksiyonunuz (Apps Script'e fetch yapan hali) ...
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S Sport Plus - Temsilci Bilgi Merkezi</title>
+    
     <link rel="stylesheet" href="style.css"> 
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-    ```
-
-### B. `<body>` Sonuna Eklenecekler
-
-`index.html` dosyanızda, **`</body>`** kapanış etiketinden hemen önce aşağıdaki satırı ekleyin:
-
-```html
-    <script src="js/app.js"></script>
-    
-</body>
-</html>
     <link rel="icon" type="image/jpeg" href="favicon.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-  
 </head>
 <body>
 
@@ -258,7 +235,7 @@ let jokers = { call: 1, half: 1, double: 1 };
     <div class="crafted-by-badge">Crafted by Doğuş Yalçınkaya</div>
 
     
+    <script src="js/app.js"></script>
+    
 </body>
 </html>
-
-
