@@ -1,3 +1,6 @@
+// =======================================================
+// === AYARLAR VE GÜVENLİ URL'LER ===
+// =======================================================
 
 const BAKIM_MODU = false; 
 
@@ -21,6 +24,13 @@ let adminUserList = [];
 let allEvaluationsData = []; 
 const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 
+
+// =======================================================
+// === YARDIMCI VE HESAPLAMA FONKSİYONLARI (GLOBAL) ===
+// =======================================================
+
+// --- PUAN HESAPLAMA MOTORU (DÜZELTİLDİ) ---
+// Bu fonksiyonlar artık global, hem kayıt hem düzenleme ekranında çalışır.
 
 window.updateRowScore = function(index, max) {
     const slider = document.getElementById(`slider-${index}`);
@@ -572,57 +582,6 @@ function openSales() {
 function toggleSales(index) { const item = document.getElementById(`sales-${index}`); const icon = document.getElementById(`icon-${index}`); item.classList.toggle('active'); if(item.classList.contains('active')){ icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } else { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); } }
 
 // --- KALİTE FONKSİYONLARI ---
-// --- KALİTE FONKSİYONLARI ---
-
-async function exportQualityReport() {
-    // Seçili ayı al
-    const monthSelect = document.getElementById('month-select-filter');
-    let monthVal = monthSelect ? monthSelect.value : '';
-
-    // "all" veya boş ise hepsi
-    if (!monthVal || monthVal === 'all') {
-        monthVal = '';
-    }
-
-    try {
-        Swal.fire({
-            title: 'Rapor hazırlanıyor...',
-            didOpen: () => Swal.showLoading(),
-            allowOutsideClick: false,
-            allowEscapeKey: false
-        });
-
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-                action: "exportEvaluationsXlsx",
-                username: currentUser,
-                token: getToken(),
-                month: monthVal
-            })
-        });
-
-        const data = await response.json();
-        Swal.close();
-
-        if (data.result === "success" && data.url) {
-            // Google Sheet linkini yeni sekmede aç – oradan XLSX indirirsin
-            window.open(data.url, "_blank");
-        } else {
-            Swal.fire(
-                'Hata',
-                data.message || 'Rapor oluşturulamadı.',
-                'error'
-            );
-        }
-    } catch (err) {
-        Swal.close();
-        console.error('Export error:', err);
-        Swal.fire('Hata', 'Beklenmeyen bir hata oluştu: ' + err, 'error');
-    }
-}
-
 
 function populateMonthFilter() {
     const selectEl = document.getElementById('month-select-filter');
@@ -647,67 +606,6 @@ function populateMonthFilter() {
 }
 
 function openQualityArea() {
-    function openQualityArea() {
-    // Modalı aç
-    document.getElementById('quality-modal').style.display = 'flex';
-
-    // Adminse buton görünsün, değilse gizlensin
-    document.getElementById('admin-quality-controls').style.display =
-        isAdminMode ? 'block' : 'none';
-
-    // Ay filtrelerini doldur
-    populateMonthFilter();
-
-    // İstatistik alanlarını sıfırla
-    document.getElementById('eval-count-span').innerText = `Dinleme Adeti: -`;
-    document.getElementById('monthly-avg-span').innerText = `Ortalama: -`;
-
-    // Ay seçici event'ini yenile
-    const monthSelect = document.getElementById('month-select-filter');
-    const newMonthSelect = monthSelect.cloneNode(true);
-    monthSelect.parentNode.replaceChild(newMonthSelect, monthSelect);
-
-    newMonthSelect.addEventListener('change', function () {
-        const target = isAdminMode
-            ? document.getElementById('agent-select-admin').value
-            : currentUser;
-        fetchEvaluationsForAgent(target);
-    });
-
-    // --- EXPORT BUTONUNU JS'TEN BAĞLA ---
-    const exportBtn = document.getElementById('btn-export-quality');
-    if (exportBtn && !exportBtn.dataset.bound) {
-        exportBtn.addEventListener('click', exportQualityReport);
-        exportBtn.dataset.bound = 'true'; // Bir daha bağlanmasın diye
-    }
-    // -------------------------------------
-
-    // Admin ise temsilci listesini yükle
-    if (isAdminMode) {
-        fetchUserListForAdmin().then((users) => {
-            const selectEl = document.getElementById('agent-select-admin');
-            selectEl.innerHTML = users
-                .map(
-                    (u) => `<option value="${u.name}" data-group="${u.group}">
-                                ${u.name} (${u.group})
-                            </option>`
-                )
-                .join('');
-
-            if (users.length > 0) selectEl.value = users[0].name;
-
-            selectEl.onchange = function () {
-                fetchEvaluationsForAgent(this.value);
-            };
-
-            fetchEvaluationsForAgent(selectEl.value);
-        });
-    } else {
-        // Temsilci ise kendi kayıtları
-        fetchEvaluationsForAgent(currentUser);
-    }
-}
-
     document.getElementById('quality-modal').style.display = 'flex';
     document.getElementById('admin-quality-controls').style.display = isAdminMode ? 'block' : 'none';
     populateMonthFilter();
@@ -761,14 +659,14 @@ async function fetchEvaluationsForAgent(forcedName) {
         if (data.result === "success") {
             allEvaluationsData = data.evaluations;
             
-            // Ay filtresi
-            let filteredEvals = allEvaluationsData.filter(evalItem => {
-                const evalDate = evalItem.date.substring(3);
+            // Filtreleme
+            let filteredEvals = allEvaluationsData.filter(eval => {
+                const evalDate = eval.date.substring(3);
                 return evalDate === selectedMonth;
             });
 
             // İstatistikler
-            const monthlyTotal = filteredEvals.reduce((sum, evalItem) => sum + (parseFloat(evalItem.score) || 0), 0);
+            const monthlyTotal = filteredEvals.reduce((sum, eval) => sum + (parseFloat(eval.score) || 0), 0);
             const monthlyCount = filteredEvals.length;
             const monthlyAvg = monthlyCount > 0 ? Math.round(monthlyTotal / monthlyCount) : 0;
 
@@ -782,16 +680,11 @@ async function fetchEvaluationsForAgent(forcedName) {
             
             let html = '';
             // Listeyi ters çevirip ekrana basıyoruz
-            filteredEvals.reverse().forEach((evalItem, index) => { 
-                const scoreColor = evalItem.score >= 90 ? '#2e7d32' : (evalItem.score >= 70 ? '#ed6c02' : '#d32f2f');
-
-                // --- TARİH FORMATLAMA VE YER DEĞİŞİMİ ---
-                const displayCallDate = formatDateToDDMMYYYY(evalItem.callDate); // Çağrı tarihi (üstte)
-                const displayLogDate  = formatDateToDDMMYYYY(evalItem.date);     // Dinleme / loglama tarihi (altta)
-
+            filteredEvals.reverse().forEach((eval, index) => { 
+                const scoreColor = eval.score >= 90 ? '#2e7d32' : (eval.score >= 70 ? '#ed6c02' : '#d32f2f');
                  let detailHtml = '';
                  try {
-                     const detailObj = JSON.parse(evalItem.details);
+                     const detailObj = JSON.parse(eval.details);
                      detailHtml = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">';
                      detailObj.forEach(item => {
                          let rowColor = item.score < item.max ? '#ffebee' : '#f9f9f9';
@@ -802,46 +695,37 @@ async function fetchEvaluationsForAgent(forcedName) {
                          </tr>`;
                      });
                      detailHtml += '</table>';
-                 } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${evalItem.details}</p>`; }
+                 } catch (e) { detailHtml = `<p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.details}</p>`; }
 
-                 // Index yerine callId kullanımı aynı bırakıldı
-                 let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${evalItem.callId}')" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
+                 // --- DÜZELTİLEN SATIR BURASI ---
+                 // Index yerine eval.callId gönderiyoruz. Call ID benzersiz olduğu için karışmaz.
+                 let editBtn = isAdminMode ? `<div style="position:absolute; top:10px; right:40px; cursor:pointer; color:#1976d2;" onclick="event.stopPropagation(); editEvaluation('${eval.callId}')" title="Değerlendirmeyi Düzenle"><i class="fas fa-edit fa-lg"></i></div>` : '';
 
                  html += `<div class="evaluation-summary" id="eval-summary-${index}" style="position:relative; border:1px solid #ddd; border-left:5px solid ${scoreColor}; padding:15px; margin-bottom:10px; border-radius:6px; background:#fff; cursor:pointer;" onclick="toggleEvaluationDetail(${index})">
                      ${editBtn}
                      <div style="display:flex; justify-content:space-between; align-items:center;">
                          <div style="flex-direction: column; align-items: flex-start; display: flex;">
-                             <!-- ÜSTTE ÇAĞRI TARİHİ -->
-                             <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">
-                                📞 Çağrı Tarihi: ${displayCallDate}
-                             </span>
-                             <!-- ALTTA DİNLEME / LOGLAMA TARİHİ -->
-                             <span style="font-size:0.9rem; color:#555; margin-top:5px;">
-                                Dinleme Tarihi: ${displayLogDate} 
-                                <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Loglama)</span>
-                             </span>
+                             <span style="font-weight:bold; color:var(--primary); font-size:1.1rem;">📅 ${eval.date} <span style="font-size:0.8rem; font-weight:normal; color:#666;">(Loglama)</span></span>
+                             <span style="font-size:0.9rem; color:#555; margin-top:5px;">Çağrı Tarihi: ${eval.callDate || 'N/A'}</span>
                          </div>
-                         <span style="font-size:0.9rem; color:#666;">Call ID: ${evalItem.callId || '-'}</span> 
-                         <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${evalItem.score}</span>
+                         <span style="font-size:0.9rem; color:#666;">Call ID: ${eval.callId || '-'}</span> 
+                         <span style="font-weight:bold; font-size:1.4rem; color:${scoreColor};">PUAN: ${eval.score}</span>
                          <i class="fas fa-chevron-down" id="eval-icon-${index}" style="color:var(--primary); transition:transform 0.3s;"></i>
                      </div>
                      <div class="evaluation-details-content" id="eval-details-${index}" style="max-height:0; overflow:hidden; transition:max-height 0.4s ease-in-out; margin-top:0;">
                          <hr style="border:none; border-top:1px dashed #eee; margin:10px 0;"><h4 style="color:var(--accent); font-size:0.9rem;">Detaylar:</h4>${detailHtml}
                          <h4 style="color:var(--primary); font-size:0.9rem; margin-top:10px;">Geri Bildirim:</h4>
-                         <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${evalItem.feedback}</p>
+                         <p style="white-space:pre-wrap; margin:0; font-size:0.9rem;">${eval.feedback}</p>
                      </div>
                  </div>`;
             });
             listEl.innerHTML = html;
-        } else { 
-            listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; 
-        }
+        } else { listEl.innerHTML = `<p style="color:red; text-align:center;">Veri çekme hatası: ${data.message || 'Bilinmeyen Hata'}</p>`; }
     } catch(err) {
         loader.style.display = 'none';
         listEl.innerHTML = `<p style="color:red; text-align:center;">Bağlantı hatası veya sunucuya ulaşılamadı.</p>`;
     }
 }
-
 
 // --- DİĞER STANDART JS FONKSİYONLARI ---
 
