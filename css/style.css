@@ -75,16 +75,16 @@ user-select: none; }
 #maintenance-screen { display: none !important; } 
 #main-app { display: none; }
  
-/* HEADER */
+/* HEADER - GÜNCEL KAPSAMLI TASARIM */
 .header { 
     background-color: #0e1b42; 
     border-bottom: 3px solid #d32f2f; 
     color: white; 
-    padding: 20px 30px; 
-    position: sticky; /* Sticky eklendi */
+    padding: 20px 30px 10px 30px; /* Alttan padding azaltıldı */
+    position: sticky; 
     top: 0; 
     z-index: 1000; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Gölge artırıldı */
 }
 .header-top { display: flex; justify-content: space-between;
 align-items: center; margin-bottom: 15px; }
@@ -105,32 +105,67 @@ cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap:
 8px; transition:0.3s;}
 .admin-btn:hover { background: rgba(255,255,255,0.1);
 border-color: #fff; }
-.control-wrapper { display: flex; gap: 30px; align-items:
-flex-start; flex-wrap: wrap; }
+/* HEADER İÇİ YERLEŞİM DÜZENLEMESİ */
+.control-wrapper { 
+    display: flex; 
+    gap: 30px; 
+    align-items: flex-start; 
+    flex-wrap: wrap; 
+    background: rgba(0,0,0,0.15); /* Arka plan koyuluğu eklendi */
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 0 auto;
+}
 .left-panel { flex: 2; min-width: 280px; }
 .right-panel { flex: 1; min-width: 260px; }
+
+/* ARAMA KUTUSU TASARIMI */
 .search-container { position: relative; width: 100%;
 margin-bottom: 20px;
 }
-#searchInput { width: 100%; padding: 12px 20px 12px 45px;
-border-radius: 4px; border: none; box-sizing: border-box; box-shadow: 0 2px 5px
-rgba(0,0,0,0.1); }
+#searchInput { 
+    width: 100%; 
+    padding: 12px 20px 12px 45px;
+    border-radius: 4px; 
+    border: none; 
+    box-sizing: border-box; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Daha belirgin gölge */
+    transition: box-shadow 0.3s, border 0.3s;
+}
+#searchInput:focus {
+    box-shadow: 0 4px 15px rgba(250, 187, 0, 0.4); /* Fokuslanınca sarı parlama */
+    outline: none;
+}
 .search-icon { position: absolute; left: 15px; top: 50%;
-transform: translateY(-50%); color: #0e1b42; }
+transform: translateY(-50%); color: var(--primary); }
  
-/* FILTERS - MOBİL UYUM İÇİN KÜÇÜLTME */
+/* FILTERS - MOBİL UYUM İÇİN KÜÇÜLTME VE GÖLGE */
 .filter-container { display: flex; gap: 6px; flex-wrap:
 wrap; }
-.filter-btn { background-color: rgba(255, 255, 255, 0.05);
-border: 1px solid rgba(255, 255, 255, 0.15); color: #eceff1; padding: 8px
-15px; 
-border-radius: 6px; cursor: pointer; transition: all 0.3s ease; display:
-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 0.85rem; 
-text-transform: uppercase; letter-spacing: 0.2px; 
+.filter-btn { 
+    background-color: rgba(255, 255, 255, 0.1); /* Hafif şeffaf arka plan */
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    color: #eceff1; 
+    padding: 8px 15px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-weight: 500; 
+    font-size: 0.85rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.2px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Düğmelere hafif gölge */
 }
-.filter-btn:hover, .filter-btn.active { background-color:
-#fabb00; color: #0e1b42; border-color: #fabb00; transform: translateY(-2px);
-box-shadow: 0 4px 10px rgba(250, 187, 0, 0.3); }
+.filter-btn:hover, .filter-btn.active { 
+    background-color: #fabb00; 
+    color: #0e1b42; 
+    border-color: #fabb00; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(250, 187, 0, 0.5); /* Parlak hover/active */
+}
 .btn-fav { border-color: #fabb00; color: #fabb00; }
 .btn-fav:hover, .btn-fav.active { color: #0e1b42; }
  
@@ -148,16 +183,29 @@ box-shadow: 0 4px 10px rgba(250, 187, 0, 0.3); }
     border-color: #fabb00 !important; 
 }
  
-/* TICKER & CARDS */
-.news-ticker-box { background: linear-gradient(145deg,
-rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid
-rgba(255, 255, 255, 0.1); border-left: 5px solid #fabb00; border-radius: 6px;
-padding: 15px; height: 85px; position: relative; cursor: pointer; overflow:
-hidden; transition: 0.3s; display: flex; flex-direction: column;
-justify-content: center; }
-.news-ticker-box:hover { border-color:
-rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); box-shadow: 0 5px
-15px rgba(0,0,0,0.2); }
+/* TICKER & CARDS - HABER ŞERİDİ İYİLEŞTİRMESİ */
+.news-ticker-box { 
+    background: linear-gradient(145deg, #2b396b 0%, #0e1b42 100%); /* Daha koyu arka plan */
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    border-left: 5px solid #fabb00; 
+    border-radius: 8px; /* Köşeler yumuşatıldı */
+    padding: 15px; 
+    height: 85px; 
+    position: relative; 
+    cursor: pointer; 
+    overflow: hidden; 
+    transition: 0.3s; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* Gölge eklendi */
+}
+.news-ticker-box:hover { 
+    border-color:
+rgba(250, 187, 0, 0.5); 
+    background: linear-gradient(145deg, #37467a 0%, #1a2f6e 100%); 
+    box-shadow: 0 5px 20px rgba(250, 187, 0, 0.2); 
+}
 .ticker-label { font-size: 0.75rem; color: #fabb00;
 font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
 margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -215,6 +263,9 @@ margin-bottom: 15px; line-height: 1.5; flex-grow: 1; cursor: pointer; }
 margin-top: auto; position: relative; font-size: 0.92rem; }
 .card-actions { margin-top: 12px; display: flex;
 justify-content: flex-end; gap: 8px; }
+.btn { padding: 6px 12px; border-radius: 4px; cursor:
+pointer; border: none; font-weight: 600; font-size: 0.85rem; display: flex;
+align-items: center; gap: 5px; }
 .btn-copy { background: var(--primary); color: white; }
 .btn-link { background: transparent; border: 1px solid
 var(--info); color: var(--info); text-decoration: none; }
@@ -557,8 +608,8 @@ scale(1); }
 @media (max-width: 768px) { 
     .header { padding: 15px 15px; }
     .header-top { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .control-wrapper { flex-direction: column; } 
-    .search-container { margin-bottom: 15px; } /* Mobil arama boşluğu */
+    .control-wrapper { flex-direction: column; gap: 15px; padding: 10px; } 
+    .search-container { margin-bottom: 0px; } 
     .penalty-field { height: 400px; }
     .goal-container { width: 240px; height: 120px; margin-top: 50px; } .goal-net {
     width: 230px; height: 115px; } .penalty-options { grid-template-columns: 1fr; }
