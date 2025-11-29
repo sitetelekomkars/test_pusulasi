@@ -180,41 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
  
-function checkSession() {
-    const savedUser =
-localStorage.getItem("sSportUser");
-    const savedToken =
-localStorage.getItem("sSportToken");
-    const savedRole =
-localStorage.getItem("sSportRole"); 
-    if (savedUser && savedToken) {
-        currentUser = savedUser;
-        
-document.getElementById("login-screen").style.display =
-"none"; 
-        
-document.getElementById("user-display").innerText = currentUser;
-        checkAdmin(savedRole); 
-        startSessionTimer();
-        if (BAKIM_MODU)
-            
-document.getElementById("maintenance-screen").style.display =
-"flex";
-        else {
-            
-document.getElementById("main-app").style.display =
-"block"; 
-            
-loadContentData(); 
-            loadWizardData();
-// YENİ: Wizard verilerini de çek
-        }
-    }
-}
- 
-function enterBas(e) { if (e.key === "Enter")
-girisYap(); }
-function girisYap() { 
+// HATA ÇÖZÜMÜ: Fonksiyonlar window. ile global alana taşındı.
+window.enterBas = function(e) { if (e.key === "Enter")
+window.girisYap(); };
+window.girisYap = function() { 
     const uName =
 document.getElementById("usernameInput").value.trim(); 
     const uPass =
@@ -270,7 +239,7 @@ Swal.fire({ icon: 'warning', title: '⚠️ Güvenlik Uyarısı', text: 'İlk
 girişiniz. Lütfen şifrenizi değiştirin.', allowOutsideClick: false,
 allowEscapeKey: false, confirmButtonText: 'Şifremi Değiştir' }).then(() => {
                 
-    changePasswordPopup(true); 
+    window.changePasswordPopup(true); 
                 
 }); 
             } else { 
@@ -320,7 +289,40 @@ document.querySelector('.login-btn').disabled = false;
         errorMsg.style.display =
 "block"; 
     }); 
+};
+ 
+function checkSession() {
+    const savedUser =
+localStorage.getItem("sSportUser");
+    const savedToken =
+localStorage.getItem("sSportToken");
+    const savedRole =
+localStorage.getItem("sSportRole"); 
+    if (savedUser && savedToken) {
+        currentUser = savedUser;
+        
+document.getElementById("login-screen").style.display =
+"none"; 
+        
+document.getElementById("user-display").innerText = currentUser;
+        checkAdmin(savedRole); 
+        startSessionTimer();
+        if (BAKIM_MODU)
+            
+document.getElementById("maintenance-screen").style.display =
+"flex";
+        else {
+            
+document.getElementById("main-app").style.display =
+"block"; 
+            
+loadContentData(); 
+            loadWizardData();
+// YENİ: Wizard verilerini de çek
+        }
+    }
 }
+ 
  
 function checkAdmin(role) { 
     const editBtn =
@@ -350,7 +352,7 @@ editBtn.classList.remove('active');
     } 
 }
  
-function logout() { 
+window.logout = function() { 
     currentUser = ""; 
     isAdminMode = false; 
     isEditingActive = false; 
@@ -375,7 +377,7 @@ document.getElementById("usernameInput").value = "";
     
 document.getElementById("error-msg").style.display =
 "none"; 
-}
+};
 function startSessionTimer() { 
     if (sessionTimeout)
 clearTimeout(sessionTimeout); 
@@ -383,11 +385,11 @@ clearTimeout(sessionTimeout);
         Swal.fire({ icon: 'warning',
 title: 'Oturum Süresi Doldu', text: 'Güvenlik nedeniyle otomatik çıkış
 yapıldı.', confirmButtonText: 'Tamam' }).then(() => { 
-            logout(); 
+            window.logout(); 
         }); 
     }, 3600000); 
 }
-function openUserMenu() { 
+window.openUserMenu = function() { 
     let options = { 
         title: `Merhaba,
 ${currentUser}`, 
@@ -401,13 +403,13 @@ ${currentUser}`,
     }; 
     Swal.fire(options).then((result) => { 
         if (result.isConfirmed)
-changePasswordPopup(); 
+window.changePasswordPopup(); 
         else if (result.isDenied)
-logout();
+window.logout();
     }); 
-}
+};
  
-async function changePasswordPopup(isMandatory = false)
+window.changePasswordPopup = async function(isMandatory = false)
 { 
     const { value: formValues } = await
 Swal.fire({ 
@@ -469,22 +471,22 @@ response.json())
 "success") { 
                 
 Swal.fire('Başarılı!', 'Şifreniz güncellendi. Güvenlik gereği yeniden giriş
-yapınız.', 'success').then(() => { logout(); }); 
+yapınız.', 'success').then(() => { window.logout(); }); 
             } else { 
                 
 Swal.fire('Hata', data.message || 'İşlem başarısız.', 'error').then(() => {
-if(isMandatory) changePasswordPopup(true); }); 
+if(isMandatory) window.changePasswordPopup(true); }); 
             } 
         }).catch(err => { 
             Swal.fire('Hata',
 'Sunucu hatası.', 'error'); 
             if(isMandatory)
-changePasswordPopup(true); 
+window.changePasswordPopup(true); 
         }); 
     } else if (isMandatory) { 
-        changePasswordPopup(true); 
+        window.changePasswordPopup(true); 
     } 
-}
+};
  
 function loadContentData() { 
     
@@ -755,7 +757,7 @@ isFav(i.title));
         filtered = filtered.filter(i =>
 i.category === currentCategory); 
     } 
-
+ 
     // Arama filtresi: 
     if (search) {
         filtered = filtered.filter(i => 
@@ -843,7 +845,7 @@ hatası.', 'error'));
 }
  
 // --- CRUD FONKSİYONLARI ---
-async function addNewCardPopup() {
+window.addNewCardPopup = async function() {
     const catSelectHTML =
 getCategorySelectHtml('Bilgi', 'swal-new-cat');
     const { value: formValues } = await
@@ -1227,9 +1229,9 @@ Swal.fire('Hata', data.message || 'Eklenemedi.', 'error');
         }).catch(err =>
 Swal.fire('Hata', 'Sunucu hatası: ' + err, 'error'));
     }
-}
+};
  
-async function editContent(index) {
+window.editContent = async function(index) {
     const item = activeCards[index]; 
     const catSelectHTML =
 getCategorySelectHtml(item.category, 'swal-cat');
@@ -1341,9 +1343,9 @@ formValues.link, 'card'), 2000);
 item.title) setTimeout(() => sendUpdate(item.title, "Title",
 formValues.title, 'card'), 2500);
     }
-}
+};
  
-async function editSport(title) {
+window.editSport = async function(title) {
     event.stopPropagation();
     const s = sportsData.find(item =>
 item.title === title);
@@ -1423,9 +1425,9 @@ setTimeout(() => sendUpdate(originalTitle, "Icon", formValues[5],
 originalTitle) setTimeout(() => sendUpdate(originalTitle, "Title",
 formValues[0], 'sport'), 2500);
     }
-}
+};
  
-async function editSales(title) {
+window.editSales = async function(title) {
     event.stopPropagation(); 
     const s = salesScripts.find(item =>
 item.title === title);
@@ -1461,9 +1463,9 @@ sendUpdate(originalTitle, "Text", formValues[1], 'sales');
 originalTitle) setTimeout(() => sendUpdate(originalTitle, "Title",
 formValues[0], 'sales'), 500);
     }
-}
+};
  
-async function editNews(index) {
+window.editNews = async function(index) {
     const i = newsData[index];
     let statusOptions = `<option
 value="Aktif" ${i.status !== 'Pasif' ? 'selected' :
@@ -1526,10 +1528,10 @@ formValues[4], 'news'), 1500);
 originalTitle) setTimeout(() => sendUpdate(originalTitle, "Title",
 formValues[0], 'news'), 2000);
     }
-}
+};
  
 // --- MODAL VE GÖRÜNTÜLEME FONKSİYONLARI ---
-function closeModal(id) {
+window.closeModal = function(id) {
     document.getElementById(id).style.display =
 'none'; 
     
@@ -1553,7 +1555,8 @@ function closeModal(id) {
              }
         }
     }
-}
+};
+
 let tickerIndex = 0;
 function startTicker() { 
     const t =
@@ -1581,7 +1584,7 @@ activeNews[tickerIndex];
     showNext(); 
     setInterval(showNext, 60000); 
 }
-function openNews() { 
+window.openNews = function() { 
     
 document.getElementById('news-modal').style.display = 'flex'; 
     const c =
@@ -1614,8 +1617,8 @@ class="news-title">${i.title} ${passiveBadge}</span><div
 class="news-desc">${i.desc}</div><span
 class="news-tag ${cl}">${tx}</span></div>`; 
     }); 
-}
-function openGuide() { 
+};
+window.openGuide = function() { 
     
 document.getElementById('guide-modal').style.display = 'flex'; 
     const grid =
@@ -1645,7 +1648,7 @@ fa-lightbulb"></i> ${s.tip}</div><div
 style="font-size:0.8rem; color:#999; margin-top:5px;">(Detay için
 tıkla)</div></div>`; 
     }); 
-}
+};
 function showSportDetail(index) { 
     const sport = sportsData[index]; 
     const detailText = sport.detail ?
@@ -1668,7 +1671,7 @@ line-height:1.6;">${detailText}</div>`,
         background: '#f8f9fa' 
     }); 
 }
-function openSales() { 
+window.openSales = function() { 
     
 document.getElementById('sales-modal').style.display = 'flex'; 
     const c =
@@ -1696,7 +1699,7 @@ onclick="event.stopPropagation(); copyText('${escapeForJsString(s.text ||
 '')}')"><i class="fas fa-copy"></i>
 Kopyala</button></div></div></div>`; 
     }); 
-}
+};
 function toggleSales(index) { 
     const item =
 document.getElementById(`sales-${index}`); 
@@ -1744,7 +1747,7 @@ true; }
     }
 }
  
-function openQualityArea() {
+window.openQualityArea = function() {
     
 document.getElementById('quality-modal').style.display = 'flex';
     
@@ -1796,7 +1799,7 @@ fetchEvaluationsForAgent(selectEl.value);
         
 fetchEvaluationsForAgent(currentUser);
     }
-}
+};
  
 async function fetchEvaluationsForAgent(forcedName) {
     const listEl =
@@ -2046,8 +2049,7 @@ sunucuya ulaşılamadı.</p>`;
 }
  
  
-// --- YENİ RAPOR EXPORT FONKSİYONU ---
-async function exportEvaluations() {
+window.exportEvaluations = async function() {
     if (!isAdminMode) {
         Swal.fire('Hata', 'Bu işlem için
 yönetici yetkisi gereklidir.', 'error');
@@ -2148,7 +2150,7 @@ Error:", err);
         Swal.fire('Hata', 'Sunucuya
 bağlanılamadı veya bilinmeyen hata.', 'error');
     }
-}
+};
  
  
 // --- DİĞER STANDART JS FONKSİYONLARI ---
@@ -2236,7 +2238,7 @@ detailEl.scrollHeight + 100 + 'px';
  
 // Diğer modal fonksiyonları (logEvaluationPopup,
 // openWizard, openPenaltyGame, vb.)
-async function logEvaluationPopup() {
+window.logEvaluationPopup = async function() {
     const selectEl =
 document.getElementById('agent-select-admin');
     const agentName = selectEl.value;
@@ -2521,11 +2523,10 @@ Swal.fire('Hata', d.message || 'Kaydedilemedi.', 'error');
         }).catch(err => {
 Swal.fire('Hata', 'Sunucu hatası.', 'error'); });
     }
-}
+};
  
-// --- DÜZENLEME FONKSİYONU ---
-// --- DÜZENLEME FONKSİYONU (CALL ID İLE ARAMA) ---
-async function editEvaluation(targetCallId) {
+ 
+window.editEvaluation = async function(targetCallId) {
     // Listeden ID'ye göre doğru kaydı bul
 // (Index'e güvenmiyoruz artık)
     const evalData = allEvaluationsData.find(item
@@ -2842,9 +2843,9 @@ Swal.fire('Hata', d.message || 'Güncellenemedi.', 'error');
         }).catch(err => {
 Swal.fire('Hata', 'Sunucu hatası.', 'error'); });
     }
-}
+};
 let pScore=0, pBalls=10, pCurrentQ=null;
-function updateJokerButtons() {
+window.updateJokerButtons = function() {
     document.getElementById('joker-call').disabled
 = jokers.call === 0;
     document.getElementById('joker-half').disabled
@@ -2860,8 +2861,8 @@ document.getElementById('joker-half').disabled = true;
         
 document.getElementById('joker-double').disabled = true; 
     } 
-}
-function useJoker(type) { 
+};
+window.useJoker = function(type) { 
     if (jokers[type] === 0 || (firstAnswerIndex
 !== -1 && type !== 'double')) return; 
     jokers[type] = 0; 
@@ -2912,12 +2913,12 @@ title: '2️⃣ Çift Cevap', text: 'Bu soruda bir kez yanlış cevap
 verme hakkınız var. İlk cevabınız yanlışsa, ikinci kez deneyebilirsiniz.',
 toast: true, position: 'top', showConfirmButton: false, timer: 2500 }); 
     } 
-}
-function openPenaltyGame() {
+};
+window.openPenaltyGame = function() {
     
 document.getElementById('penalty-modal').style.display = 'flex'; 
     showLobby(); 
-}
+};
 function showLobby() {
     
 document.getElementById('penalty-lobby').style.display = 'flex';
@@ -2925,13 +2926,13 @@ document.getElementById('penalty-lobby').style.display = 'flex';
 document.getElementById('penalty-game-area').style.display = 'none';
     fetchLeaderboard(); 
 }
-function startGameFromLobby() {
+window.startGameFromLobby = function() {
     
 document.getElementById('penalty-lobby').style.display = 'none';
     
 document.getElementById('penalty-game-area').style.display = 'block';
     startPenaltySession(); 
-}
+};
 function fetchLeaderboard() { 
     const tbody =
 document.getElementById('leaderboard-body'), 
@@ -3227,7 +3228,7 @@ document.getElementById('p-restart-btn').style.display = 'block';
  
 // --- WIZARD FONKSİYONLARI ---
  
-function openWizard(){
+window.openWizard = function(){
     
 document.getElementById('wizard-modal').style.display='flex';
     // Veri yüklenmediyse yüklemeye çalış,
@@ -3259,7 +3260,7 @@ oluştu.</h2>';
     } else {
         renderStep('start');
     }
-}
+};
  
 function renderStep(k){ 
     const s = wizardStepsData[k];
