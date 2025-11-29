@@ -1,7 +1,6 @@
 const BAKIM_MODU = false; 
  
 // Apps Script URL'si (Bu URL'yi kendi yayınınızla
-değiştirin!)
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbzbocJrJPU7_u0lvlnBQ8CrQYHCfy22G6UU8jRo5s6Yrl4rpTQ_a7oB5Ttf_NkGsUOiQg/exec";
  
@@ -23,7 +22,7 @@ let currentCategory = 'all';
 let adminUserList = [];
 let allEvaluationsData = [];
 let wizardStepsData = {}; // YENİ: Wizard verileri buraya
-yüklenecek
+// yüklenecek
 const MONTH_NAMES = ["Ocak", "Şubat",
 "Mart", "Nisan", "Mayıs", "Haziran",
 "Temmuz", "Ağustos", "Eylül", "Ekim",
@@ -78,7 +77,7 @@ document.querySelectorAll('.slider-input');
         currentTotal +=
 parseInt(s.value) || 0;
         // Max değerini slider'ın
-özelliğinden dinamik alıyoruz
+// özelliğinden dinamik alıyoruz
         maxTotal +=
 parseInt(s.getAttribute('max')) || 0; 
     });
@@ -94,7 +93,7 @@ currentTotal;
     if(ringEl) {
         let color = '#2e7d32'; 
         // Oran hesapla (Maksimum puana
-göre)
+// göre)
         let ratio = maxTotal > 0 ?
 (currentTotal / maxTotal) * 100 : 0;
  
@@ -169,42 +168,11 @@ return false; }
 document.addEventListener('DOMContentLoaded', () => {
     checkSession(); 
 });
- 
-function checkSession() {
-    const savedUser =
-localStorage.getItem("sSportUser");
-    const savedToken =
-localStorage.getItem("sSportToken");
-    const savedRole =
-localStorage.getItem("sSportRole"); 
-    if (savedUser && savedToken) {
-        currentUser = savedUser;
-        
-document.getElementById("login-screen").style.display =
-"none"; 
-        
-document.getElementById("user-display").innerText = currentUser;
-        checkAdmin(savedRole); 
-        startSessionTimer();
-        if (BAKIM_MODU)
-            
-document.getElementById("maintenance-screen").style.display =
-"flex";
-        else {
-            
-document.getElementById("main-app").style.display =
-"block"; 
-            
-loadContentData(); 
-            loadWizardData();
-// YENİ: Wizard verilerini de çek
-        }
-    }
-}
- 
-function enterBas(e) { if (e.key === "Enter")
+
+// !!! DÜZELTME: HTML'deki onkeyup ve onclick olayları için fonksiyonları global olarak tanımla
+window.enterBas = function(e) { if (e.key === "Enter")
 girisYap(); }
-function girisYap() { 
+window.girisYap = function() { 
     const uName =
 document.getElementById("usernameInput").value.trim(); 
     const uPass =
@@ -310,6 +278,38 @@ document.querySelector('.login-btn').disabled = false;
     }); 
 }
  
+function checkSession() {
+    const savedUser =
+localStorage.getItem("sSportUser");
+    const savedToken =
+localStorage.getItem("sSportToken");
+    const savedRole =
+localStorage.getItem("sSportRole"); 
+    if (savedUser && savedToken) {
+        currentUser = savedUser;
+        
+document.getElementById("login-screen").style.display =
+"none"; 
+        
+document.getElementById("user-display").innerText = currentUser;
+        checkAdmin(savedRole); 
+        startSessionTimer();
+        if (BAKIM_MODU)
+            
+document.getElementById("maintenance-screen").style.display =
+"flex";
+        else {
+            
+document.getElementById("main-app").style.display =
+"block"; 
+            
+loadContentData(); 
+            loadWizardData();
+// YENİ: Wizard verilerini de çek
+        }
+    }
+}
+ 
 function checkAdmin(role) { 
     const editBtn =
 document.getElementById('quickEditBtn'); 
@@ -375,7 +375,7 @@ yapıldı.', confirmButtonText: 'Tamam' }).then(() => {
         }); 
     }, 3600000); 
 }
-function openUserMenu() { 
+window.openUserMenu = function() { 
     let options = { 
         title: `Merhaba,
 ${currentUser}`, 
@@ -495,7 +495,7 @@ document.getElementById('loading').style.display = 'none';
 data.data; 
  
             // Verileri Type
-alanına göre ayırırken toLowerCase() kullandık
+// alanına göre ayırırken toLowerCase() kullandık
             const fetchedCards
 = rawData.filter(i =>
 ['card','bilgi','teknik','kampanya','ikna'].includes(i.Type.toLowerCase())).map(i
@@ -732,7 +732,7 @@ title, html: `<div style="text-align:left; font-size:1rem;
 line-height:1.6;">${text.replace(/\\n/g,'<br>')}</div>`,
 showCloseButton: true, showConfirmButton: false, width: '600px', background:
 '#f8f9fa' }); }
-function filterContent() { const search =
+window.filterContent = function() { const search =
 document.getElementById('searchInput').value.toLowerCase(); let filtered =
 database; if (currentCategory === 'fav') { filtered = filtered.filter(i =>
 isFav(i.title)); } else if (currentCategory !== 'all') { filtered =
@@ -745,7 +745,7 @@ filtered.filter(i => i.category === currentCategory); }
     );
     renderCards(searchFiltered);
 }
-function filterCategory(btn, cat) { currentCategory = cat;
+window.filterCategory = function(btn, cat) { currentCategory = cat;
 document.querySelectorAll('.filter-btn').forEach(b =>
 b.classList.remove('active')); btn.classList.add('active'); filterContent(); }
 function copyText(t) {
@@ -755,7 +755,7 @@ navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() =>
 toast:true, position:'top-end', showConfirmButton:false, timer:1500}) ); 
 }
  
-function toggleEditMode() { 
+window.toggleEditMode = function() { 
     if (!isAdminMode) return; 
     isEditingActive = !isEditingActive; 
     document.body.classList.toggle('editing',
@@ -821,7 +821,7 @@ hatası.', 'error'));
 }
  
 // --- CRUD FONKSİYONLARI ---
-async function addNewCardPopup() {
+window.addNewCardPopup = async function() {
     const catSelectHTML =
 getCategorySelectHtml('Bilgi', 'swal-new-cat');
     const { value: formValues } = await
@@ -865,7 +865,7 @@ margin-top:10px;">
                     
 <input id="swal-new-title"
 class="swal2-input" style="margin:0; height:40px; flex-grow:1;
-border:none; border-bottom:2px solid #eee; padding:0 5px; font-weight:bold;
+border:none; border-bottom:2px solid #eee; padding:0 5-x; font-weight:bold;
 color:#0e1b42;" placeholder="Başlık Giriniz...">
                     
 <div id="cat-container" style="width:
@@ -1009,8 +1009,10 @@ const newsExtra = document.getElementById('news-extra');
                 
 const quizExtra = document.getElementById('quiz-extra'); // YENİ
                 
+const cardPreview = document.getElementById('preview-card');
+                
                 //
-Hepsini gizle
+// Hepsini gizle
                 
 catCont.style.display = 'none'; scriptCont.style.display = 'none';
 extraCont.style.display = 'none'; 
@@ -1019,14 +1021,14 @@ sportExtra.style.display = 'none'; newsExtra.style.display = 'none';
 quizExtra.style.display = 'none'; // YENİ
                 
                 //
-Başlık/Metin alanlarını resetle/ayarla
+// Başlık/Metin alanlarını resetle/ayarla
                 
 document.getElementById('swal-new-title').value = '';
                 
 document.getElementById('swal-new-text').value = '';
  
                 //
-Varsayılan görünüm ayarları
+// Varsayılan görünüm ayarları
                 
 cardPreview.style.borderLeft = "5px solid var(--info)"; 
                 
@@ -1113,7 +1115,7 @@ today.getDate() + "." + (today.getMonth()+1) + "." +
 today.getFullYear();
             
             // Quiz özel
-alanları
+// alanları
             const quizOpts =
 type === 'quiz' ? document.getElementById('swal-quiz-opts').value : '';
             const quizAns =
@@ -1535,9 +1537,8 @@ activeNews[tickerIndex];
     showNext(); 
     setInterval(showNext, 60000); 
 }
-
-// GÜNCELLENMİŞ DUYURULAR MODALI
-function openNews() { 
+ 
+window.openNews = function() { 
     document.getElementById('news-modal').style.display = 'flex'; 
     const c = document.getElementById('news-container'); 
     c.innerHTML = ''; 
@@ -1550,7 +1551,7 @@ function openNews() {
         // Dinamik ikon seçimi
         let iconClass = i.type === 'fix' ? 'fa-check-circle' : (i.type === 'update' ? 'fa-code-branch' : 'fa-lightbulb');
         if (i.status === 'Pasif') iconClass = 'fa-eye-slash';
-
+ 
         let editBtn = (isAdminMode && isEditingActive) 
             ? `<i class="fas fa-pencil-alt edit-icon" style="top:5px; right:5px; font-size:0.9rem; padding:4px;" onclick="event.stopPropagation(); editNews(${index})"></i>` 
             : ''; 
@@ -1568,9 +1569,7 @@ function openNews() {
             </div>`; 
     }); 
 }
-
-// GÜNCELLENMİŞ SPOR REHBERİ MODALI
-function openGuide() { 
+window.openGuide = function() { 
     document.getElementById('guide-modal').style.display = 'flex'; 
     const grid = document.getElementById('guide-grid'); 
     grid.innerHTML = ''; 
@@ -1615,7 +1614,7 @@ line-height:1.6;">${detailText}</div>`,
         background: '#f8f9fa' 
     }); 
 }
-function openSales() { 
+window.openSales = function() { 
     
 document.getElementById('sales-modal').style.display = 'flex'; 
     const c =
@@ -1692,7 +1691,7 @@ true; }
     }
 }
  
-function openQualityArea() {
+window.openQualityArea = function() {
     
 document.getElementById('quality-modal').style.display = 'flex';
     
@@ -1723,7 +1722,7 @@ fetchUserListForAdmin().then(users => {
 document.getElementById('agent-select-admin');
             
             // Tüm
-Kullanıcılar seçeneğini en üste ekle
+// Kullanıcılar seçeneğini en üste ekle
             selectEl.innerHTML
 = `<option value="all" data-group="all">-- Tüm
 Temsilciler --</option>` + 
@@ -1762,7 +1761,7 @@ document.getElementById('agent-select-admin');
 selectEl.value; 
         
         // Eğer yönetici "Tüm
-Temsilciler"i seçtiyse, listeyi gösterme (çok kalabalık olur)
+// Temsilciler"i seçtiyse, listeyi gösterme (çok kalabalık olur)
         if(targetAgent === 'all') {
             loader.innerHTML =
 '<span style="color:#1976d2;">"Tüm Temsilciler"
@@ -1841,7 +1840,7 @@ return;
             
             let html = '';
             // Listeyi ters
-çevirip ekrana basıyoruz
+// çevirip ekrana basıyoruz
             
 filteredEvals.reverse().forEach((evalItem, index) => { 
                 
@@ -1849,10 +1848,10 @@ const scoreColor = evalItem.score >= 90 ? '#2e7d32' : (evalItem.score >=
 70 ? '#ed6c02' : '#d32f2f');
  
                 //
---- TARİH FORMATLAMA VE YER DEĞİŞİMİ ---
+// --- TARİH FORMATLAMA VE YER DEĞİŞİMİ ---
                 
 const displayCallDate = formatDateToDDMMYYYY(evalItem.callDate); // Çağrı
-tarihi (üstte)
+// tarihi (üstte)
                 
 const displayLogDate  = formatDateToDDMMYYYY(evalItem.date);  
 // Dinleme / loglama tarihi (altta)
@@ -2051,9 +2050,9 @@ response.json();
         if (data.result ===
 "success" && data.csvData) {
             // CSV verisini
-blob olarak indir
+// blob olarak indir
             // \ufeff BOM
-karakteri Excel'in Türkçe karakterleri doğru okuması için eklendi
+// karakteri Excel'in Türkçe karakterleri doğru okuması için eklendi
             const blob = new
 Blob(["\ufeff" + data.csvData], { type: 'text/csv;charset=utf-8;' });
             const link =
@@ -2081,7 +2080,7 @@ Swal.fire('Başarılı', `Rapor <strong>${data.fileName}</strong>
 adıyla indirildi.`, 'success');
             } else {
                 //
-Tarayıcı indirmeyi desteklemiyorsa uyarı ver
+// Tarayıcı indirmeyi desteklemiyorsa uyarı ver
                 
 Swal.fire('Hata', 'Tarayıcınız otomatik indirmeyi desteklemiyor. Lütfen rapor
 içeriğini Apps Script kodundan kopyalamayı deneyin.', 'error');
@@ -2184,8 +2183,7 @@ detailEl.scrollHeight + 100 + 'px';
  
  
 // Diğer modal fonksiyonları (logEvaluationPopup,
-// GÜNCELLENMİŞ WIZARD MODALI
-function openWizard(){
+window.openWizard = function(){
     document.getElementById('wizard-modal').style.display='flex';
     // Veri yüklenmediyse yüklemeye çalış,
 // yüklendiyse direkt başla
@@ -2915,7 +2913,7 @@ verme hakkınız var. İlk cevabınız yanlışsa, ikinci kez deneyebilirsiniz.'
 toast: true, position: 'top', showConfirmButton: false, timer: 2500 }); 
     } 
 }
-function openPenaltyGame() {
+window.openPenaltyGame = function() {
     
 document.getElementById('penalty-modal').style.display = 'flex'; 
     showLobby(); 
