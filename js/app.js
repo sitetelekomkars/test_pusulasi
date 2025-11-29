@@ -365,7 +365,7 @@ function loadContentData() {
     }); 
 }
 
-// --- YENİ WIZARD VERİ ÇEKME FONKSİYONU ---
+// --- WIZARD VERİ ÇEKME FONKSİYONU ---
 function loadWizardData() {
     return new Promise((resolve, reject) => {
         fetch(SCRIPT_URL, {
@@ -433,7 +433,7 @@ function renderCards(data) {
 
 function highlightText(htmlContent) { if (!htmlContent) return ""; const searchTerm = document.getElementById('searchInput').value.trim(); if (!searchTerm) return htmlContent; const regex = new RegExp(`(${searchTerm})(?![^<]*>|[^<>]*<\/)`, "gi"); return htmlContent.replace(regex, '<span class="highlight">$1</span>'); }
 function showCardDetail(title, text) { Swal.fire({ title: title, html: `<div style="text-align:left; font-size:1rem; line-height:1.6;">${text.replace(/\\n/g,'<br>')}</div>`, showCloseButton: true, showConfirmButton: false, width: '600px', background: '#f8f9fa' }); }
-function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); let filtered = database; if (currentCategory === 'fav') { filtered = filtered.filter(i => isFav(i.title)); } else if (currentCategory !== 'all') { filtered = filtered.filter(i => i.category === currentCategory); } if (search) { filtered = filtered.filter(i => (i.title && i.title.toLowerCase().includes(search)) || (i.text && i.text.toLowerCase().includes(search)) ); } renderCards(filtered); }
+function filterContent() { const search = document.getElementById('searchInput').value.toLowerCase(); let filtered = database; if (currentCategory === 'fav') { filtered = filtered.filter(i => isFav(i.title)); } else if (currentCategory !== 'all') { filtered = filtered.filter(i => i.category === currentCategory); } }
 function filterCategory(btn, cat) { currentCategory = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterContent(); }
 function copyText(t) {
     navigator.clipboard.writeText(t.replace(/\\n/g, '\n')).then(() =>
@@ -473,8 +473,6 @@ function sendUpdate(o, c, v, t='card') {
       .then(data => { 
         if (data.result === "success") { 
             Swal.fire({icon: 'success', title: 'Başarılı', timer: 1500, showConfirmButton: false}); 
-            // İçerik güncellendiğinde tüm datayı yeniden çekmek yerine, sadece ilgili modülü güncelleyebiliriz,
-            // ancak tutarlılık için şu an tüm veriyi çekiyoruz.
             setTimeout(loadContentData, 1600); 
         } else { 
             Swal.fire('Hata', 'Kaydedilemedi: ' + (data.message || 'Bilinmeyen Hata'), 'error'); 
@@ -902,7 +900,11 @@ function openQualityArea() {
     if (isAdminMode) {
         fetchUserListForAdmin().then(users => {
             const selectEl = document.getElementById('agent-select-admin');
-            selectEl.innerHTML = users.map(u => `<option value="${u.name}" data-group="${u.group}">${u.name} (${u.group})</option>`).join('');
+            
+            // Tüm Kullanıcılar seçeneğini en üste ekle
+            selectEl.innerHTML = `<option value="all" data-group="all">-- Tüm Temsilciler --</option>` + 
+                                users.map(u => `<option value="${u.name}" data-group="${u.group}">${u.name} (${u.group})</option>`).join('');
+            
             if(users.length > 0) selectEl.value = users[0].name;
             selectEl.onchange = function() { fetchEvaluationsForAgent(this.value); };
             fetchEvaluationsForAgent(selectEl.value); 
@@ -922,6 +924,14 @@ async function fetchEvaluationsForAgent(forcedName) {
     if (isAdminMode) {
         const selectEl = document.getElementById('agent-select-admin');
         targetAgent = forcedName || selectEl.value; 
+        
+        // Eğer yönetici "Tüm Temsilciler"i seçtiyse, listeyi gösterme (çok kalabalık olur)
+        if(targetAgent === 'all') {
+            loader.innerHTML = '<span style="color:#1976d2;">"Tüm Temsilciler" seçili iken listeyi göstermek yerine, lütfen "Rapor İndir" butonunu kullanın.</span>';
+            document.getElementById('eval-count-span').innerText = `Dinleme Adeti: -`;
+            document.getElementById('monthly-avg-span').innerText = `Ortalama: -`;
+            return;
+        }
     }
     if (!targetAgent) {
         loader.innerHTML = '<span style="color:red;">Lütfen listeden bir temsilci seçimi yapın.</span>';
@@ -1019,6 +1029,74 @@ async function fetchEvaluationsForAgent(forcedName) {
     } catch(err) {
         loader.style.display = 'none';
         listEl.innerHTML = `<p style="color:red; text-align:center;">Bağlantı hatası veya sunucuya ulaşılamadı.</p>`;
+    }
+}
+
+
+// --- YENİ RAPOR EXPORT FONKSİYONU ---
+async function exportEvaluations() {
+    if (!isAdminMode) {
+        Swal.fire('Hata', 'Bu işlem için yönetici yetkisi gereklidir.', 'error');
+        return;
+    }
+    
+    const selectEl = document.getElementById('agent-select-admin');
+    const targetAgent = selectEl.value;
+    const agentName = targetAgent === 'all' ? 'Tüm Temsilciler' : targetAgent;
+
+    const { isConfirmed } = await Swal.fire({
+        icon: 'question',
+        title: 'Raporu Onayla',
+        html: `<strong>${agentName}</strong> için tüm değerlendirme kayıtları (kırılım detayları dahil) CSV formatında indirilecektir. Onaylıyor musunuz?`,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-download"></i> İndir',
+        cancelButtonText: 'İptal'
+    });
+
+    if (!isConfirmed) return;
+
+    Swal.fire({ title: 'Kırılım Raporu Hazırlanıyor...', didOpen: () => Swal.showLoading() });
+
+    try {
+        const response = await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+            body: JSON.stringify({ 
+                action: "exportEvaluations", 
+                targetAgent: targetAgent, // 'all' veya temsilci adı
+                username: currentUser, 
+                token: getToken() 
+            }) 
+        });
+        const data = await response.json();
+        
+        if (data.result === "success" && data.csvData) {
+            // CSV verisini blob olarak indir
+            // \ufeff BOM karakteri Excel'in Türkçe karakterleri doğru okuması için eklendi
+            const blob = new Blob(["\ufeff" + data.csvData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", data.fileName);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                Swal.fire('Başarılı', `Rapor <strong>${data.fileName}</strong> adıyla indirildi.`, 'success');
+            } else {
+                // Tarayıcı indirmeyi desteklemiyorsa uyarı ver
+                Swal.fire('Hata', 'Tarayıcınız otomatik indirmeyi desteklemiyor. Lütfen rapor içeriğini Apps Script kodundan kopyalamayı deneyin.', 'error');
+            }
+        } else {
+            Swal.fire('Hata', data.message || 'Rapor verisi alınamadı.', 'error');
+        }
+
+    } catch (err) {
+        console.error("Export Error:", err);
+        Swal.fire('Hata', 'Sunucuya bağlanılamadı veya bilinmeyen hata.', 'error');
     }
 }
 
@@ -1638,7 +1716,7 @@ function finishPenaltyGame() {
     }); 
 }
 
-// --- WIZARD FONKSİYONLARI YENİ ---
+// --- WIZARD FONKSİYONLARI ---
 
 function openWizard(){
     document.getElementById('wizard-modal').style.display='flex';
