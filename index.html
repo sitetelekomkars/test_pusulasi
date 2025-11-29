@@ -308,4 +308,155 @@ style="padding:10px;">Ort. Puan</th>
 </table>
                 
 <button class="penalty-btn" style="width:200px;
-background:#2e7d32; color:white; border-
+background:#2e7d32; color:white; border-color:#1b5e20;"
+onclick="startGameFromLobby()">MAÇA BAŞLA 🏃‍♂️⚽</button>
+            </div>
+            <div
+id="penalty-game-area" style="display:none;">
+                
+<div class="penalty-stats">
+                
+    <span>SKOR: <span
+id="p-score">0</span></span>
+                
+    <span>KALAN ŞUT: <span
+id="p-balls">10</span></span>
+                
+</div>
+                
+<div class="penalty-field">
+                
+    <div class="stadium-stands"></div>
+                
+    <div class="grass-stripes"></div>
+                
+    <div class="goal-container">
+                
+        <div class="goal-net"></div>
+                
+        <div
+class="goal-top-bar"></div>
+                
+        <div
+class="goal-post-left"></div>
+                
+        <div
+class="goal-post-right"></div>
+                
+        <div id="keeper-wrap"
+class="keeper-wrapper">
+                
+            <div
+class="player-figure">
+                
+                <div
+class="head"></div>
+                
+                <div
+class="torso"></div>
+                
+                <div
+class="arms"><div class="arm left"><div
+class="gloves"></div></div><div class="arm
+right"><div
+class="gloves"></div></div></div>
+                
+                <div
+class="shorts"></div>
+                
+                <div
+class="legs"><div class="leg
+left"></div><div class="leg
+right"></div></div>
+                
+            </div>
+                
+            <div
+class="keeper-shadow"></div>
+                
+        </div>
+                
+    </div>
+                
+    <div class="goal-message"
+id="goal-msg">GOL!</div>
+                
+    <div class="penalty-area"></div>
+                
+    <div class="penalty-spot-mark"></div>
+                
+    <div id="ball-wrap"
+class="ball-wrapper"><div
+class="football"></div><div
+class="ball-shadow"></div></div>
+                
+    <div id="shooter-wrap"
+class="shooter-wrapper">
+                
+        <div class="player-figure">
+                
+            <div
+class="head"></div><div
+class="torso"></div>
+                
+            <div
+class="arms"><div class="arm
+left"></div><div class="arm
+right"></div></div>
+                
+            <div
+class="shorts"></div>
+                
+            <div
+class="legs"><div class="leg left"><div
+class="sock"></div><div class="shoe"></div></div><div
+class="leg right"><div
+class="sock"></div><div
+class="shoe"></div></div></div>
+                
+        </div>
+                
+    </div>
+                
+</div>
+                
+<div style="margin-top:15px; color:#ddd; min-height:50px;
+font-weight:500; text-align:center; font-size:1.1rem; padding:10px;
+background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">Soru
+yükleniyor...</div>
+                
+<div id="joker-container" style="display: flex;
+justify-content: space-around; margin: 15px 0;">
+                
+    <button id="joker-call" class="joker-btn"
+onclick="useJoker('call')" title="Telefon Jokeri
+(Umut/Doğuş/Deniz/Esra)">📞 Telefon</button>
+                
+    <button id="joker-half" class="joker-btn"
+onclick="useJoker('half')" title="Yarı Yarıya Joker">✂️
+50:50</button>
+                
+    <button id="joker-double"
+class="joker-btn" onclick="useJoker('double')"
+title="Çift Cevap Hakkı">2️⃣ Çift Cevap</button>
+                
+</div>
+                
+<div class="penalty-options"
+id="p-options"></div>
+                
+<button id="p-restart-btn" class="restart-btn"
+style="display:none; width:100%; background:#fabb00; color:black;
+font-weight:bold;" onclick="showLobby()">LOBİYE DÖN 🏠</button>
+            </div>
+        </div>
+    </div>
+    <!-- İMZA EKLENDİ (Doğuş Yalçınkaya) -->
+    <div
+class="crafted-by-badge">Crafted by Doğuş Yalçınkaya</div>
+    
+    <script
+src="js/app.js"></script>
+    
+</body>
+</html>
