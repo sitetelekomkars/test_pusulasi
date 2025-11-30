@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S Sport Plus - Temsilci Bilgi Merkezi</title>
-    
     <link rel="stylesheet" href="css/style.css">
-    
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
+
     <div id="login-screen">
         <div class="login-card">
             <i class="fas fa-lock fa-3x" style="color: #0e1b42;"></i>
@@ -26,13 +24,15 @@
             <p id="error-msg" style="color:red; display:none; margin-top:10px;">Hatalı Kullanıcı Adı veya Şifre!</p>
         </div>
     </div>
+
     <div id="maintenance-screen">
-        <div class="maintenance-content">
+        <div class="maintenance-content" style="text-align:center; color:white;">
             <span style="font-size: 4rem;">👨‍🏫</span>
             <h1>Sistem Mola Verdi!</h1>
             <p>Doğuş bey yine bir şeyler deniyor... 🚀</p>
         </div>
     </div>
+
     <div id="main-app">
         <div class="header">
             <div class="header-top">
@@ -49,38 +49,37 @@
                     </button>
                 </div>
             </div>
+
             <div class="control-wrapper">
-                <div class="left-panel">
-                    <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="searchInput" placeholder="Hızlı Ara..." onkeyup="filterContent()">
-                    </div>
-                    <div class="filter-container">
-                        <button class="filter-btn btn-fav" onclick="filterCategory(this, 'fav')"><i class="fas fa-star"></i> </button>
-                        <button class="filter-btn btn-all active" onclick="filterCategory(this, 'all')"><i class="fas fa-th-large"></i> Tümü</button>
-                        <button class="filter-btn btn-tech" onclick="filterCategory(this, 'Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
-                        <button class="filter-btn btn-ikna" onclick="filterCategory(this, 'İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
-                        <button class="filter-btn btn-camp" onclick="filterCategory(this, 'Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
-                        <button class="filter-btn btn-info" onclick="filterCategory(this, 'Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
-                        <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn btn-stream"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
-                        
-                        <button class="filter-btn guide-btn" onclick="openGuide()">📖 Spor Rehberi</button>
-                        <button class="filter-btn wizard-btn" onclick="openWizard()">⚖️ İade Asistanı</button>
-                        <button class="filter-btn sales-btn" onclick="openSales()">📞 TeleSatış</button>
-                        <button class="filter-btn game-btn" onclick="openPenaltyGame()">⚽ OYUN</button>
-                        <button class="filter-btn" onclick="openQualityArea()"><i class="fas fa-microscope"></i> Kalite</button> 
-                    </div>
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Hızlı Ara..." onkeyup="filterContent()">
                 </div>
-                <div class="right-panel">
-                    <div class="news-ticker-box" onclick="openNews()">
-                        <div class="ticker-label">
-                            <i class="fas fa-circle" style="font-size:8px;"></i> GÜNCEL
-                        </div>
-                        <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
-                    </div>
+                <div class="filter-container">
+                    <button class="filter-btn btn-fav" onclick="filterCategory(this, 'fav')"><i class="fas fa-star"></i> </button>
+                    <button class="filter-btn btn-all active" onclick="filterCategory(this, 'all')"><i class="fas fa-th-large"></i> Tümü</button>
+                    <button class="filter-btn btn-tech" onclick="filterCategory(this, 'Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
+                    <button class="filter-btn btn-ikna" onclick="filterCategory(this, 'İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
+                    <button class="filter-btn btn-camp" onclick="filterCategory(this, 'Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
+                    <button class="filter-btn btn-info" onclick="filterCategory(this, 'Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
+                    <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn btn-stream"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
+
+                    <button class="filter-btn guide-btn" onclick="openGuide()">📖 Spor Rehberi</button>
+                    <button class="filter-btn wizard-btn" onclick="openWizard()">⚖️ İade Asistanı</button>
+                    <button class="filter-btn sales-btn" onclick="openSales()">📞 TeleSatış</button>
+                    <button class="filter-btn game-btn" onclick="openPenaltyGame()">⚽ OYUN</button>
+                    <button class="filter-btn" onclick="openQualityArea()"><i class="fas fa-microscope"></i> Kalite</button>
                 </div>
             </div>
+
+            <div class="news-ticker-box" onclick="openNews()">
+                <div class="ticker-label">
+                    <i class="fas fa-circle" style="font-size:8px;"></i> GÜNCEL
+                </div>
+                <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
+            </div>
         </div>
+
         <div class="container">
             <div id="loading" style="text-align:center; padding:20px; color:#666;">
                 <i class="fas fa-spinner fa-spin fa-2x"></i><br>Veriler Google Tablo'dan çekiliyor...
@@ -88,6 +87,7 @@
             <div class="grid" id="cardGrid"></div>
         </div>
     </div>
+
     <div id="news-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('news-modal')">&times;</span>
@@ -95,12 +95,14 @@
             <div id="news-container"></div>
         </div>
     </div>
+
     <div id="wizard-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('wizard-modal')">&times;</span>
             <div id="wizard-body"></div>
         </div>
     </div>
+
     <div id="guide-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('guide-modal')">&times;</span>
@@ -109,6 +111,7 @@
             <div class="guide-grid" id="guide-grid"></div>
         </div>
     </div>
+
     <div id="sales-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('sales-modal')">&times;</span>
@@ -117,10 +120,12 @@
             <div class="sales-grid" id="sales-grid"></div>
         </div>
     </div>
+
     <div id="penalty-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 650px; background: #1a1a1a; border: 1px solid #333; min-height:600px; display:flex; flex-direction:column;">
             <span class="close-modal" style="color:white; z-index:1000;" onclick="closeModal('penalty-modal')">&times;</span>
             <h2 style="text-align:center; color:#fabb00; margin-top:0; text-shadow:0 0 10px rgba(250,187,0,0.3);">⚽ S Sport Arena</h2>
+            
             <div id="penalty-lobby" style="text-align:center; padding:20px; flex-grow:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <h3 style="color:white; margin-bottom:15px;">🏆 Liderlik Tablosu (Top 5)</h3>
                 <div id="leaderboard-loader" style="color:#aaa;">Veriler yükleniyor...</div>
@@ -137,6 +142,7 @@
                 </table>
                 <button class="penalty-btn" style="width:200px; background:#2e7d32; color:white; border-color:#1b5e20;" onclick="startGameFromLobby()">MAÇA BAŞLA 🏃‍♂️⚽</button>
             </div>
+
             <div id="penalty-game-area" style="display:none;">
                 <div class="penalty-stats">
                     <span>SKOR: <span id="p-score">0</span></span>
@@ -176,7 +182,7 @@
                 </div>
                 <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; font-size:1.1rem; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">Soru yükleniyor...</div>
                 <div id="joker-container" style="display: flex; justify-content: space-around; margin: 15px 0;">
-                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri (Umut/Doğuş/Deniz/Esra)">📞 Telefon</button>
+                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri">📞 Telefon</button>
                     <button id="joker-half" class="joker-btn" onclick="useJoker('half')" title="Yarı Yarıya Joker">✂️ 50:50</button>
                     <button id="joker-double" class="joker-btn" onclick="useJoker('double')" title="Çift Cevap Hakkı">2️⃣ Çift Cevap</button>
                 </div>
@@ -185,18 +191,18 @@
             </div>
         </div>
     </div>
+
     <div id="quality-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 900px;">
             <span class="close-modal" onclick="closeModal('quality-modal')">&times;</span>
             <h2 style="text-align:center; color:var(--primary);"><i class="fas fa-microscope"></i> Kalite Değerlendirmelerim</h2>
-            
+
             <div id="admin-quality-controls" style="text-align:center; display:none;">
                 <div class="quality-controls-top">
                     <div style="display:flex; gap:15px;">
                         <button class="add-btn" style="background:var(--accent); border-color:var(--accent);" onclick="logEvaluationPopup()">
                             <i class="fas fa-plus"></i> Yeni Değerlendirme Ekle
                         </button>
-                        <!-- YENİ RAPOR İNDİR BUTONU -->
                         <button class="admin-btn" style="background:var(--primary); color:white; border-color:var(--primary);" onclick="exportEvaluations()">
                             <i class="fas fa-file-csv"></i> Rapor İndir
                         </button>
@@ -207,8 +213,8 @@
                     </div>
                 </div>
             </div>
+
             <div id="quality-content" style="padding: 20px; border: 1px solid #eee; border-radius: 8px; margin-top: 5px;">
-                
                 <div class="quality-filter-group">
                     <span style="font-weight:bold; color:var(--primary);">Dönem:</span>
                     <select id="month-select-filter" onchange="fetchEvaluationsForAgent()"></select>
@@ -224,9 +230,8 @@
             </div>
         </div>
     </div>
+
     <div class="crafted-by-badge">Crafted by Doğuş Yalçınkaya</div>
-    
     <script src="js/app.js"></script>
-    
 </body>
 </html>
