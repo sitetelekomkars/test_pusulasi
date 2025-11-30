@@ -20,7 +20,7 @@ body {
     user-select: none; 
 }
 
-/* LOGIN & GENERAL */
+/* --- LOGIN & GENERAL --- */
 #login-screen { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; 
     display: flex; justify-content: center; align-items: center;
@@ -52,40 +52,40 @@ body {
 #maintenance-screen { display: none !important; }
 #main-app { display: none; }
 
-/* --- HEADER (YENİLENMİŞ TASARIM) --- */
+/* --- HEADER (MODERN & GLASSMORPHISM) --- */
 .header { 
-    background: linear-gradient(90deg, #0e1b42 0%, #162450 100%); /* Modern Degrade */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* İnce Zarif Çizgi */
+    background: linear-gradient(90deg, #0e1b42 0%, #162450 100%); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
     color: white; 
-    padding: 10px 20px; /* Daha kompakt */
+    padding: 10px 20px; 
     position: sticky; top: 0; 
     z-index: 1000; 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* Yumuşak Gölge */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
 }
 .header-top { 
     display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 8px; /* Boşluk azaltıldı */
+    margin-bottom: 8px; 
 }
 /* Pusula İkonuna Efekt */
 .header h1 i {
     color: #fabb00;
-    text-shadow: 0 0 10px rgba(250, 187, 0, 0.4);
+    text-shadow: 0 0 15px rgba(250, 187, 0, 0.6);
 }
 
 .header-controls { display: flex; align-items: center; gap:10px; }
 .edit-toggle-btn, .add-btn { 
     background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); 
-    color: #fff; padding: 8px 20px; border-radius: 4px; cursor: pointer; 
-    font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; 
-    gap: 10px; transition: all 0.3s; 
+    color: #fff; padding: 6px 16px; border-radius: 20px; cursor: pointer; 
+    font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; 
+    gap: 8px; transition: all 0.3s; 
 }
 .edit-toggle-btn:hover, .add-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
 .edit-toggle-btn.active { background: #fabb00; border-color: #fabb00; color: #0e1b42; }
 .add-btn { background: #2e7d32; border-color: #2e7d32; }
 .admin-btn { 
-    background: transparent; border: 1px solid rgba(255,255,255,0.5); 
-    color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; 
-    font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition:0.3s;
+    background: transparent; border: 1px solid rgba(255,255,255,0.3); 
+    color: white; padding: 6px 12px; border-radius: 20px; cursor: pointer; 
+    font-size: 0.8rem; display: flex; align-items: center; gap: 8px; transition:0.3s;
 }
 .admin-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
@@ -93,56 +93,69 @@ body {
 .left-panel { flex: 2; min-width: 280px; }
 .right-panel { flex: 1; min-width: 260px; }
 
-.search-container { position: relative; width: 100%; margin-bottom: 10px; /* Boşluk azaltıldı */ }
+/* --- MODERN SEARCH BAR --- */
+.search-container { position: relative; width: 100%; margin-bottom: 12px; }
 #searchInput { 
-    width: 100%; padding: 10px 20px 10px 45px; /* Input biraz inceltildi */
-    border-radius: 4px; border: none; box-sizing: border-box; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    width: 100%; padding: 10px 20px 10px 45px;
+    background: rgba(255, 255, 255, 0.1); /* Glass Effect */
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px; /* Yuvarlak hatlar */
+    color: white;
+    box-sizing: border-box; 
+    transition: all 0.3s ease;
 }
-.search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #0e1b42; }
+#searchInput::placeholder { color: rgba(255, 255, 255, 0.6); }
+#searchInput:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fabb00;
+    box-shadow: 0 0 15px rgba(250, 187, 0, 0.2);
+    outline: none;
+}
+.search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.7); }
 
-/* --- FILTERS (KOMPAKT TASARIM) --- */
+/* --- FILTERS (PILL DESIGN) --- */
 .filter-container { 
     display: flex; 
-    gap: 4px; /* Boşluk azaltıldı (8px -> 4px) */
+    gap: 6px; 
     flex-wrap: wrap; 
 }
 .filter-btn { 
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15); 
+    background-color: rgba(255, 255, 255, 0.08);
+    border: none; /* Çerçevesiz */
     color: #eceff1; 
-    padding: 6px 12px; /* Butonlar küçültüldü */
-    border-radius: 6px; 
+    padding: 6px 16px; /* İnce ve geniş */
+    border-radius: 20px; /* Hap şekli */
     cursor: pointer; 
     transition: all 0.3s ease; 
-    display: flex; align-items: center; gap: 5px; 
-    font-weight: 500; 
-    font-size: 0.8rem; /* Yazı boyutu küçültüldü */
+    display: flex; align-items: center; gap: 6px; 
+    font-weight: 600; 
+    font-size: 0.8rem; 
     text-transform: uppercase; 
     letter-spacing: 0.5px; 
 }
-.filter-btn:hover, .filter-btn.active { 
-    background-color: #fabb00; color: #0e1b42; border-color: #fabb00; 
-    transform: translateY(-2px); box-shadow: 0 4px 10px rgba(250, 187, 0, 0.3); 
+.filter-btn:hover { 
+    background-color: rgba(255, 255, 255, 0.2); 
+    transform: translateY(-2px); 
 }
-.btn-fav { border-color: #fabb00; color: #fabb00; }
-.btn-fav:hover, .btn-fav.active { color: #0e1b42; }
-
-.game-btn { border-color: rgba(255, 255, 255, 0.15) !important; color: #eceff1 !important; background: rgba(255, 255, 255, 0.05) !important; }
-.game-btn:hover, .game-btn.active { background-color: #fabb00 !important; color: #0e1b42 !important; border-color: #fabb00 !important; }
+.filter-btn.active { 
+    background-color: #fabb00; color: #0e1b42; 
+    box-shadow: 0 4px 12px rgba(250, 187, 0, 0.4); /* Sarı parlama */
+}
+.btn-fav { color: #fabb00; background: rgba(250, 187, 0, 0.1); }
+.btn-fav:hover, .btn-fav.active { background: #fabb00; color: #0e1b42; }
 
 /* TICKER & CARDS */
 .news-ticker-box { 
-    background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); 
-    border: 1px solid rgba(255, 255, 255, 0.1); border-left: 5px solid #fabb00; 
-    border-radius: 6px; padding: 10px 15px; /* Padding biraz düzenlendi */
-    height: 80px; /* Yükseklik biraz azaltıldı */
+    background: rgba(0, 0, 0, 0.2); /* Header ile bütünleşen koyu zemin */
+    border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #fabb00; 
+    border-radius: 8px; padding: 10px 15px; 
+    height: 80px; 
     position: relative; cursor: pointer; overflow: hidden; transition: 0.3s; 
     display: flex; flex-direction: column; justify-content: center; 
 }
 .news-ticker-box:hover { 
-    border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+    background: rgba(255,255,255,0.05); 
 }
 .ticker-label { 
     font-size: 0.75rem; color: #fabb00; font-weight: 800; 
@@ -151,7 +164,7 @@ body {
 }
 .ticker-label i { font-size: 10px; color: #fabb00; animation: intense-pulse 1.5s infinite; }
 .ticker-content { 
-    font-size: 0.95rem; color: #fff; font-weight: 500; line-height: 1.4; 
+    font-size: 0.95rem; color: rgba(255, 255, 255, 0.9); font-weight: 500; line-height: 1.4; 
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
     overflow: hidden; animation: slideIn 0.5s ease-out; 
 }
@@ -163,7 +176,7 @@ body {
     box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--info); 
     display: flex; flex-direction: column; transition: transform 0.2s; position: relative; 
 }
-.card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 .card.Teknik { border-left-color: var(--primary); }
 .card.İkna { border-left-color: var(--accent); } 
 .card.Kampanya { border-left-color: var(--success); } 
