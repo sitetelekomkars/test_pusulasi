@@ -76,9 +76,15 @@ body {
     margin-bottom: 15px; 
 }
 
+/* MARKA ALANI DÜZENLEMESİ */
 .brand-area { display: flex; align-items: center; gap: 12px; }
-.brand-icon { color: var(--secondary); font-size: 1.4rem; text-shadow: 0 0 15px rgba(250, 187, 0, 0.4); }
-.brand-title { font-size: 1.2rem; font-weight: 500; letter-spacing: 0.5px; margin: 0; color: #fff; }
+.brand-icon { color: var(--secondary); font-size: 1.8rem; text-shadow: 0 0 15px rgba(250, 187, 0, 0.4); }
+/* Eğer logo resmi kullanırsan bu class'ı kullan */
+.brand-img { height: 35px; width: auto; object-fit: contain; }
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-text .main-text { font-size: 1.2rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+.brand-text .sub-text { font-size: 0.85rem; font-weight: 300; color: rgba(255,255,255,0.6); }
 
 .header-controls { display: flex; align-items: center; gap:10px; }
 
@@ -109,12 +115,12 @@ body {
 /* --- ORTA KONTROL ALANI (Dengeli & Ortalanmış) --- */
 .control-wrapper { 
     display: flex; 
-    align-items: center; /* Dikey ortala */
+    align-items: center; 
     justify-content: center; /* YATAY ORTALA */
     gap: 20px; 
     padding-bottom: 10px;
     position: relative;
-    flex-wrap: wrap; /* Küçük ekranda taşarsa alt satıra geçsin */
+    flex-wrap: wrap; 
 }
 
 /* Arama Kutusu */
@@ -188,13 +194,20 @@ body {
 .link-btn { color: rgba(255, 255, 255, 0.5); font-size: 0.75rem; }
 .link-btn:hover { color: #fff; }
 
+/* --- STICKY BUTONLAR İÇİN --- */
+.filter-container { position: relative; }
+.btn-fav { position: sticky; left: 0; z-index: 100; background: #0e1b42 !important; border-right: 1px solid rgba(255,255,255,0.1); margin-right: 0; border-radius: 4px 0 0 4px; }
+.btn-all { position: sticky; left: 35px; z-index: 99; background: #0e1b42 !important; margin-left: 0; border-radius: 0 4px 4px 0; box-shadow: 5px 0 10px -2px rgba(0,0,0,0.5); }
+/* Sticky arka plan düzeltme */
+.btn-fav:hover, .btn-all:hover { background: #0e1b42 !important; }
+
 /* --- TICKER (İNCE & SOFT) --- */
 .news-ticker-box { 
     width: 100%;
-    background: rgba(0, 0, 0, 0.2); /* Çok soft zemin */
+    background: rgba(0, 0, 0, 0.2); 
     border-top: 1px solid rgba(255, 255, 255, 0.03);
     padding: 0 25px; 
-    height: 28px; /* Çok ince */
+    height: 28px; 
     display: flex; 
     align-items: center; 
     gap: 15px; 
@@ -264,12 +277,9 @@ body.editing .edit-icon { display: block !important; }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0e1b42; border-left:1px solid rgba(255,255,255,0.05); }
-::-webkit-scrollbar-thumb { background: #3e4c7a; border-radius: 4px; border:1px solid #0e1b42; }
-::-webkit-scrollbar-thumb:hover { background: #fabb00; }
-
-/* Text Selection */
-::selection { background: #fabb00; color: #0e1b42; text-shadow: none; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 
 .crafted-by-badge { position: fixed; bottom: 5px; right: 10px; font-family: sans-serif; font-size: 0.65rem; color: #0e1b42; opacity: 0.2; z-index: 9999; pointer-events: none; }
 
