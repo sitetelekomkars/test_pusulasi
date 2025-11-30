@@ -33,6 +33,14 @@ body {
     width: 300px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.05);
 }
+/* Login Logosunun Ayarı */
+.login-logo-img {
+    width: 80px; 
+    height: auto; 
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px rgba(250, 187, 0, 0.3)); /* Hafif sarı gölge */
+}
+
 .login-input { 
     width: 100%; padding: 12px; margin: 8px 0; background: #2c344a; color: #fff; 
     border: 1px solid #3a4563; border-radius: 6px; text-align: center; box-sizing: border-box; 
@@ -74,8 +82,15 @@ body {
     margin-bottom: 8px; 
 }
 
+/* MARKA ALANI */
 .brand-area { display: flex; align-items: center; gap: 12px; }
-.brand-icon { color: var(--secondary); font-size: 1.6rem; text-shadow: 0 0 15px rgba(250, 187, 0, 0.4); }
+/* Header Logosunun Ayarı */
+.brand-img { 
+    height: 36px; /* Header yüksekliğine uygun */
+    width: auto; 
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(250, 187, 0, 0.3));
+}
 .brand-text { display: flex; flex-direction: column; line-height: 1; }
 .brand-text .main-text { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
 .brand-text .sub-text { font-size: 0.75rem; font-weight: 300; color: rgba(255,255,255,0.6); }
@@ -91,7 +106,7 @@ body {
 .action-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
 .action-btn.active { background: var(--secondary); border-color: var(--secondary); color: #0e1b42; }
 
-/* KULLANICI MENÜSÜ */
+/* KULLANICI MENÜSÜ & DROPDOWN */
 .user-menu-wrapper { position: relative; }
 .user-btn { background: transparent; border: none; color: #eee; padding: 6px 10px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; border-radius: 4px; border: 1px solid transparent; transition: all 0.2s; }
 .user-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
@@ -158,8 +173,8 @@ body {
 
 /* GENEL FİLTRE BUTONU (Yıldız ve Tümü Dahil) */
 .filter-btn { 
-    background-color: rgba(255, 255, 255, 0.03); /* Şeffafımsı */
-    border: 1px solid rgba(255, 255, 255, 0.15); /* İnce Çerçeve */
+    background-color: rgba(255, 255, 255, 0.03); 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
     color: rgba(255, 255, 255, 0.75); 
     padding: 5px 10px; 
     border-radius: 4px; 
@@ -185,9 +200,8 @@ body {
     box-shadow: 0 2px 8px rgba(250, 187, 0, 0.3);
 }
 
-/* Yıldız Butonu Özelleştirmesi (Sadece renk, yapı aynı) */
-.btn-fav { color: #fabb00; } /* Yıldız sarı olsun */
-.btn-fav.active { color: #0e1b42; } /* Aktifken koyu olsun */
+.btn-fav { color: #fabb00; } 
+.btn-fav.active { color: #0e1b42; } 
 
 .divider { width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 4px; }
 .link-btn { color: rgba(255, 255, 255, 0.7); }
