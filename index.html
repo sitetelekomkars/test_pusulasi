@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S Sport Plus - Pusula</title>
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="favicon.png">
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -14,12 +16,16 @@
 
     <div id="login-screen">
         <div class="login-card">
-            <i class="fas fa-compass fa-3x" style="color: #fabb00;"></i>
-            <h2 style="color:white; font-weight:300; margin-top:15px;">S Sport Plus <strong style="color:#fabb00;">Pusula</strong></h2>
+            <img src="favicon.png" alt="Logo" class="login-logo-img">
+            
+            <h2 style="color:white; font-weight:300; margin-top:10px;">S Sport Plus <strong style="color:#fabb00;">Pusula</strong></h2>
             <p style="opacity:0.6; font-size:0.9rem; margin-bottom:20px;">Personel Girişi</p>
+            
             <input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı">
             <input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)">
+            
             <button class="login-btn" onclick="girisYap()">Giriş Yap</button>
+            
             <div id="loading-msg" class="loading-text">Bağlanıyor...</div>
             <p id="error-msg" style="color:#ef5350; display:none; margin-top:10px; font-size:0.9rem;">Hatalı Kullanıcı Adı veya Şifre!</p>
         </div>
@@ -40,7 +46,8 @@
                 
                 <div class="header-top">
                     <div class="brand-area">
-                        <i class="fas fa-compass brand-icon"></i>
+                        <img src="favicon.png" alt="S Sport Logo" class="brand-img">
+                        
                         <div class="brand-text">
                             <span class="main-text">S Sport Plus</span>
                             <span class="sub-text">| Temsilci Pusulası</span>
@@ -75,7 +82,6 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -88,11 +94,14 @@
                     <div class="filter-container">
                         <button class="filter-btn btn-fav" onclick="filterCategory(this, 'fav')"><i class="fas fa-star"></i></button>
                         <button class="filter-btn btn-all active" onclick="filterCategory(this, 'all')"><i class="fas fa-layer-group"></i> Tümü</button>
+                        
                         <button class="filter-btn" onclick="filterCategory(this, 'Teknik')"><i class="fas fa-wrench"></i> Teknik</button>
                         <button class="filter-btn" onclick="filterCategory(this, 'İkna')"><i class="fas fa-hand-holding-dollar"></i> İkna</button>
                         <button class="filter-btn" onclick="filterCategory(this, 'Kampanya')"><i class="fas fa-gift"></i> Kampanya</button>
                         <button class="filter-btn" onclick="filterCategory(this, 'Bilgi')"><i class="fas fa-info-circle"></i> Bilgi</button>
+                        
                         <div class="divider"></div>
+
                         <a href="https://www.ssportplus.com/yayin-akisi/" target="_blank" class="filter-btn link-btn"><i class="fas fa-calendar-alt"></i> Yayın Akışı</a>
                         <button class="filter-btn link-btn" onclick="openGuide()"><i class="fas fa-book"></i> Spor Rehberi</button>
                         <button class="filter-btn link-btn" onclick="openWizard()"><i class="fas fa-robot"></i> İade Asistanı</button>
@@ -205,15 +214,12 @@
             const dropdown = document.getElementById('userDropdown');
             const arrow = document.getElementById('user-menu-arrow');
             dropdown.classList.toggle('show');
-            
             if (dropdown.classList.contains('show')) {
                 arrow.style.transform = 'rotate(180deg)';
             } else {
                 arrow.style.transform = 'rotate(0deg)';
             }
         }
-
-        // Menü dışına tıklanırsa kapat
         window.addEventListener('click', function(e) {
             if (!document.getElementById('adminBtn').contains(e.target)) {
                 const dropdown = document.getElementById('userDropdown');
@@ -224,8 +230,6 @@
                 }
             }
         });
-        
-        // Orijinal openUserMenu fonksiyonunu eziyoruz ki sweetalert açılmasın
         window.openUserMenu = function() {
             toggleUserDropdown();
         };
