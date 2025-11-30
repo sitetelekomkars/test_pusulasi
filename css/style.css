@@ -45,15 +45,16 @@ body {
 #maintenance-screen { display: none !important; }
 #main-app { display: none; }
 
-/* --- PROFESSIONAL HEADER STRUCTURE --- */
+/* --- HEADER (MODERN & COMPACT) --- */
 .header { 
-    background: #0e1b42; 
+    background: #0e1b42; /* Kurumsal Lacivert */
     border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
     color: white; 
+    /* Alt padding 0, çünkü ticker en alta yapışık */
     padding: 15px 25px 0 25px; 
     position: sticky; top: 0; 
     z-index: 1000; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -68,7 +69,10 @@ body {
     font-size: 1.4rem; font-weight: 600; letter-spacing: 0.5px;
     display: flex; align-items: center; gap: 10px;
 }
-.header h1 i { color: #fabb00; }
+.header h1 i { 
+    color: #fabb00; 
+    text-shadow: 0 0 15px rgba(250, 187, 0, 0.4);
+}
 
 .header-controls { display: flex; align-items: center; gap:10px; }
 .edit-toggle-btn, .add-btn { 
@@ -95,7 +99,7 @@ body {
     padding-bottom: 10px; 
 }
 
-/* Search Bar */
+/* Search Bar - Glassmorphism */
 .search-container { 
     position: relative; 
     width: 350px; 
@@ -103,24 +107,25 @@ body {
 }
 #searchInput { 
     width: 100%; padding: 10px 15px 10px 40px;
-    background: #1a264d; 
-    border: 1px solid #2d3b66;
+    background: rgba(255, 255, 255, 0.1); /* Hafif Şeffaf */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px; 
     color: white;
     font-size: 0.9rem;
     box-sizing: border-box; 
     transition: all 0.2s ease;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
 }
-#searchInput::placeholder { color: rgba(255, 255, 255, 0.4); }
+#searchInput::placeholder { color: rgba(255, 255, 255, 0.6); }
 #searchInput:focus {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2); /* Odaklanınca açıl */
     border-color: #fabb00;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(250, 187, 0, 0.15);
+    box-shadow: 0 0 0 4px rgba(250, 187, 0, 0.2); /* Glow Efekti */
 }
 .search-icon { 
     position: absolute; left: 12px; top: 50%; transform: translateY(-50%); 
-    color: rgba(255, 255, 255, 0.5); font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;
 }
 
 /* --- FILTERS - STICKY FIXED DESIGN --- */
@@ -131,13 +136,14 @@ body {
     padding-bottom: 5px; 
     flex-grow: 1;
     position: relative;
-    /* Maskeleme kaldırıldı, sticky ile çakışmaması için */
+    /* Maskeleme kapalı, sticky ile sorun çıkmaması için */
 }
+/* Scrollbar'ı gizle */
 .filter-container::-webkit-scrollbar { height: 4px; }
 .filter-container::-webkit-scrollbar-track { background: transparent; }
 .filter-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
-/* GENEL BUTON STİLİ */
+/* Genel Buton Stili */
 .filter-btn { 
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2); 
@@ -149,11 +155,12 @@ body {
     display: flex; align-items: center; gap: 6px; 
     font-weight: 500; font-size: 0.8rem; 
     white-space: nowrap; 
-    z-index: 1; /* Diğer butonlar altta kalsın */
+    z-index: 1; /* Diğer butonlar altta */
 }
 .filter-btn:hover { 
-    background-color: rgba(255, 255, 255, 0.1); 
-    color: white; border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.15); 
+    color: white; border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
 }
 .filter-btn.active { 
     background-color: #fabb00; color: #0e1b42; border-color: #fabb00; font-weight: 700;
@@ -166,39 +173,40 @@ body {
     position: sticky; 
     left: 0; 
     z-index: 100; /* En üstte */
-    background-color: #0e1b42 !important; /* Header rengiyle kapla */
+    background-color: #0e1b42 !important; /* Arkası görünmesin */
     border-color: #fabb00; 
     color: #fabb00;
     margin-right: 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
 }
 .btn-fav:hover, .btn-fav.active { background: #0e1b42; color: #fabb00; }
 
 /* 2. TÜMÜ BUTONU */
 .btn-all {
     position: sticky;
-    /* Yıldız butonunun genişliği + az boşluk (tahmini 45px) */
+    /* Yıldız butonunun genişliğine göre ayarlı */
     left: 45px; 
-    z-index: 90; /* Yıldızdan düşük, diğerlerinden yüksek */
-    background-color: #0e1b42 !important; /* Header rengiyle kapla */
+    z-index: 90; 
+    background-color: #0e1b42 !important; 
     border-color: #fabb00;
     
     /* Sağ tarafa derinlik gölgesi */
     box-shadow: 6px 0 10px -4px rgba(0, 0, 0, 0.8);
-    clip-path: inset(0 -15px 0 0); /* Gölge sadece sağda görünsün */
+    clip-path: inset(0 -15px 0 0); 
 }
 .btn-all.active {
     background-color: #fabb00 !important;
     color: #0e1b42 !important;
 }
 
-/* --- TICKER --- */
+/* --- TICKER (DUYURU ŞERİDİ) --- */
 .news-ticker-box { 
-    width: calc(100% + 50px); 
-    margin-left: -25px; 
-    background: rgba(0, 0, 0, 0.2); 
+    width: calc(100% + 50px); /* Header padding'ini taşır */
+    margin-left: -25px; /* Sola yasla */
+    background: rgba(0, 0, 0, 0.3); /* Biraz daha koyu, net okuma için */
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 0 25px; 
-    height: 32px; 
+    height: 32px; /* İnce şerit */
     display: flex; 
     align-items: center; 
     gap: 15px; 
@@ -206,7 +214,9 @@ body {
     transition: 0.2s;
     font-family: 'Consolas', 'Monaco', monospace; 
 }
-.news-ticker-box:hover { background: rgba(0, 0, 0, 0.4); }
+.news-ticker-box:hover { 
+    background: rgba(0, 0, 0, 0.5); /* Hover efekti */
+}
 
 .ticker-label { 
     font-size: 0.7rem; color: #fabb00; font-weight: 700; 
@@ -216,7 +226,7 @@ body {
 .ticker-label i { font-size: 6px; color: #fabb00; animation: blink 2s infinite; }
 
 .ticker-content { 
-    font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); 
+    font-size: 0.8rem; color: rgba(255, 255, 255, 0.85); 
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
     flex-grow: 1; 
 }
