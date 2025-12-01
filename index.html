@@ -17,15 +17,11 @@
     <div id="login-screen">
         <div class="login-card">
             <img src="favicon.png" alt="Logo" class="login-logo-img">
-            
             <h2 style="color:white; font-weight:300; margin-top:10px;">S Sport Plus <strong style="color:#fabb00;">Pusula</strong></h2>
             <p style="opacity:0.6; font-size:0.9rem; margin-bottom:20px;">Personel Girişi</p>
-            
             <input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı">
             <input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)">
-            
             <button class="login-btn" onclick="girisYap()">Giriş Yap</button>
-            
             <div id="loading-msg" class="loading-text">Bağlanıyor...</div>
             <p id="error-msg" style="color:#ef5350; display:none; margin-top:10px; font-size:0.9rem;">Hatalı Kullanıcı Adı veya Şifre!</p>
         </div>
@@ -47,7 +43,6 @@
                 <div class="header-top">
                     <div class="brand-area">
                         <img src="favicon.png" alt="S Sport Logo" class="brand-img">
-                        
                         <div class="brand-text">
                             <span class="main-text">S Sport Plus</span>
                             <span class="sub-text">| Temsilci Pusulası</span>
@@ -68,7 +63,6 @@
                                 <span id="user-display">Misafir</span>
                                 <i class="fas fa-chevron-down" id="user-menu-arrow" style="font-size:0.7rem; opacity:0.5; transition:0.3s;"></i>
                             </button>
-                            
                             <div id="userDropdown" class="dropdown-menu">
                                 <div class="dropdown-header">
                                     <span style="font-size:0.8rem; color:#999;">Hesap İşlemleri</span>
@@ -116,7 +110,9 @@
                 <div class="ticker-label">
                     <span class="pulse-dot"></span> DUYURU
                 </div>
-                <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
+                <div class="ticker-scroll-wrapper">
+                    <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
+                </div>
             </div>
         </div>
 
@@ -178,7 +174,9 @@
                 </div>
                 <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">Soru yükleniyor...</div>
                 <div id="joker-container" style="display: flex; justify-content: space-around; margin: 15px 0;">
-                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')">📞</button><button id="joker-half" class="joker-btn" onclick="useJoker('half')">✂️</button><button id="joker-double" class="joker-btn" onclick="useJoker('double')">2️⃣</button>
+                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri">📞 Telefon</button>
+                    <button id="joker-half" class="joker-btn" onclick="useJoker('half')" title="Yarı Yarıya Joker">✂️ 50:50</button>
+                    <button id="joker-double" class="joker-btn" onclick="useJoker('double')" title="Çift Cevap Hakkı">2️⃣ Çift Cevap</button>
                 </div>
                 <div class="penalty-options" id="p-options"></div>
                 <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="showLobby()">LOBİYE DÖN 🏠</button>
