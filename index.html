@@ -17,15 +17,11 @@
     <div id="login-screen">
         <div class="login-card">
             <img src="favicon.png" alt="Logo" class="login-logo-img">
-            
             <h2 style="color:white; font-weight:300; margin-top:10px;">S Sport Plus <strong style="color:#fabb00;">Pusula</strong></h2>
             <p style="opacity:0.6; font-size:0.9rem; margin-bottom:20px;">Personel Girişi</p>
-            
             <input type="text" id="usernameInput" class="login-input" placeholder="Kullanıcı Adı">
             <input type="password" id="passInput" class="login-input" placeholder="Şifre" onkeyup="enterBas(event)">
-            
             <button class="login-btn" onclick="girisYap()">Giriş Yap</button>
-            
             <div id="loading-msg" class="loading-text">Bağlanıyor...</div>
             <p id="error-msg" style="color:#ef5350; display:none; margin-top:10px; font-size:0.9rem;">Hatalı Kullanıcı Adı veya Şifre!</p>
         </div>
@@ -47,10 +43,9 @@
                 <div class="header-top">
                     <div class="brand-area">
                         <img src="favicon.png" alt="S Sport Logo" class="brand-img">
-                        
                         <div class="brand-text">
                             <span class="main-text">S Sport Plus</span>
-                            <span class="sub-text">| Temsilci Pusulası</span>
+                            <span class="sub-text">Temsilci Pusulası</span>
                         </div>
                     </div>
                     
@@ -68,7 +63,6 @@
                                 <span id="user-display">Misafir</span>
                                 <i class="fas fa-chevron-down" id="user-menu-arrow" style="font-size:0.7rem; opacity:0.5; transition:0.3s;"></i>
                             </button>
-                            
                             <div id="userDropdown" class="dropdown-menu">
                                 <div class="dropdown-header">
                                     <span style="font-size:0.8rem; color:#999;">Hesap İşlemleri</span>
@@ -116,7 +110,9 @@
                 <div class="ticker-label">
                     <span class="pulse-dot"></span> DUYURU
                 </div>
-                <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
+                <div class="ticker-scroll-wrapper">
+                    <div id="ticker-content" class="ticker-content">Veriler yükleniyor...</div>
+                </div>
             </div>
         </div>
 
@@ -158,7 +154,7 @@
     </div>
     <div id="penalty-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 650px; background: #1a1a1a; border: 1px solid #333; min-height:600px; display:flex; flex-direction:column;">
-            <span class="close-modal" style="color:white; z-index:1000;" onclick="closeModal('penalty-modal')">&times;</span>
+            <span class="close-modal" onclick="closeModal('penalty-modal')">&times;</span>
             <h2 style="text-align:center; color:#fabb00; margin-top:0;">⚽ S Sport Arena</h2>
             <div id="penalty-lobby" style="text-align:center; padding:20px; flex-grow:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <h3 style="color:white; margin-bottom:15px;">🏆 Liderlik Tablosu (Top 5)</h3>
@@ -177,9 +173,13 @@
                     <div class="goal-message" id="goal-msg">GOL!</div><div class="penalty-area"></div><div class="penalty-spot-mark"></div><div id="ball-wrap" class="ball-wrapper"><div class="football"></div><div class="ball-shadow"></div></div><div id="shooter-wrap" class="shooter-wrapper"><div class="player-figure"><div class="head"></div><div class="torso"></div><div class="arms"><div class="arm left"></div><div class="arm right"></div></div><div class="shorts"></div><div class="legs"><div class="leg left"><div class="sock"></div><div class="shoe"></div></div><div class="leg right"><div class="sock"></div><div class="shoe"></div></div></div></div></div>
                 </div>
                 <div style="margin-top:15px; color:#ddd; min-height:50px; font-weight:500; text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;" id="p-question-text">Soru yükleniyor...</div>
+                
                 <div id="joker-container" style="display: flex; justify-content: space-around; margin: 15px 0;">
-                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')">📞</button><button id="joker-half" class="joker-btn" onclick="useJoker('half')">✂️</button><button id="joker-double" class="joker-btn" onclick="useJoker('double')">2️⃣</button>
+                    <button id="joker-call" class="joker-btn" onclick="useJoker('call')" title="Telefon Jokeri">📞 Telefon</button>
+                    <button id="joker-half" class="joker-btn" onclick="useJoker('half')" title="Yarı Yarıya Joker">✂️ 50:50</button>
+                    <button id="joker-double" class="joker-btn" onclick="useJoker('double')" title="Çift Cevap Hakkı">2️⃣ Çift Cevap</button>
                 </div>
+                
                 <div class="penalty-options" id="p-options"></div>
                 <button id="p-restart-btn" class="restart-btn" style="display:none; width:100%; background:#fabb00; color:black; font-weight:bold;" onclick="showLobby()">LOBİYE DÖN 🏠</button>
             </div>
@@ -188,8 +188,8 @@
     <div id="quality-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 900px;">
             <span class="close-modal" onclick="closeModal('quality-modal')">&times;</span>
-            <h2 style="text-align:center; color:var(--primary);"><i class="fas fa-microscope"></i> Kalite</h2>
-            <div id="admin-quality-controls" style="text-align:center; display:none;">
+            <h2 style="text-align:center; color:var(--primary);">Kalite</h2>
+            <div id="admin-quality-controls" style="display:none;">
                 <div class="quality-controls-top">
                     <div style="display:flex; gap:10px;">
                         <button class="add-btn" style="background:var(--accent); border-color:var(--accent);" onclick="logEvaluationPopup()"><i class="fas fa-plus"></i> Ekle</button>
@@ -199,7 +199,7 @@
                 </div>
             </div>
             <div id="quality-content" style="padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-top: 5px;">
-                <div class="quality-filter-group"><span style="color:var(--primary);">Dönem:</span><select id="month-select-filter" onchange="fetchEvaluationsForAgent()"></select><span style="margin-left:15px;"><i class="fas fa-chart-line"></i> <span id="eval-count-span">-</span></span><span style="color:var(--success); margin-left:15px;"><i class="fas fa-bullseye"></i> <span id="monthly-avg-span">-</span></span></div>
+                <div class="quality-filter-group"><span style="color:var(--primary);">Dönem:</span><select id="month-select-filter" onchange="fetchEvaluationsForAgent()"></select><span style="margin-left:15px;"><i class="fas fa-chart-line"></i> <span id="eval-count-span">Dinleme Adeti: -</span></span><span style="color:var(--success); margin-left:15px;"><i class="fas fa-bullseye"></i> <span id="monthly-avg-span">Ortalama: -</span></span></div>
                 <div id="quality-loader" style="text-align:center; color:#999; font-style:italic; margin-top:20px;">Yükleniyor...</div>
                 <div id="evaluations-list"></div>
             </div>
