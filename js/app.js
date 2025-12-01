@@ -257,16 +257,13 @@ function checkAdmin(role) {
     document.body.classList.remove('editing');
 
     if(isAdminMode) { 
-        // Butonlar artık dropdown içinde (HTML'de 'style="display:none;"' var), sadece göster/gizle
-        if (editBtn) editBtn.style.display = "flex"; 
-        if (addBtn) addBtn.style.display = "flex"; 
-        if (editBtn) {
-            editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
-            editBtn.classList.remove('active');
-        }
+        editBtn.style.display = "flex"; 
+        addBtn.style.display = "flex"; 
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç';
+        editBtn.classList.remove('active');
     } else { 
-        if (editBtn) editBtn.style.display = "none"; 
-        if (addBtn) addBtn.style.display = "none"; 
+        editBtn.style.display = "none"; 
+        addBtn.style.display = "none"; 
     } 
 }
 
@@ -588,12 +585,10 @@ function toggleEditMode() {
     const btn = document.getElementById('quickEditBtn'); 
     if(isEditingActive) { 
         btn.classList.add('active'); 
-        // Dropdown menüdeki linkin metnini güncelliyoruz
         btn.innerHTML = '<i class="fas fa-times"></i> Düzenlemeyi Kapat'; 
         Swal.fire({ icon: 'success', title: 'Düzenleme Modu AÇIK', text: 'Kalem ikonlarına tıklayarak içerikleri düzenleyebilirsiniz.', timer: 1500, showConfirmButton: false }); 
     } else { 
         btn.classList.remove('active'); 
-        // Dropdown menüdeki linkin metnini güncelliyoruz
         btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Düzenlemeyi Aç'; 
     } 
     
