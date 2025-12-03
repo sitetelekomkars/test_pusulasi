@@ -191,16 +191,23 @@
             <span class="close-modal" onclick="closeModal('quality-modal')">&times;</span>
             <h2 style="text-align:center; color:var(--primary); margin-bottom: 20px;">Kalite</h2>
             
-            <!-- Admin Kontrolleri (Ekle / Rapor) -->
+            <!-- Admin Kontrolleri (GÜNCELLENDİ) -->
             <div id="admin-quality-controls" style="display:none; margin-bottom:15px;">
                 <div class="quality-controls-top">
                     <div style="display:flex; gap:10px;">
                         <button class="add-btn" style="background:var(--accent); border:none; color:white; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="logEvaluationPopup()"><i class="fas fa-plus"></i> Ekle</button>
                         <button class="admin-btn" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="exportEvaluations()"><i class="fas fa-file-csv"></i> Rapor</button>
                     </div>
-                    <div style="font-weight:bold; display:flex; align-items:center; gap: 5px;">
-                        <label>Temsilci:</label>
-                        <select id="agent-select-admin" class="swal2-input" onchange="fetchEvaluationsForAgent()" style="width: 200px; padding:5px; height:35px;"></select>
+                    <!-- YENİ: Grup ve Temsilci Filtresi -->
+                    <div style="font-weight:bold; display:flex; align-items:center; gap: 15px;">
+                        <div style="display:flex; flex-direction:column;">
+                            <label style="font-size:0.7rem; color:#999; margin-bottom:2px;">Ekip / Grup</label>
+                            <select id="group-select-admin" class="swal2-input" onchange="updateAgentListBasedOnGroup()" style="width: 150px; padding:5px; height:35px; margin:0; border-color:#ccc; font-size:0.85rem;"></select>
+                        </div>
+                        <div style="display:flex; flex-direction:column;">
+                            <label style="font-size:0.7rem; color:#999; margin-bottom:2px;">Temsilci</label>
+                            <select id="agent-select-admin" class="swal2-input" onchange="fetchEvaluationsForAgent()" style="width: 180px; padding:5px; height:35px; margin:0; border-color:#ccc; font-size:0.85rem;"></select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -208,14 +215,13 @@
             <!-- GÜNCELLENMİŞ KALİTE İÇERİĞİ -->
             <div id="quality-content" style="padding: 10px; border-radius: 8px;">
     
-                <!-- ÜST KISIM: BAŞLIK VE FİLTRE (Eski alt bar buraya taşındı) -->
+                <!-- ÜST KISIM: BAŞLIK VE FİLTRE -->
                 <div class="q-dashboard-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
                     <div>
                         <h3 style="font-size:1.2rem; color:var(--primary); margin:0; font-weight:700;">Kalite Yönetim Paneli</h3>
                         <p style="font-size:0.8rem; color:#888; margin:2px 0 0 0;">Genel performans özeti</p>
                     </div>
                     
-                    <!-- DÖNEM SEÇİMİ (Eski alttaki select buraya geldi) -->
                     <div style="text-align:right;">
                         <label style="font-size:0.75rem; color:#999; display:block; margin-bottom:2px;">Dönem Seçimi:</label>
                         <select id="month-select-filter" class="minimal-select" style="font-size:0.9rem; font-weight:bold; color:var(--primary); border:none; border-bottom:1px dashed #ccc; outline:none; background:transparent; cursor:pointer;" onchange="fetchEvaluationsForAgent()">
@@ -224,9 +230,8 @@
                     </div>
                 </div>
             
-                <!-- ORTA KISIM: 3'LÜ İSTATİSTİK KARTLARI (Bilgiler burada gösteriliyor) -->
+                <!-- ORTA KISIM: 3'LÜ İSTATİSTİK KARTLARI -->
                 <div class="q-stats-grid">
-                    <!-- Kart 1: Ortalama -->
                     <div class="q-stat-card card-blue">
                         <div class="q-card-title">ORTALAMA PUAN</div>
                         <div class="q-card-value" id="dash-avg-score">-</div>
@@ -234,7 +239,6 @@
                         <div class="q-card-icon-bg"><i class="fas fa-chart-pie"></i></div>
                     </div>
             
-                    <!-- Kart 2: Adet -->
                     <div class="q-stat-card card-green">
                         <div class="q-card-title">ÇAĞRI ADEDİ</div>
                         <div class="q-card-value" id="dash-eval-count">-</div>
@@ -242,7 +246,6 @@
                         <div class="q-card-icon-bg"><i class="fas fa-check"></i></div>
                     </div>
             
-                    <!-- Kart 3: Hedef -->
                     <div class="q-stat-card card-orange">
                         <div class="q-card-title">HEDEF TUTMA</div>
                         <div class="q-card-value" id="dash-target-rate">-%</div>
@@ -258,7 +261,6 @@
                 
                 <div id="quality-loader" style="text-align:center; color:#999; font-style:italic; display:none; margin:20px 0;">Yükleniyor...</div>
             
-                <!-- LİSTE ALANI (Kaydırma özelliği ile) -->
                 <div id="evaluations-list" style="max-height: 380px; overflow-y: auto; padding-right:5px;"></div>
             </div>
 
