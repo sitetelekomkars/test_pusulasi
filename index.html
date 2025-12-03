@@ -188,7 +188,49 @@
 <div style="font-weight:bold; display:flex; align-items:center; gap: 5px;"><label>Temsilci:</label><select id="agent-select-admin" class="swal2-input" onchange="fetchEvaluationsForAgent()" style="width: 200px; padding:5px;"></select></div>
 </div>
 </div>
-<div id="quality-content" style="padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-top: 5px;">
+<div id="quality-content" style="padding: 15px; border-radius: 8px; margin-top: 5px;">
+    
+    <div class="q-dashboard-header">
+        <h3><i class="fas fa-chart-line"></i> Kalite Yönetim Paneli</h3>
+        <p>Performans metrikleri ve değerlendirme takibi</p>
+    </div>
+
+    <div class="q-stats-grid">
+        
+        <div class="q-stat-card card-blue">
+            <div class="q-card-title">ORTALAMA KALİTE PUANI</div>
+            <div class="q-card-value" id="dash-avg-score">-</div>
+            <div class="q-card-footer">
+                <select id="month-select-filter" class="minimal-select" onchange="fetchEvaluationsForAgent()"></select>
+                <span>dönemi</span>
+            </div>
+            <div class="q-card-icon-bg"><i class="fas fa-check-circle"></i></div>
+        </div>
+
+        <div class="q-stat-card card-green">
+            <div class="q-card-title">DEĞERLENDİRİLEN ÇAĞRI</div>
+            <div class="q-card-value" id="dash-eval-count">-</div>
+            <div class="q-card-footer">
+                <span style="color:#2e7d32;">Aktif</span> performans kaydı
+            </div>
+            <div class="q-card-icon-bg"><i class="fas fa-clipboard-list"></i></div>
+        </div>
+
+        <div class="q-stat-card card-orange">
+            <div class="q-card-title">HEDEF TUTMA ORANI</div>
+            <div class="q-card-value" id="dash-target-rate">-%</div>
+            <div class="q-card-footer">
+                Hedef puan: 90+
+            </div>
+            <div class="q-card-icon-bg"><i class="fas fa-bullseye"></i></div>
+        </div>
+
+    </div>
+
+    <div id="quality-loader" style="text-align:center; color:#999; font-style:italic; margin-top:30px;">Yükleniyor...</div>
+    
+    <div id="evaluations-list" style="margin-top: 25px;"></div>
+</div>
 <div class="quality-filter-group"><span style="color:var(--primary);">Dönem:</span><select id="month-select-filter" onchange="fetchEvaluationsForAgent()"></select><span style="margin-left:15px;"><i class="fas fa-chart-line"></i> <span id="eval-count-span">Dinleme Adeti: -</span></span><span style="color:var(--success); margin-left:15px;"><i class="fas fa-bullseye"></i> <span id="monthly-avg-span">Ortalama: -</span></span></div>
 <div id="quality-loader" style="text-align:center; color:#999; font-style:italic; margin-top:20px;">Yükleniyor...</div>
 <div id="evaluations-list"></div>
@@ -224,3 +266,4 @@ toggleUserDropdown();
 </script>
 </body>
 </html>
+
