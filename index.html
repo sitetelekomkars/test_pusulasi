@@ -86,7 +86,29 @@
         });
         window.openUserMenu = function() {
             toggleUserDropdown();
-        };</script><div id="game-hub-modal" class="modal-overlay"><div class="modal-content" style="max-width:760px"><span class="close-modal" onclick='closeModal("game-hub-modal")'>&times;</span><h2 style="text-align:center;color:var(--primary);margin-top:0">🎮 Oyun Merkezi</h2><p style="text-align:center;color:#666;margin-top:-10px">İstersen hızlı eğitim oyunu, istersen arena!</p><div class="game-hub-grid"><div class="game-hub-card" onclick="openQuickDecisionGame()"><div class="gh-icon">🧠</div><div class="gh-title">Hızlı Karar</div><div class="gh-desc">30 sn / 5 senaryo • İkna + Teknik refleksi</div><div class="gh-cta">Başlat</div></div><div class="game-hub-card" onclick="openPenaltyGame()"><div class="gh-icon">⚽</div><div class="gh-title">S Sport Arena</div><div class="gh-desc">Liderlik tablosu • 10 top • Jokerli</div><div class="gh-cta">Arenaya Gir</div></div></div></div></div><div id="quick-modal" class="modal-overlay"><div class="modal-content" style="max-width:760px"><span class="close-modal" onclick='closeModal("quick-modal")'>&times;</span><h2 style="text-align:center;color:var(--secondary);margin-top:0">🧠 Hızlı Karar</h2><div class="quick-topbar"><div class="quick-chip">Süre:<span id="qd-time">30</span>sn</div><div class="quick-chip">Soru:<span id="qd-step">0</span>/5</div><div class="quick-chip">Puan:<span id="qd-score">0</span></div></div><div id="qd-lobby" class="quick-lobby"><p style="margin:0;color:#555;line-height:1.6">30 saniyede 5 senaryo. En doğru yaklaşımı seç, puanı kap! 🎯</p><button class="btn btn-copy" style="margin-top:15px;justify-content:center" onclick="startQuickDecision()">Başlat</button></div><div id="qd-game" style="display:none"><div class="quick-question" id="qd-question">Soru yükleniyor...</div><div class="quick-options" id="qd-options"></div><div class="quick-footer"><button class="btn btn-link" onclick="resetQuickDecision()">Yeniden Başla</button><button class="btn btn-copy" onclick='closeModal("quick-modal")'>Kapat</button></div></div></div></div><div id="telesales-fullscreen" class="q-fullscreen" style="display:none">
+        };
+
+        // Duyuru barındaki akan metinde [GG.AA.YYYY] formatındaki tarihi otomatik span'leyip
+        // kurumsal gri (var(--corp-gray)) ile boyayalım.
+        (function(){
+            const el = document.getElementById('ticker-content');
+            if(!el) return;
+
+            function wrapTickerDates(){
+                const html = el.innerHTML;
+                // Aynı içeriği tekrar tekrar sarmamak için
+                if (html.includes('ticker-date')) return;
+
+                const re = /\[(\d{2}\.\d{2}\.\d{4})\]/g;
+                const next = html.replace(re, '<span class="ticker-date">[$1]</span>');
+                if (next !== html) el.innerHTML = next;
+            }
+
+            wrapTickerDates();
+            const obs = new MutationObserver(() => wrapTickerDates());
+            obs.observe(el, { childList: true, subtree: true, characterData: true });
+        })();
+        </script><div id="game-hub-modal" class="modal-overlay"><div class="modal-content" style="max-width:760px"><span class="close-modal" onclick='closeModal("game-hub-modal")'>&times;</span><h2 style="text-align:center;color:var(--primary);margin-top:0">🎮 Oyun Merkezi</h2><p style="text-align:center;color:#666;margin-top:-10px">İstersen hızlı eğitim oyunu, istersen arena!</p><div class="game-hub-grid"><div class="game-hub-card" onclick="openQuickDecisionGame()"><div class="gh-icon">🧠</div><div class="gh-title">Hızlı Karar</div><div class="gh-desc">30 sn / 5 senaryo • İkna + Teknik refleksi</div><div class="gh-cta">Başlat</div></div><div class="game-hub-card" onclick="openPenaltyGame()"><div class="gh-icon">⚽</div><div class="gh-title">S Sport Arena</div><div class="gh-desc">Liderlik tablosu • 10 top • Jokerli</div><div class="gh-cta">Arenaya Gir</div></div></div></div></div><div id="quick-modal" class="modal-overlay"><div class="modal-content" style="max-width:760px"><span class="close-modal" onclick='closeModal("quick-modal")'>&times;</span><h2 style="text-align:center;color:var(--secondary);margin-top:0">🧠 Hızlı Karar</h2><div class="quick-topbar"><div class="quick-chip">Süre:<span id="qd-time">30</span>sn</div><div class="quick-chip">Soru:<span id="qd-step">0</span>/5</div><div class="quick-chip">Puan:<span id="qd-score">0</span></div></div><div id="qd-lobby" class="quick-lobby"><p style="margin:0;color:#555;line-height:1.6">30 saniyede 5 senaryo. En doğru yaklaşımı seç, puanı kap! 🎯</p><button class="btn btn-copy" style="margin-top:15px;justify-content:center" onclick="startQuickDecision()">Başlat</button></div><div id="qd-game" style="display:none"><div class="quick-question" id="qd-question">Soru yükleniyor...</div><div class="quick-options" id="qd-options"></div><div class="quick-footer"><button class="btn btn-link" onclick="resetQuickDecision()">Yeniden Başla</button><button class="btn btn-copy" onclick='closeModal("quick-modal")'>Kapat</button></div></div></div></div><div id="telesales-fullscreen" class="q-fullscreen" style="display:none">
   <div class="q-sidebar">
     <div class="q-side-top telesales-side-top">
       <div class="q-side-header">
