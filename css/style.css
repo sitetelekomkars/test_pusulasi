@@ -1311,3 +1311,20 @@ body.editing .edit-icon { display: block !important; }
   color:#ffffff;
   font-weight:600;
 }
+
+/* === GLOBAL FIX: İsimler beyaz === */
+#home-welcome-user,
+.q-user-name,
+.q-name,
+#user-display {
+  color:#ffffff !important;
+}
+
+/* === GLOBAL FIX: Seçili menü içi beyaz === */
+.filter-btn.active,
+.action-btn.active,
+.q-nav-item.active,
+.q-nav-item.active i,
+.q-nav-item.active svg {
+  color:#ffffff !important;
+}
