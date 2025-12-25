@@ -299,6 +299,14 @@ body {
     animation: ticker-scroll 30s linear infinite; 
     font-weight: 400; font-family: 'Segoe UI', sans-serif; 
 }
+
+/* Duyuru barında akan tarih rengi: kurumsal gri */
+.ticker-content .ticker-date,
+.ticker-content .news-date {
+    color: var(--corp-gray) !important;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+}
 @keyframes ticker-scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%) translateX(-200px); } 
@@ -544,11 +552,12 @@ body.editing .edit-icon { display: block !important; }
 .q-nav-item.active { background: #CF0A2C; color: #0e1b42; font-weight: bold; border-right: 4px solid #fff; }
 .q-sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
 .q-exit-btn {
-    width: 100%; padding: 10px; background: #d32f2f; border: none;
+    /* Teknik alandaki geri butonu ile aynı renk */
+    width: 100%; padding: 10px; background: #6c757d; border: none;
     color: white; border-radius: 6px; cursor: pointer; font-weight: bold;
     display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.q-exit-btn:hover { background: #b71c1c; }
+.q-exit-btn:hover { background: #5a6268; }
 /* CONTENT AREA */
 .q-content { flex-grow: 1; padding: 30px; overflow-y: auto; background: #f4f6f9; position: relative; }
 .q-view-section { display: none; animation: fadeIn 0.3s ease; }
