@@ -1257,3 +1257,39 @@ body.editing .edit-icon { display: block !important; }
 .welcome-card span.username {
     color: #ffffff !important;
 }
+
+/* Hoş Geldin kartı isim rengi ZORLA beyaz */
+.welcome-card b,
+.welcome-card strong,
+.welcome-card span,
+.welcome-card .username,
+.welcome-card .user-name,
+.welcome-card .name,
+.welcome-card h1 span,
+.welcome-card h2 span {
+    color: #ffffff !important;
+}
+
+/* --- FIX: Teknik/TeleSatış sidebar aktif item yazısı beyaz olsun --- */
+.q-nav-item.active{
+  color:#fff !important;
+}
+.q-nav-item.active i,
+.q-nav-item.active svg{
+  color:#fff !important;
+}
+
+/* --- FIX: Üst menüde (Ana Sayfa / Teknik / TeleSatış vs.) aktif sekme renklensin + yazı beyaz olsun --- */
+.nav-btn.active,
+.menu-btn.active,
+.tab-btn.active,
+.top-nav button.active,
+.header .control-wrapper button.active{
+  background: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color:#fff !important;
+}
+.nav-btn.active i, .menu-btn.active i, .tab-btn.active i,
+.top-nav button.active i, .header .control-wrapper button.active i{
+  color:#fff !important;
+}
