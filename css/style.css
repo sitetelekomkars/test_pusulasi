@@ -1268,3 +1268,27 @@ body.editing .edit-icon { display: block !important; }
 /* Hoş geldin bar: kurumsal laciverte yakın ton */
 .home-hero{background:linear-gradient(135deg,#002766,#0033A0)}
 .home-hero-title #home-welcome-user{color:#CF0A2C}
+
+/* === UI Renk Düzenlemeleri (Talep) === */
+
+/* Hoş Geldin kullanıcı adı beyaz */
+#home-welcome-user {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Ana başlıklar – kurumsal mavi */
+.home-card-title,
+.card-title,
+.modal-content h2,
+.home-hero-title {
+    color: var(--primary);
+}
+
+/* Kırmızı başlık & ikonlar → kurumsal gri */
+.home-card-title i,
+.card .badge,
+.edit-icon,
+.dropdown-item i {
+    color: var(--neutral) !important;
+}
