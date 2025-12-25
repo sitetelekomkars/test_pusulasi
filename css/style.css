@@ -1328,3 +1328,25 @@ body.editing .edit-icon { display: block !important; }
 .q-nav-item.active svg {
   color:#ffffff !important;
 }
+
+/* === TeleSatış seçili arka plan === */
+.q-fullscreen .q-nav-item.active{
+  background: var(--secondary) !important;
+  color:#fff !important;
+}
+.q-fullscreen .q-nav-item.active i{
+  color:#fff !important;
+}
+
+/* === Login mozaik arka plan === */
+#login-screen{
+  background:
+    linear-gradient(rgba(14,27,66,.85), rgba(14,27,66,.85)),
+    repeating-linear-gradient(
+      45deg,
+      #1c2438 0px,
+      #1c2438 20px,
+      #16203a 20px,
+      #16203a 40px
+    ) !important;
+}
