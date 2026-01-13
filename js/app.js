@@ -1,5 +1,3 @@
-
-
 function formatWeekLabel(raw) {
     try {
         if (!raw) return '';
@@ -6194,10 +6192,10 @@ function deleteTechDoc(tabKey, baslik) {
     });
 }
 
-// override / extend existing switchTechTab
+
 window.switchTechTab = async function (tab) {
     try {
-        // existing visual tab switch
+
         document.querySelectorAll('#tech-fullscreen .q-nav-item').forEach(li => li.classList.remove('active'));
         const tabMap = { wizard: 'x-view-wizard', access: 'x-view-access', app: 'x-view-app', activation: 'x-view-activation', payment: 'x-view-payment', cards: 'x-view-cards', info: 'x-view-info' };
         const viewId = tabMap[tab] || tabMap['wizard'];
