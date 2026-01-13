@@ -1490,8 +1490,6 @@ body.editing .edit-icon { display: block !important; }
   color: var(--corp-gray) !important;
 }
 
-/* RESMİ ENGELLEYEN MOZAİK KODU BURADAN SİLİNMİŞTİR */
-
 /* --- v2 Quality Dashboard (Sales + Chat unified) --- */
 .q-stats-row-4{ grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 1100px){
