@@ -463,8 +463,9 @@
   };
 })();
 </script>
-<script>
 
+<script>
+/* Teknik menü aktiflik düzeltmesi (app.js'i bozmadan) */
 (function(){
   function fixActive(tab){
     var root = document.getElementById('tech-fullscreen');
@@ -517,7 +518,11 @@
   };
 })();
 </script>
+
+
+
 <script>
+// TeleSatış sol menü: seçili sekmeyi (active) Teknik gibi renklendir
 document.addEventListener('click', (e) => {
   const item = e.target.closest('#telesales-fullscreen .q-nav-item');
   if (!item) return;
